@@ -23,6 +23,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
   const isDark = theme === 'dark';
   const [selectedNode, setSelectedNode] = useState(null); 
   const [activePopover, setActivePopover] = useState(null);
+  const [skipConfirmModal, setSkipConfirmModal] = useState({ isOpen: false, sectionIdx: null });
   const popoverRef = React.useRef(null);
 
   useEffect(() => {
@@ -288,18 +289,17 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
         )}
       </div>
 
-      {/* ── Pokemon Card Display (Nodes as TCG Cards) ── */}
-      <div className="w-full max-w-6xl mx-auto pb-32">
-        <div className="flex flex-wrap gap-4 md:gap-6 justify-center items-center pt-8 px-4 md:px-8 min-h-[400px]">
+      {/* ── Pokemon Card Display (Nodes as TCG Cards - Apple Cover Flow) ── */}
+      <div className="w-full max-w-7xl mx-auto pb-8 overflow-x-clip">
+        
+        {/* Container strictly prevents scrolling, forces overlap */}
+        <div className="relative flex justify-center items-center w-full min-h-[450px] px-4 md:px-8 pt-8">
+          
           {currentSection.nodes.map((node, i) => {
             const isNodeCompleted = completedNodes.includes(node.id);
             const isNodeLocked = isLocked || (!isNodeCompleted && i > 0 && !completedNodes.includes(currentSection.nodes[i - 1].id));
             const isNodeActive = !isNodeCompleted && !isNodeLocked;
             
-            // Focus logic: 
-            // - If user is hovering any card, that card is focused.
-            // - If NO card is hovered, the currently active (next to learn) card is focused.
-            // - If the section is completely finished and nothing is hovered, maybe focus the first one or none.
             let isFocus = false;
             if (hoveredNodeId) {
               isFocus = hoveredNodeId === node.id;
@@ -307,22 +307,26 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
               if (!isCompleted) {
                 isFocus = isNodeActive;
               } else {
-                isFocus = i === currentSection.nodes.length - 1; // Focus last card if all done
+                isFocus = i === currentSection.nodes.length - 1; 
               }
             }
 
             const progress = save.nodeProgress?.[node.id] || 0;
             const totalLessons = node.lessons.length;
+            const totalNodes = currentSection.nodes.length;
 
             const tooltip = (i === 0 && isLocked) ? (
               <button
-                onClick={(e) => { e.stopPropagation(); if(onRequestSkipTest) onRequestSkipTest(activeSectionIdx); }}
-                className="flex flex-col items-center group/tt cursor-pointer"
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setSkipConfirmModal({ isOpen: true, sectionIdx: activeSectionIdx });
+                }}
+                className="flex flex-col items-center group/tt cursor-pointer animate-bounce"
               >
-                <div className={`px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-black shadow-lg whitespace-normal break-keep text-center min-w-[max-content] transition bg-[#FFB300] text-white hover:bg-[#E6A100]`}>
-                  여기부터 시작하기
+                <div className={`p-2 rounded-full shadow-lg transition bg-[#FFB300] text-white hover:bg-[#E6A100] border-2 border-white/20`}>
+                  <Play size={24} fill="currentColor" className="ml-0.5" />
                 </div>
-                <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rotate-45 -mt-1.5 md:-mt-2 shadow-sm transition bg-[#FFB300] group-hover/tt:bg-[#E6A100]`}></div>
+                <div className={`w-2 h-2 rotate-45 -mt-1 shadow-sm transition bg-[#FFB300] group-hover/tt:bg-[#E6A100]`}></div>
               </button>
             ) : null;
 
@@ -331,6 +335,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                 key={node.id}
                 node={node}
                 index={i}
+                totalNodes={totalNodes}
                 isLocked={isNodeLocked}
                 isCompleted={isNodeCompleted}
                 isActive={isNodeActive}
@@ -363,6 +368,33 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
         xpReward={xpPerLesson}
       />
 
+      {/* ── Custom Skip Confirm Modal ── */}
+      {skipConfirmModal.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className={`w-full max-w-sm rounded-3xl p-6 shadow-2xl border-2 text-center animate-pop ${isDark ? 'bg-[#334155] border-[#475569] text-white' : 'bg-white border-gray-100 text-gray-800'}`}>
+            <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-4xl bg-[#FFB300]/20 text-[#FFB300]`}>
+              <FastForward size={32} fill="currentColor" />
+            </div>
+            <h2 className="text-xl font-black mb-6">이 섹션부터 시작하시겠습니까?</h2>
+            
+            <button
+              onClick={() => {
+                if (onRequestSkipTest) onRequestSkipTest(skipConfirmModal.sectionIdx);
+                setSkipConfirmModal({ isOpen: false, sectionIdx: null });
+              }}
+              className="w-full bg-[#FFB300] hover:bg-[#E6A100] text-white font-black py-4 rounded-2xl transition shadow-[0_4px_0_0_#CC8F00] active:translate-y-1 active:shadow-none flex items-center justify-center gap-2"
+            >
+              <Play size={20} fill="currentColor" /> 시작하기
+            </button>
+            <button 
+              onClick={() => setSkipConfirmModal({ isOpen: false, sectionIdx: null })} 
+              className={`w-full font-bold py-3 mt-1 text-sm transition ${isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'}`}
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
