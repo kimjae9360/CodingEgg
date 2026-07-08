@@ -75,7 +75,26 @@ export default function App() {
   const handleLessonComplete = () => {
     setSave(prev => {
       if (!selectedNodeId || prev.completedNodes.includes(selectedNodeId)) return prev;
-      const withNode = { ...prev, completedNodes: [...prev.completedNodes, selectedNodeId] };
+
+      let nodeLessonsLength = 4; // fallback
+      for (const section of trackData.sections) {
+        const found = section.nodes.find(n => n.id === selectedNodeId);
+        if (found) {
+           nodeLessonsLength = found.lessons.length;
+           break;
+        }
+      }
+
+      const currentProgress = prev.nodeProgress?.[selectedNodeId] || 0;
+      const newProgress = currentProgress + 1;
+      const nodeProgress = { ...(prev.nodeProgress || {}), [selectedNodeId]: newProgress };
+      
+      let withNode = { ...prev, nodeProgress };
+      
+      if (newProgress >= nodeLessonsLength) {
+         withNode = { ...withNode, completedNodes: [...prev.completedNodes, selectedNodeId] };
+      }
+
       return applyLessonCompletion(withNode);
     });
     setView('tree');
@@ -182,8 +201,10 @@ export default function App() {
           onBack={requestExitLesson}
           hearts={save.hearts}
           onLoseHeart={handleLoseHeart}
+          onRefillHearts={handleBuyHeartRefill}
           xpPerLesson={XP_PER_LESSON}
           gemsPerLesson={GEMS_PER_LESSON}
+          currentLessonIndex={skipTest ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
         />
         <ConfirmModal
           open={pendingExit}

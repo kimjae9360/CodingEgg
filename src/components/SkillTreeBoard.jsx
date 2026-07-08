@@ -195,6 +195,9 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
               }
             }
 
+            const progress = save.nodeProgress?.[node.id] || 0;
+            const totalLessons = node.lessons.length;
+
             return (
               <PokemonCard
                 key={node.id}
@@ -206,6 +209,8 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                 isFocus={isFocus}
                 isDark={isDark}
                 xpReward={xpPerLesson}
+                progress={progress}
+                totalLessons={totalLessons}
                 onStart={() => setSelectedNode(node)}
                 onHover={() => handleCardHover(node.id)}
                 onLeave={handleCardLeave}

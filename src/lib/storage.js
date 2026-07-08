@@ -19,6 +19,7 @@ function defaultState() {
     joinDate: todayStr(),
     theme: 'light',
     completedNodes: [],
+    nodeProgress: {},         // Tracks lesson index progress for each node (e.g. { 'node_1_1': 2 })
     xp: 0,
     gems: 0,
     streak: 0,

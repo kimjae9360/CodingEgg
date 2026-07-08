@@ -14,6 +14,8 @@ export default function PokemonCard({
   isFocus,
   isDark, 
   xpReward, 
+  progress = 0,
+  totalLessons = 1,
   onStart,
   onHover,
   onLeave
@@ -172,7 +174,7 @@ export default function PokemonCard({
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-xs font-bold px-2 py-1 rounded ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
-                    {node.lessons.length}단계 레슨
+                    {isCompleted ? '완료됨' : `레슨 ${progress + 1}/${totalLessons}`}
                   </span>
                   {isCompleted && <CheckCircle2 size={16} className="text-[#00C4B5]" />}
                 </div>
@@ -197,7 +199,7 @@ export default function PokemonCard({
                     : 'bg-[#00C4B5] text-white hover:bg-[#15d8c9] border border-[#00A396]'
                 }`}
             >
-              {isCompleted ? '복습' : isLocked ? '잠김' : <><Play size={14} fill="currentColor"/> 시작</>}
+              {isCompleted ? '복습' : isLocked ? '잠김' : <><Play size={14} fill="currentColor"/> 시작 {totalLessons > 1 && `(${progress+1}/${totalLessons})`}</>}
             </button>
           </div>
 

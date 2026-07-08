@@ -83,13 +83,12 @@ export default function InteractiveLessonBoard({
     }
   }, [nodeId, trackData, overrideNode, isSkipTest, currentLessonIndex]);
 
+  // When step changes, reset states
   const currentStep = stepsQueue[currentStepIndex];
   useEffect(() => {
     if (currentStep) {
       if (currentStep.type === 'quiz_code') {
         setUserAnswer(currentStep.initialCode || '');
-      } else if (currentStep.type === 'quiz_word_bank') {
-        setUserAnswer([]);
       } else {
         setUserAnswer(null);
       }
@@ -141,19 +140,6 @@ export default function InteractiveLessonBoard({
 
     if (currentStep.type === 'quiz_multiple_choice') {
       if (userAnswer === currentStep.answer) {
-        playCorrectSound();
-        setSubmissionState('correct');
-      } else {
-        playWrongSound();
-        onLoseHeart();
-        setMistakeCount(c => c + 1);
-        setSubmissionState('wrong');
-      }
-    } else if (currentStep.type === 'quiz_word_bank') {
-      // userAnswer is an array of selected word indices
-      const userWords = (userAnswer || []).map(idx => currentStep.wordBank[idx]);
-      const isCorrect = userWords.join(' ') === (currentStep.answer || []).join(' ');
-      if (isCorrect) {
         playCorrectSound();
         setSubmissionState('correct');
       } else {
@@ -232,7 +218,7 @@ export default function InteractiveLessonBoard({
         <div className="flex-1 mx-6 h-4 bg-gray-200 rounded-full overflow-hidden">
           <div 
             className="h-full bg-green-500 rounded-full transition-all duration-500 ease-out" 
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: \`\${progressPercentage}%\` }}
           />
         </div>
         
@@ -264,62 +250,16 @@ export default function InteractiveLessonBoard({
                 <button 
                   key={i}
                   onClick={() => setUserAnswer(i)}
-                  className={`p-6 rounded-2xl border-2 font-bold text-lg md:text-xl transition-all active:scale-95 flex flex-col items-center justify-center min-h-[160px]
-                    ${userAnswer === i 
+                  className={\`p-6 rounded-2xl border-2 font-bold text-lg md:text-xl transition-all active:scale-95 flex flex-col items-center justify-center min-h-[160px]
+                    \${userAnswer === i 
                       ? 'border-blue-400 bg-blue-50 text-blue-500 shadow-[0_4px_0_rgba(96,165,250,1)]' 
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-[0_4px_0_rgba(229,231,235,1)] text-gray-700'
                     }
-                  `}
+                  \`}
                 >
                   {opt}
                 </button>
               ))}
-            </div>
-          )}
-
-          {/* Word Bank / Fill in the blanks */}
-          {currentStep.type === 'quiz_word_bank' && (
-            <div className="flex flex-col items-center gap-8 mt-4">
-              
-              {/* Answer Blanks Area */}
-              <div className="flex flex-wrap items-center justify-center gap-2 p-6 w-full max-w-2xl bg-gray-50 rounded-2xl min-h-[100px] border-2 border-dashed border-gray-300">
-                <span className="text-xl md:text-2xl font-bold text-gray-700">{currentStep.sentenceParts?.[0]}</span>
-                
-                <div className="flex flex-wrap gap-2 items-center justify-center min-w-[100px] min-h-[48px] border-b-2 border-gray-400 pb-1">
-                  {(userAnswer || []).map((wordIndex, i) => (
-                    <button 
-                      key={i}
-                      onClick={() => setUserAnswer(prev => prev.filter((_, idx) => idx !== i))}
-                      className="px-4 py-2 bg-white border-2 border-gray-200 rounded-xl font-bold text-lg text-gray-700 shadow-sm active:scale-95 transition"
-                    >
-                      {currentStep.wordBank[wordIndex]}
-                    </button>
-                  ))}
-                </div>
-                
-                <span className="text-xl md:text-2xl font-bold text-gray-700">{currentStep.sentenceParts?.[1]}</span>
-              </div>
-
-              {/* Word Bank Chips (Source) */}
-              <div className="flex flex-wrap justify-center gap-3 w-full max-w-2xl mt-4">
-                {currentStep.wordBank && currentStep.wordBank.map((word, i) => {
-                  const isSelected = (userAnswer || []).includes(i);
-                  return (
-                    <button
-                      key={i}
-                      disabled={isSelected}
-                      onClick={() => setUserAnswer(prev => [...(prev || []), i])}
-                      className={`px-4 py-3 rounded-xl font-bold text-lg md:text-xl transition-all active:scale-95 border-2
-                        ${isSelected 
-                          ? 'bg-gray-200 border-gray-200 text-transparent shadow-none cursor-default' 
-                          : 'bg-white border-gray-300 text-gray-800 shadow-[0_4px_0_rgba(209,213,219,1)] hover:bg-gray-50'}
-                      `}
-                    >
-                      {word}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
           )}
 
@@ -363,11 +303,11 @@ export default function InteractiveLessonBoard({
       </div>
 
       {/* Dynamic Bottom Bar */}
-      <div className={`absolute bottom-0 left-0 right-0 border-t-2 transition-colors duration-300 flex items-center justify-center p-6
-        ${submissionState === 'idle' ? 'bg-white border-gray-200' : ''}
-        ${submissionState === 'correct' ? 'bg-green-100 border-green-200' : ''}
-        ${submissionState === 'wrong' ? 'bg-red-100 border-red-200' : ''}
-      `}>
+      <div className={\`absolute bottom-0 left-0 right-0 border-t-2 transition-colors duration-300 flex items-center justify-center p-6
+        \${submissionState === 'idle' ? 'bg-white border-gray-200' : ''}
+        \${submissionState === 'correct' ? 'bg-green-100 border-green-200' : ''}
+        \${submissionState === 'wrong' ? 'bg-red-100 border-red-200' : ''}
+      \`}>
         <div className="w-full max-w-5xl flex items-center justify-between gap-4">
           
           {submissionState === 'idle' ? (
@@ -382,11 +322,11 @@ export default function InteractiveLessonBoard({
               <button
                 onClick={checkAnswer}
                 disabled={userAnswer === null || userAnswer === ''}
-                className={`px-10 py-4 rounded-2xl font-black text-white transition uppercase tracking-wider text-sm md:text-base
-                  ${(userAnswer === null || userAnswer === '') 
+                className={\`px-10 py-4 rounded-2xl font-black text-white transition uppercase tracking-wider text-sm md:text-base
+                  \${(userAnswer === null || userAnswer === '') 
                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                     : 'bg-green-500 hover:bg-green-400 shadow-[0_4px_0_rgba(34,197,94,1)] active:translate-y-1 active:shadow-none'}
-                `}
+                \`}
               >
                 확인
               </button>
@@ -394,9 +334,9 @@ export default function InteractiveLessonBoard({
           ) : (
             <>
               <div className="flex flex-col">
-                <div className={`flex items-center gap-2 font-black text-xl md:text-2xl mb-1
-                  ${submissionState === 'correct' ? 'text-green-600' : 'text-red-500'}
-                `}>
+                <div className={\`flex items-center gap-2 font-black text-xl md:text-2xl mb-1
+                  \${submissionState === 'correct' ? 'text-green-600' : 'text-red-500'}
+                \`}>
                   {submissionState === 'correct' ? <><Check size={28} strokeWidth={4}/> 정답입니다!</> : <><X size={28} strokeWidth={4}/> 틀렸습니다!</>}
                 </div>
                 {submissionState === 'wrong' && currentStep.type === 'quiz_multiple_choice' && (
@@ -413,9 +353,9 @@ export default function InteractiveLessonBoard({
               
               <button
                 onClick={handleContinue}
-                className={`px-10 py-4 rounded-2xl font-black text-white transition uppercase tracking-wider text-sm md:text-base shadow-[0_4px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none
-                  ${submissionState === 'correct' ? 'bg-green-500 hover:bg-green-400' : 'bg-red-500 hover:bg-red-400'}
-                `}
+                className={\`px-10 py-4 rounded-2xl font-black text-white transition uppercase tracking-wider text-sm md:text-base shadow-[0_4px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none
+                  \${submissionState === 'correct' ? 'bg-green-500 hover:bg-green-400' : 'bg-red-500 hover:bg-red-400'}
+                \`}
               >
                 계속하기
               </button>
@@ -425,19 +365,11 @@ export default function InteractiveLessonBoard({
         </div>
       </div>
 
-      {/* Overlay for clicking outside to close */}
-      {isHintDrawerOpen && (
-        <div 
-          className="fixed inset-0 z-[55] bg-black/10 backdrop-blur-sm transition-opacity duration-300"
-          onClick={() => setIsHintDrawerOpen(false)}
-        />
-      )}
-
       {/* Right Slide-in Hint/Theory Drawer */}
       <div 
-        className={`fixed top-0 right-0 h-full w-full md:w-[400px] bg-white shadow-2xl z-[60] transform transition-transform duration-300 ease-out flex flex-col border-l border-gray-100
-          ${isHintDrawerOpen ? 'translate-x-0' : 'translate-x-full'}
-        `}
+        className={\`fixed top-0 right-0 h-full w-full md:w-[400px] bg-white shadow-2xl z-[60] transform transition-transform duration-500 ease-in-out flex flex-col border-l border-gray-100
+          \${isHintDrawerOpen ? 'translate-x-0' : 'translate-x-full'}
+        \`}
       >
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-black text-xl text-gray-800 flex items-center gap-2">
