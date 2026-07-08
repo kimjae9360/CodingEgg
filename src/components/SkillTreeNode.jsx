@@ -47,14 +47,14 @@ export default function SkillTreeNode({ node, onClick, theme = 'light', sectionI
   // Cyberpunk Dark Theme Configuration
   const darkConfig = {
     locked: { 
-      glass: 'bg-[#2b3a42] border-[#1f292e]', 
+      glass: 'bg-[#334155] border-[#1f292e]', 
       glow: 'shadow-inner', 
-      hover: 'hover:bg-[#3b4a52]' 
+      hover: 'hover:bg-[#475569]' 
     },
     active: { 
-      glass: 'bg-[#00C4B5]/20 backdrop-blur-xl border-[#00C4B5]', 
+      glass: 'bg-[#FFB300]/20 backdrop-blur-xl border-[#FFB300]', 
       glow: 'shadow-[0_0_40px_rgba(0,196,181,0.6)]', 
-      hover: 'hover:bg-[#00C4B5]/30 hover:shadow-[0_0_60px_rgba(0,196,181,0.8)] hover:scale-105' 
+      hover: 'hover:bg-[#FFB300]/30 hover:shadow-[0_0_60px_rgba(0,196,181,0.8)] hover:scale-105' 
     },
     completed: { 
       glass: 'bg-[#FFB300]/20 backdrop-blur-xl border-[#FFB300]', 
@@ -72,13 +72,13 @@ export default function SkillTreeNode({ node, onClick, theme = 'light', sectionI
       {isActive && (
         <div className={`absolute -top-14 font-black px-5 py-2 rounded-full text-sm md:text-base uppercase tracking-widest animate-pulse border whitespace-nowrap
           ${isDark 
-            ? 'bg-[#00C4B5] text-gray-900 shadow-[0_0_20px_rgba(0,196,181,0.8)] border-white/20' 
+            ? 'bg-[#FFB300] text-gray-900 shadow-[0_0_20px_rgba(0,196,181,0.8)] border-white/20' 
             : 'bg-amber-400 text-white shadow-[0_10px_20px_rgba(251,191,36,0.4)] border-amber-300'
           }`}
         >
           시작
           <div className={`absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 border-r border-b 
-            ${isDark ? 'bg-[#00C4B5] border-white/20' : 'bg-amber-400 border-amber-300'}`}></div>
+            ${isDark ? 'bg-[#FFB300] border-white/20' : 'bg-amber-400 border-amber-300'}`}></div>
         </div>
       )}
 
@@ -97,7 +97,7 @@ export default function SkillTreeNode({ node, onClick, theme = 'light', sectionI
         >
           {/* Inner Glowing Ring for active */}
           {isActive && (
-            <div className={`absolute inset-2 border-2 rounded-full opacity-50 animate-ping ${isDark ? 'border-[#00C4B5]' : 'border-amber-400'}`}></div>
+            <div className={`absolute inset-2 border-2 rounded-full opacity-50 animate-ping ${isDark ? 'border-[#FFB300]' : 'border-amber-400'}`}></div>
           )}
 
           <span className={`relative z-10 flex items-center justify-center w-full h-full ${isActive ? 'animate-float' : ''}`}>
@@ -107,13 +107,13 @@ export default function SkillTreeNode({ node, onClick, theme = 'light', sectionI
           {/* Status Badge */}
           {isLocked && (
             <div className={`absolute -bottom-2 right-0 rounded-full p-2 border shadow-sm
-              ${isDark ? 'bg-[#181A20] border-[#3b4a52] text-gray-500 shadow-lg' : 'bg-white border-gray-200 text-gray-400'}`}>
+              ${isDark ? 'bg-[#0B1120] border-[#475569] text-gray-500 shadow-lg' : 'bg-white border-gray-200 text-gray-400'}`}>
               <Lock size={16} />
             </div>
           )}
           {isActive && (
             <div className={`absolute -bottom-2 right-0 rounded-full p-2 border 
-              ${isDark ? 'bg-[#00C4B5] border-white/20 text-gray-900 shadow-[0_0_15px_rgba(0,196,181,1)]' : 'bg-amber-400 border-white text-white shadow-[0_5px_15px_rgba(251,191,36,0.6)]'}`}>
+              ${isDark ? 'bg-[#FFB300] border-white/20 text-gray-900 shadow-[0_0_15px_rgba(0,196,181,1)]' : 'bg-amber-400 border-white text-white shadow-[0_5px_15px_rgba(251,191,36,0.6)]'}`}>
               <Zap size={16} fill="currentColor" />
             </div>
           )}

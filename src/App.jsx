@@ -19,6 +19,7 @@ export default function App() {
   });
   const [selectedNodeId, setSelectedNodeId] = useState(null);
   const [skipTest, setSkipTest] = useState(null); // { nodesToComplete, node } | null — active only during a skip test
+  const [examSession, setExamSession] = useState(null); // { node } | null — active only during a tier final exam
   const [pendingExit, setPendingExit] = useState(false); // exit-lesson confirm modal
   const [toast, setToast] = useState(null);
   const [nudgeDismissed, setNudgeDismissed] = useState(false); // streak reminder banner, dismissible per session
@@ -159,10 +160,52 @@ export default function App() {
     setView('tree');
   };
 
+  // Tier final exam: samples every graded question from every node in the
+  // requested (boss) section — a real cumulative test, not a lesson. Scored
+  // and reported by InteractiveLessonBoard/LessonSummaryScreen; App only
+  // needs to build the question pool and clean up afterward.
+  const handleRequestExam = (sectionIdx) => {
+    const fresh = regenHearts(save);
+    if (fresh.hearts <= 0) {
+      setSave(fresh);
+      setToast('하트가 없어서 시험을 볼 수 없어요! 하트를 채운 뒤 다시 시도해주세요.');
+      return;
+    }
+
+    const section = trackData.sections[sectionIdx];
+    if (!section) return;
+
+    let pool = [];
+    for (const node of section.nodes) {
+      for (const lesson of node.lessons) {
+        const resolved = Array.isArray(lesson) ? lesson[0] : lesson;
+        if (resolved.type === 'quiz_multiple_choice' || resolved.type === 'quiz_code') {
+          pool.push({ ...resolved, _topic: node.title });
+        }
+      }
+    }
+
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    const sampleSize = Math.min(20, shuffled.length);
+    const sampledSteps = shuffled.slice(0, sampleSize);
+    if (sampledSteps.length === 0) return;
+
+    setSave(fresh);
+    setExamSession({ node: { id: `exam_${sectionIdx}`, title: section.title.replace(/\n/, ' '), lessons: sampledSteps } });
+    setSelectedNodeId(null);
+    setView('lesson');
+  };
+
+  const handleExamComplete = () => {
+    setExamSession(null);
+    setView('tree');
+  };
+
   const requestExitLesson = () => setPendingExit(true);
   const confirmExitLesson = () => {
     setPendingExit(false);
     setSkipTest(null);
+    setExamSession(null);
     setView('tree');
   };
 
@@ -194,14 +237,16 @@ export default function App() {
   }
 
   if (view === 'lesson') {
+    const isExam = !!examSession;
     return (
       <>
         <InteractiveLessonBoard
-          nodeId={skipTest ? null : selectedNodeId}
+          nodeId={skipTest || isExam ? null : selectedNodeId}
           trackData={trackData}
-          overrideNode={skipTest ? skipTest.node : null}
+          overrideNode={isExam ? examSession.node : (skipTest ? skipTest.node : null)}
           isSkipTest={!!skipTest}
-          onComplete={skipTest ? handleSkipTestComplete : handleLessonComplete}
+          isExamMode={isExam}
+          onComplete={isExam ? handleExamComplete : (skipTest ? handleSkipTestComplete : handleLessonComplete)}
           onBack={requestExitLesson}
           hearts={save.hearts}
           gems={save.gems}
@@ -209,13 +254,13 @@ export default function App() {
           onRefillHearts={handleBuyHeartRefill}
           xpPerLesson={XP_PER_LESSON}
           gemsPerLesson={GEMS_PER_LESSON}
-          currentLessonIndex={skipTest ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
+          currentLessonIndex={skipTest || isExam ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
         />
         <ConfirmModal
           open={pendingExit}
           theme="dark"
-          title={skipTest ? '건너뛰기 테스트를 그만둘까요?' : '레슨을 종료할까요?'}
-          message={skipTest ? '지금 나가면 테스트가 취소되고, 유닛은 건너뛴 상태로 처리되지 않아요.' : '지금 나가면 이번 레슨의 진행 상황은 저장되지 않아요.'}
+          title={isExam ? '시험을 그만둘까요?' : skipTest ? '건너뛰기 테스트를 그만둘까요?' : '레슨을 종료할까요?'}
+          message={isExam ? '지금 나가면 시험이 취소되고 결과가 기록되지 않아요.' : skipTest ? '지금 나가면 테스트가 취소되고, 유닛은 건너뛴 상태로 처리되지 않아요.' : '지금 나가면 이번 레슨의 진행 상황은 저장되지 않아요.'}
           confirmLabel="나가기"
           cancelLabel="계속하기"
           onConfirm={confirmExitLesson}
@@ -232,9 +277,9 @@ export default function App() {
         onClick={() => setView(targetView)}
         className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg
           ${isActive
-            ? 'bg-[#00C4B5]/10 text-[#00C4B5] border-2 border-[#00C4B5]/20'
+            ? 'bg-[#FFB300]/10 text-[#FFB300] border-2 border-[#FFB300]/20'
             : isDark
-              ? 'text-gray-400 hover:bg-[#2b3a42] border-2 border-transparent'
+              ? 'text-gray-400 hover:bg-[#334155] border-2 border-transparent'
               : 'text-gray-500 hover:bg-gray-100 border-2 border-transparent'
           }`}
       >
@@ -249,7 +294,7 @@ export default function App() {
     return (
       <button
         onClick={() => setView(targetView)}
-        className={`flex-1 flex flex-col items-center justify-center py-2 transition ${isActive ? 'text-[#00C4B5]' : isDark ? 'text-gray-500' : 'text-gray-400'}`}
+        className={`flex-1 flex flex-col items-center justify-center py-2 transition ${isActive ? 'text-[#FFB300]' : isDark ? 'text-gray-500' : 'text-gray-400'}`}
       >
         <Icon size={24} />
       </button>
@@ -264,10 +309,10 @@ export default function App() {
   const streakAtRisk = save.streak > 0 && save.lastActiveDate !== new Date().toISOString().slice(0, 10);
 
   return (
-    <div className={`flex w-full min-h-screen ${isDark ? 'bg-[#181A20] text-white' : 'bg-[#F8FAFC] text-gray-900'}`}>
+    <div className={`flex w-full min-h-screen ${isDark ? 'bg-[#0B1120] text-white' : 'bg-[#F8FAFC] text-gray-900'}`}>
       {/* Left Sidebar (Global, desktop/tablet only) */}
-      <div className={`w-[80px] xl:w-[250px] border-r-2 hidden md:flex flex-col p-4 xl:p-6 fixed h-screen z-10 ${isDark ? 'border-[#2b3a42] bg-[#181A20]' : 'border-gray-200 bg-white shadow-sm'}`}>
-        <div className={`font-black text-2xl xl:text-3xl mb-12 px-2 tracking-tight ${isDark ? 'text-[#FFB300]' : 'text-[#00C4B5]'}`}>
+      <div className={`w-[80px] xl:w-[250px] border-r-2 hidden md:flex flex-col p-4 xl:p-6 fixed h-screen z-10 ${isDark ? 'border-[#334155] bg-[#0B1120]' : 'border-gray-200 bg-white shadow-sm'}`}>
+        <div className={`font-black text-2xl xl:text-3xl mb-12 px-2 tracking-tight ${isDark ? 'text-[#FFB300]' : 'text-[#FFB300]'}`}>
           <span className="hidden xl:inline">Coding Egg</span>
           <span className="xl:hidden text-4xl">🥚</span>
         </div>
@@ -283,9 +328,9 @@ export default function App() {
         <button
           onClick={() => setShowGuidebook(true)}
           className={`mt-auto w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent
-            ${isDark ? 'text-gray-400 hover:bg-[#2b3a42]' : 'text-gray-500 hover:bg-gray-100'}`}
+            ${isDark ? 'text-gray-400 hover:bg-[#334155]' : 'text-gray-500 hover:bg-gray-100'}`}
         >
-          <BookOpen size={28} className="text-[#00C4B5]" />
+          <BookOpen size={28} className="text-[#FFB300]" />
           <span className="hidden xl:block">가이드북</span>
         </button>
 
@@ -293,7 +338,7 @@ export default function App() {
         <button
           onClick={() => setSave(prev => ({ ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' }))}
           className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent mt-2
-            ${isDark ? 'text-gray-400 hover:bg-[#2b3a42]' : 'text-gray-500 hover:bg-gray-100'}`}
+            ${isDark ? 'text-gray-400 hover:bg-[#334155]' : 'text-gray-500 hover:bg-gray-100'}`}
         >
           {isDark ? <Sun size={28} className="text-[#FFB300]" /> : <Moon size={28} className="text-gray-500" />}
           <span className="hidden xl:block">{isDark ? '라이트 모드' : '다크 모드'}</span>
@@ -330,6 +375,7 @@ export default function App() {
             trackData={trackData}
             theme={theme}
             onRequestSkipTest={handleRequestSkipTest}
+            onRequestExam={handleRequestExam}
             onChangeCourse={() => setView('courses')}
             onSectionChange={setAppSectionIdx}
             onStoreClick={() => setView('store')}
@@ -372,14 +418,14 @@ export default function App() {
       </div>
 
       {/* Mobile bottom nav (phones only — the sidebar above is desktop/tablet) */}
-      <div className={`md:hidden fixed bottom-0 inset-x-0 z-20 flex border-t-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-200'}`}>
+      <div className={`md:hidden fixed bottom-0 inset-x-0 z-20 flex border-t-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-200'}`}>
         <MobileNavItem icon={Home} targetView="tree" />
         <MobileNavItem icon={Trophy} targetView="leaderboard" />
         <MobileNavItem icon={Store} targetView="store" />
         <MobileNavItem icon={User} targetView="profile" />
         <button
           onClick={() => setShowGuidebook(true)}
-          className={`flex-1 flex flex-col items-center justify-center py-2 text-[#00C4B5]`}
+          className={`flex-1 flex flex-col items-center justify-center py-2 text-[#FFB300]`}
         >
           <BookOpen size={22} />
         </button>
@@ -387,7 +433,7 @@ export default function App() {
 
       {/* Toast notice */}
       {toast && (
-        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-[#181A20] text-white font-bold px-6 py-3 rounded-2xl shadow-2xl max-w-sm text-center animate-pop">
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-[#0B1120] text-white font-bold px-6 py-3 rounded-2xl shadow-2xl max-w-sm text-center animate-pop">
           {toast}
         </div>
       )}

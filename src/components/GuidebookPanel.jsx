@@ -46,11 +46,11 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
       {/* Drawer */}
       <div className={`relative w-full max-w-md h-full overflow-y-auto shadow-2xl 
         ${isClosing ? 'animate-slide-out-right-panel' : 'animate-slide-in-right-panel'}
-        ${isDark ? 'bg-[#181A20] text-white' : 'bg-white text-gray-900'}`}
+        ${isDark ? 'bg-[#0B1120] text-white' : 'bg-white text-gray-900'}`}
       >
-        <div className={`sticky top-0 z-10 flex items-center justify-between p-5 border-b-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+        <div className={`sticky top-0 z-10 flex items-center justify-between p-5 border-b-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#00C4B5]/15 text-[#00C4B5] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#FFB300]/15 text-[#FFB300] flex items-center justify-center shrink-0">
               <BookOpen size={20} />
             </div>
             <div>
@@ -62,7 +62,7 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
           </div>
           <button
             onClick={onClose}
-            className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition ${isDark ? 'hover:bg-[#2b3a42] text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
+            className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition ${isDark ? 'hover:bg-[#334155] text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
           >
             <X size={20} />
           </button>
@@ -74,8 +74,8 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
           ) : (
             <div className="space-y-4">
               {nodesWithTheory.map((node) => (
-                <div key={node.id} className={`rounded-2xl border-2 p-4 ${isDark ? 'bg-[#1f2937] border-[#2b3a42]' : 'bg-gray-50 border-gray-100'}`}>
-                  <h3 className="font-black text-base mb-3 text-[#00C4B5]">{node.title}</h3>
+                <div key={node.id} className={`rounded-2xl border-2 p-4 ${isDark ? 'bg-[#1f2937] border-[#334155]' : 'bg-gray-50 border-gray-100'}`}>
+                  <h3 className="font-black text-base mb-3 text-[#FFB300]">{node.title}</h3>
                   <div className="space-y-3">
                     {node.theoryPoints.map((text, i) => (
                       <p key={i} className={`text-sm leading-relaxed whitespace-pre-wrap ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>

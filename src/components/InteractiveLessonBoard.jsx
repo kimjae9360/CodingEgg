@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
-import { X, Heart, Lightbulb, Check, ChevronRight } from 'lucide-react';
+import { X, Heart, Lightbulb, Check, ChevronRight, Clock } from 'lucide-react';
 import eggCharacter from '../assets/egg_character.png';
 import Confetti from './Confetti';
 import LessonSummaryScreen from './LessonSummaryScreen';
 import { playCorrectSound, playWrongSound, playFinishSound } from '../lib/sound';
 
-export default function InteractiveLessonBoard({ 
-  nodeId, trackData, overrideNode, isSkipTest = false, 
+export default function InteractiveLessonBoard({
+  nodeId, trackData, overrideNode, isSkipTest = false, isExamMode = false,
   onComplete, onBack, hearts, gems, onLoseHeart, onRefillHearts,
   xpPerLesson = 20, gemsPerLesson = 10,
-  currentLessonIndex = 0
+  currentLessonIndex = 0, examDurationSec = 600
 }) {
   const [stepsQueue, setStepsQueue] = useState([]);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(examDurationSec);
+  const [topicResults, setTopicResults] = useState([]); // exam mode only: { correct, topic }[]
 
   // New UI States
   const [userAnswer, setUserAnswer] = useState(null); // stores selected index OR code string
@@ -99,19 +101,47 @@ export default function InteractiveLessonBoard({
     }
   }, [hearts, isFinished]);
 
+  const finishNow = () => {
+    finishTimeRef.current = Date.now();
+    setIsFinished(true);
+    setShowConfetti(true);
+    playFinishSound();
+  };
+
+  // Exam countdown — ticks down regardless of which step the learner is on;
+  // when it hits zero the exam ends immediately and scores whatever was
+  // answered so far (a real exam doesn't wait for you to finish).
+  useEffect(() => {
+    if (!isExamMode || isFinished) return;
+    if (timeLeft <= 0) {
+      finishNow();
+      return;
+    }
+    const id = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+    return () => clearTimeout(id);
+  }, [isExamMode, isFinished, timeLeft]);
+
   if (!currentStep) return null;
 
   if (isFinished) {
+    const examScore = topicResults.length > 0 ? Math.round((topicResults.filter(r => r.correct).length / topicResults.length) * 100) : 0;
+    const examPass = examScore >= 70;
+    const weakTopics = [...new Set(topicResults.filter(r => !r.correct).map(r => r.topic))];
     return (
       <>
         {showConfetti && <Confetti />}
         <LessonSummaryScreen
           nodeTitle={overrideNode ? overrideNode.title : "레슨 완료"}
+          isSkipTest={isSkipTest}
+          isExamMode={isExamMode}
+          examScore={examScore}
+          examPass={examPass}
+          weakTopics={weakTopics}
           xpEarned={isSkipTest ? xpPerLesson * 2 : xpPerLesson}
           gemsEarned={gemsPerLesson}
           accuracy={stepsQueue.length > 0 ? Math.round(((stepsQueue.length - mistakeCount) / stepsQueue.length) * 100) : 100}
           timeSpentMs={finishTimeRef.current - startTimeRef.current}
-          onContinue={onComplete}
+          onContinue={() => onComplete(isExamMode ? { score: examScore, pass: examPass, weakTopics } : undefined)}
         />
       </>
     );
@@ -153,6 +183,11 @@ export default function InteractiveLessonBoard({
     });
   };
 
+  const recordExamResult = (isCorrect) => {
+    if (!isExamMode) return;
+    setTopicResults(prev => [...prev, { correct: isCorrect, topic: currentStep._topic || '기타' }]);
+  };
+
   const checkAnswer = async () => {
     if (userAnswer === null || userAnswer === '') return; // Disabled button anyway
 
@@ -160,11 +195,13 @@ export default function InteractiveLessonBoard({
       if (userAnswer === currentStep.answer) {
         playCorrectSound();
         setSubmissionState('correct');
+        recordExamResult(true);
       } else {
         playWrongSound();
         onLoseHeart();
         setMistakeCount(c => c + 1);
         setSubmissionState('wrong');
+        recordExamResult(false);
       }
     } else if (currentStep.type === 'quiz_word_bank') {
       // userAnswer is an array of selected word indices
@@ -173,11 +210,13 @@ export default function InteractiveLessonBoard({
       if (isCorrect) {
         playCorrectSound();
         setSubmissionState('correct');
+        recordExamResult(true);
       } else {
         playWrongSound();
         onLoseHeart();
         setMistakeCount(c => c + 1);
         setSubmissionState('wrong');
+        recordExamResult(false);
       }
     } else if (currentStep.type === 'quiz_code') {
       // Evaluate python code
@@ -201,11 +240,13 @@ export default function InteractiveLessonBoard({
         if (isCorrect) {
           playCorrectSound();
           setSubmissionState('correct');
+          recordExamResult(true);
         } else {
           playWrongSound();
           onLoseHeart();
           setMistakeCount(c => c + 1);
           setSubmissionState('wrong');
+          recordExamResult(false);
         }
       } catch (err) {
         setOutput(err.toString());
@@ -218,24 +259,27 @@ export default function InteractiveLessonBoard({
   };
 
   const handleContinue = () => {
-    if (submissionState === 'wrong') {
-      // Duolingo pushes the wrong question to the end, but here we can just reset state and force retry, or push to end.
-      // Let's push to end.
+    // Exams ask each question exactly once — requeueing wrong answers (like
+    // regular lessons do) would let a learner brute-force a perfect score
+    // and defeat the point of a cumulative test.
+    if (submissionState === 'wrong' && !isExamMode) {
       setStepsQueue(prev => [...prev, currentStep]);
     }
 
     if (currentStepIndex >= stepsQueue.length - 1) {
-      // Finished
-      finishTimeRef.current = Date.now();
-      setIsFinished(true);
-      setShowConfetti(true);
-      playFinishSound();
+      finishNow();
     } else {
       setCurrentStepIndex(i => i + 1);
     }
   };
 
   const progressPercentage = (currentStepIndex / stepsQueue.length) * 100;
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  };
 
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col h-[100dvh] overflow-hidden font-sans text-gray-800">
@@ -253,25 +297,33 @@ export default function InteractiveLessonBoard({
           />
         </div>
         
+        {isExamMode ? (
+          <div className={`flex items-center gap-2 font-black text-xl mr-4 ${timeLeft < 60 ? 'text-red-500 animate-pulse' : 'text-orange-500'}`}>
+            <Clock size={28} /> {formatTime(timeLeft)}
+          </div>
+        ) : null}
+        
         <div className="flex items-center gap-2 font-black text-xl text-red-500">
           <Heart size={28} fill="currentColor" /> {hearts}
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pb-40 px-4 md:px-8 flex justify-center">
-        <div className="w-full max-w-3xl mt-4 md:mt-10 flex flex-col">
+      <div className="flex-1 overflow-y-auto pb-32 md:pb-40 px-4 md:px-8 flex justify-center">
+        <div className="w-full max-w-3xl mt-2 md:mt-10 flex flex-col">
           
-          <div className="flex justify-between items-start mb-8">
-            <h1 className="text-2xl md:text-3xl font-black text-gray-800 leading-snug break-keep">
+          <div className="flex justify-between items-start mb-6 md:mb-8">
+            <h1 className="text-xl md:text-3xl font-black text-gray-800 leading-snug break-keep">
               {currentStep.content.replace(/\[.*?\]\s*/g, '')} {/* Remove [복습] tags from UI display */}
             </h1>
-            <button 
-              onClick={() => setIsHintDrawerOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-500 hover:bg-blue-100 rounded-full font-bold transition whitespace-nowrap"
-            >
-              <Lightbulb size={20} /> 힌트 보기
-            </button>
+            {!isExamMode && (
+              <button 
+                onClick={() => setIsHintDrawerOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-500 hover:bg-blue-100 rounded-full font-bold transition whitespace-nowrap"
+              >
+                <Lightbulb size={20} /> 힌트 보기
+              </button>
+            )}
           </div>
 
           {/* Multiple Choice Card Grid */}
@@ -281,7 +333,7 @@ export default function InteractiveLessonBoard({
                 <button 
                   key={i}
                   onClick={() => setUserAnswer(i)}
-                  className={`p-6 rounded-2xl border-2 font-bold text-lg md:text-xl transition-all active:scale-95 flex flex-col items-center justify-center min-h-[160px]
+                  className={`p-4 md:p-6 rounded-2xl border-2 font-bold text-base md:text-xl transition-all active:scale-95 flex flex-col items-center justify-center min-h-[100px] md:min-h-[160px]
                     ${userAnswer === i 
                       ? 'border-blue-400 bg-blue-50 text-blue-500 shadow-[0_4px_0_rgba(96,165,250,1)]' 
                       : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 shadow-[0_4px_0_rgba(229,231,235,1)] text-gray-700'
@@ -357,8 +409,8 @@ export default function InteractiveLessonBoard({
                   🔄 초기화
                 </button>
               </div>
-              <div className="flex-1 flex flex-col p-4">
-                <div className="h-[250px] md:h-[300px] border border-gray-700 rounded-lg overflow-hidden bg-[#1e1e1e]">
+              <div className="flex-1 flex flex-col p-3 md:p-4">
+                <div className="h-[200px] md:h-[300px] border border-gray-700 rounded-lg overflow-hidden bg-[#1e1e1e]">
                   <Editor
                     height="100%"
                     language="python"
@@ -389,7 +441,7 @@ export default function InteractiveLessonBoard({
       </div>
 
       {/* Dynamic Bottom Bar */}
-      <div className={`absolute bottom-0 left-0 right-0 border-t-2 transition-colors duration-300 flex items-center justify-center p-6
+      <div className={`absolute bottom-0 left-0 right-0 border-t-2 transition-colors duration-300 flex items-center justify-center p-4 md:p-6
         ${submissionState === 'idle' ? 'bg-white border-gray-200' : ''}
         ${submissionState === 'correct' ? 'bg-green-100 border-green-200' : ''}
         ${submissionState === 'wrong' ? 'bg-red-100 border-red-200' : ''}

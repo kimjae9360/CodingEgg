@@ -21,7 +21,7 @@ export default class ErrorBoundary extends React.Component {
       return (
         <div style={{
           minHeight: '100vh',
-          background: '#181A20',
+          background: '#0B1120',
           color: '#fff',
           fontFamily: 'monospace',
           padding: '32px',
@@ -36,7 +36,7 @@ export default class ErrorBoundary extends React.Component {
             onClick={() => this.setState({ error: null })}
             style={{
               marginTop: '24px',
-              background: '#00C4B5',
+              background: '#FFB300',
               color: '#fff',
               border: 'none',
               padding: '10px 20px',

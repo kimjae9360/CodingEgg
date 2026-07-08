@@ -18,7 +18,8 @@ export default function PokemonCard({
   totalLessons = 1,
   onStart,
   onHover,
-  onLeave
+  onLeave,
+  tooltip
 }) {
   const cardRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
@@ -87,17 +88,23 @@ export default function PokemonCard({
   const heightClass = isFocus ? 'h-[320px] md:h-[360px]' : 'h-[200px] md:h-[240px]';
 
   return (
-    <div
-      className={`relative group flex-none shrink-0 transition-all duration-500 ease-out ${widthClass} ${heightClass}`}
-      style={{ perspective: '1000px' }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className={`relative flex-none shrink-0 flex flex-col items-center ${widthClass} ${heightClass} transition-all duration-500 ease-out`}>
+      {tooltip && (
+        <div className="absolute -top-12 md:-top-16 z-50 animate-bounce cursor-pointer flex flex-col items-center">
+          {tooltip}
+        </div>
+      )}
       <div
-        ref={cardRef}
-        className={`w-full h-full rounded-2xl shadow-2xl transition-transform duration-200 ease-out border-8 relative overflow-hidden bg-gradient-to-br ${cardStyle}
-          ${isActive && !isHovered ? 'animate-pulse shadow-[0_0_20px_rgba(0,196,181,0.5)]' : ''}
+        className={`w-full h-full relative group transition-all duration-500 ease-out`}
+        style={{ perspective: '1000px' }}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div
+          ref={cardRef}
+          className={`w-full h-full rounded-2xl shadow-2xl transition-transform duration-200 ease-out border-8 relative overflow-hidden bg-gradient-to-br ${cardStyle}
+            ${isActive && !isHovered ? 'animate-pulse shadow-[0_0_20px_rgba(0,196,181,0.5)]' : ''}
         `}
         style={{
           transformStyle: 'preserve-3d',
@@ -132,7 +139,7 @@ export default function PokemonCard({
         )}
 
         {/* Card Content Shell */}
-        <div className={`absolute inset-1 rounded-xl flex flex-col pointer-events-none z-10 backdrop-blur-sm transition-all duration-500 ${isFocus ? 'p-4' : 'p-3'} ${isDark ? 'bg-[#181A20]/95' : 'bg-white/90'}`}>
+        <div className={`absolute inset-1 rounded-xl flex flex-col pointer-events-none z-10 backdrop-blur-sm transition-all duration-500 ${isFocus ? 'p-4' : 'p-3'} ${isDark ? 'bg-[#0B1120]/95' : 'bg-white/90'}`}>
           
           {/* Header */}
           <div className={`flex justify-between items-center border-b-2 transition-all ${isFocus ? 'mb-3 pb-2' : 'mb-2 pb-1'} ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
@@ -176,7 +183,7 @@ export default function PokemonCard({
                   <span className={`text-xs font-bold px-2 py-1 rounded ${isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
                     {isCompleted ? '완료됨' : `레슨 ${progress + 1}/${totalLessons}`}
                   </span>
-                  {isCompleted && <CheckCircle2 size={16} className="text-[#00C4B5]" />}
+                  {isCompleted && <CheckCircle2 size={16} className="text-[#FFB300]" />}
                 </div>
                 <p className={`text-xs font-semibold leading-relaxed ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                   {node.title}
@@ -196,7 +203,7 @@ export default function PokemonCard({
                   ? (isDark ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-gray-200 text-gray-400 cursor-not-allowed')
                   : isCompleted
                     ? 'bg-gradient-to-r from-yellow-400 to-yellow-500 text-white hover:from-yellow-500 hover:to-yellow-600 border border-yellow-300'
-                    : 'bg-[#00C4B5] text-white hover:bg-[#15d8c9] border border-[#00A396]'
+                    : 'bg-[#FFB300] text-white hover:bg-[#E6A100] border border-[#CC8F00]'
                 }`}
             >
               {isCompleted ? '복습' : isLocked ? '잠김' : <><Play size={14} fill="currentColor"/> 시작 {totalLessons > 1 && `(${progress+1}/${totalLessons})`}</>}
@@ -206,5 +213,6 @@ export default function PokemonCard({
         </div>
       </div>
     </div>
+  </div>
   );
 }

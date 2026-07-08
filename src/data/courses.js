@@ -11,7 +11,7 @@ export const COURSES = [
     subtitle: '기초부터 객체지향까지',
     emoji: '🐍',
     logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg',
-    color: '#00C4B5',
+    color: '#FFB300',
     available: true,
     track: PYTHON_TRACK,
   },

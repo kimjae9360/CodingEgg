@@ -5,7 +5,7 @@ import { FastForward, ChevronLeft, ChevronRight, BookOpen, CheckCircle2, Lock, P
 
 // Section info per unit range
 function getSectionInfo(unitIdx) {
-  if (unitIdx < 5)  return { label: 'SECTION 1', name: '파이썬 비기너',   emoji: '🐣', gradient: 'linear-gradient(135deg, #00C4B5 0%, #1CB0F6 100%)', iconColor: '#00C4B5' };
+  if (unitIdx < 5)  return { label: 'SECTION 1', name: '파이썬 비기너',   emoji: '🐣', gradient: 'linear-gradient(135deg, #FFB300 0%, #1CB0F6 100%)', iconColor: '#FFB300' };
   if (unitIdx < 10) return { label: 'SECTION 2', name: '파이썬 디벨로퍼', emoji: '⚡', gradient: 'linear-gradient(135deg, #CE82FF 0%, #FF66B1 100%)', iconColor: '#CE82FF' };
   return                     { label: 'SECTION 3', name: '파이썬 마스터',   emoji: '🔥', gradient: 'linear-gradient(135deg, #FF9600 0%, #FF66B1 100%)', iconColor: '#FF9600' };
 }
@@ -19,7 +19,7 @@ function getShortTitle(fullTitle) {
 
 
 
-export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData, theme = 'light', onRequestSkipTest, onChangeCourse, onSectionChange, onStoreClick, xpPerLesson = 20, save, maxHearts = 5, currentCourse }) {
+export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData, theme = 'light', onRequestSkipTest, onRequestExam, onChangeCourse, onSectionChange, onStoreClick, xpPerLesson = 20, save, maxHearts = 5, currentCourse }) {
   const isDark = theme === 'dark';
   const [selectedNode, setSelectedNode] = useState(null); 
   const [activePopover, setActivePopover] = useState(null);
@@ -83,7 +83,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
   const shortTitle = getShortTitle(currentSection.title);
 
   return (
-    <div className={`w-full min-h-screen flex flex-col relative py-8 px-4 md:px-8 xl:px-12 ${isDark ? 'bg-[#181A20]' : 'bg-[#F8FAFC]'}`}>
+    <div className={`w-full min-h-screen flex flex-col relative py-8 px-4 md:px-8 xl:px-12 ${isDark ? 'bg-[#0B1120]' : 'bg-[#F8FAFC]'}`}>
       
       {/* ── Top Header with Stats (Mobile Optimized) ── */}
       <div className="max-w-6xl mx-auto w-full flex flex-col-reverse md:flex-row md:items-center justify-end gap-4 mb-6">
@@ -94,7 +94,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
            <>
              {/* Course Popover */}
              <div className="relative">
-               <button onClick={() => setActivePopover(activePopover === 'course' ? null : 'course')} className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition shadow-sm border overflow-hidden p-1 ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-white border-transparent' : 'bg-white hover:bg-gray-50 text-[#FFD43B] border-gray-200'}`}>
+               <button onClick={() => setActivePopover(activePopover === 'course' ? null : 'course')} className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition shadow-sm border overflow-hidden p-1 ${isDark ? 'bg-[#334155] hover:bg-[#475569] text-white border-transparent' : 'bg-white hover:bg-gray-50 text-[#FFD43B] border-gray-200'}`}>
                  {currentCourse?.logoUrl ? (
                    <img src={currentCourse.logoUrl} alt={currentCourse.name} className="w-full h-full object-contain" />
                  ) : (
@@ -102,9 +102,9 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                  )}
                </button>
                {activePopover === 'course' && (
-                 <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl shadow-xl z-50 p-2 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                 <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl shadow-xl z-50 p-2 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
                    <div className={`text-xs font-bold uppercase p-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>내 과정</div>
-                   <div className={`flex items-center gap-3 p-3 rounded-xl mb-2 ${isDark ? 'bg-[#2b3a42]' : 'bg-gray-50'}`}>
+                   <div className={`flex items-center gap-3 p-3 rounded-xl mb-2 ${isDark ? 'bg-[#334155]' : 'bg-gray-50'}`}>
                      {currentCourse?.logoUrl ? (
                        <img src={currentCourse.logoUrl} alt={currentCourse.name} className="w-6 h-6 object-contain" />
                      ) : (
@@ -113,7 +113,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                      <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{currentCourse?.name || '과정'}</span>
                    </div>
                    {onChangeCourse && (
-                     <button onClick={() => { setActivePopover(null); if (confirm('새로운 과정을 추가하시겠습니까?')) onChangeCourse(); }} className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${isDark ? 'hover:bg-[#2b3a42] text-gray-300' : 'hover:bg-gray-50 text-gray-700'}`}>
+                     <button onClick={() => { setActivePopover(null); if (confirm('새로운 과정을 추가하시겠습니까?')) onChangeCourse(); }} className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${isDark ? 'hover:bg-[#334155] text-gray-300' : 'hover:bg-gray-50 text-gray-700'}`}>
                        <span className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center font-black text-xl">+</span>
                        <span className="font-bold text-sm">새로운 과정 추가하기</span>
                      </button>
@@ -124,11 +124,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
 
              {/* Streak Popover */}
              <div className="relative">
-               <button onClick={() => setActivePopover(activePopover === 'streak' ? null : 'streak')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#FFB300] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-yellow-50 border-gray-200'}`}>
+               <button onClick={() => setActivePopover(activePopover === 'streak' ? null : 'streak')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#FFB300] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#334155] hover:bg-[#475569] border-transparent' : 'bg-white hover:bg-yellow-50 border-gray-200'}`}>
                  <Flame size={18} fill={save.streak > 0 ? "currentColor" : "none"} /> {save.streak}
                </button>
                {activePopover === 'streak' && (
-                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
                    <div className="flex items-start gap-4">
                      <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center shrink-0">
                        <Flame size={24} className="text-orange-500" fill="currentColor" />
@@ -146,11 +146,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
 
              {/* Gems Popover */}
              <div className="relative">
-               <button onClick={() => setActivePopover(activePopover === 'gem' ? null : 'gem')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#B96CE8] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-purple-50 border-gray-200'}`}>
+               <button onClick={() => setActivePopover(activePopover === 'gem' ? null : 'gem')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#B96CE8] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#334155] hover:bg-[#475569] border-transparent' : 'bg-white hover:bg-purple-50 border-gray-200'}`}>
                  <Gem size={18} /> {save.gems}
                </button>
                {activePopover === 'gem' && (
-                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
                    <div className="flex items-start gap-4">
                      <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
                        <Gem size={24} className="text-purple-500" />
@@ -171,11 +171,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
 
              {/* Hearts Popover */}
              <div className="relative">
-               <button onClick={() => setActivePopover(activePopover === 'heart' ? null : 'heart')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#ff4b4b] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-red-50 border-gray-200'}`}>
+               <button onClick={() => setActivePopover(activePopover === 'heart' ? null : 'heart')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#ff4b4b] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#334155] hover:bg-[#475569] border-transparent' : 'bg-white hover:bg-red-50 border-gray-200'}`}>
                  <Heart size={18} fill="currentColor" /> {save.hearts}
                </button>
                {activePopover === 'heart' && (
-                 <div className={`absolute top-full right-0 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                 <div className={`absolute top-full right-0 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
                    <div className="flex items-start gap-4 mb-4">
                      <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
                        <Heart size={24} className="text-red-500" fill="currentColor" />
@@ -188,7 +188,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                      </div>
                    </div>
                    <div className="space-y-2">
-                     <button className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#3b4a52] hover:bg-[#2b3a42]' : 'border-gray-200 hover:bg-gray-50'}`}>
+                     <button className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}>
                        <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                          <span className="text-xl">♾️</span> 무제한 하트
                        </span>
@@ -199,7 +199,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                           setActivePopover(null);
                           if (onStoreClick) onStoreClick(); // Store handles refill 
                         }} 
-                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#3b4a52] hover:bg-[#2b3a42]' : 'border-gray-200 hover:bg-gray-50'}`}
+                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}
                       >
                        <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                          <Heart size={20} className="text-red-500" fill="none" /> 하트 리필하기
@@ -226,14 +226,14 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
             {activeSectionIdx > 0 && (
               <button 
                 onClick={() => setActiveSectionIdx(0)}
-                className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
+                className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#334155] hover:bg-[#475569] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
               >
                 처음으로
               </button>
             )}
           </div>
 
-          <div className={`flex items-center gap-4 px-2 py-2 rounded-full border-2 shadow-sm ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+          <div className={`flex items-center gap-4 px-2 py-2 rounded-full border-2 shadow-sm ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
             <button 
               onClick={() => setActiveSectionIdx(p => Math.max(0, p - 1))}
               disabled={activeSectionIdx === 0}
@@ -265,7 +265,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
             {activeSectionIdx < trackData.sections.length - 1 && (
               <button 
                 onClick={() => setActiveSectionIdx(trackData.sections.length - 1)}
-                className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
+                className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#334155] hover:bg-[#475569] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
               >
                 끝으로
               </button>
@@ -276,6 +276,16 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
         <p className={`text-sm md:text-base font-bold mt-3 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
           {trackData.description}
         </p>
+
+        {currentSection.title.includes('보스전') && !isLocked && onRequestExam && (
+          <button
+            onClick={() => onRequestExam(activeSectionIdx)}
+            className="mt-5 flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-white transition shadow-[0_4px_0_rgba(180,83,9,1)] active:translate-y-1 active:shadow-none"
+            style={{ background: 'linear-gradient(135deg, #FF9600 0%, #FF66B1 100%)' }}
+          >
+            <Trophy size={20} /> 🎓 이 티어 시험 보기 (기말고사)
+          </button>
+        )}
       </div>
 
       {/* ── Pokemon Card Display (Nodes as TCG Cards) ── */}
@@ -304,6 +314,18 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
             const progress = save.nodeProgress?.[node.id] || 0;
             const totalLessons = node.lessons.length;
 
+            const tooltip = (i === 0 && isLocked) ? (
+              <button
+                onClick={(e) => { e.stopPropagation(); if(onRequestSkipTest) onRequestSkipTest(activeSectionIdx); }}
+                className="flex flex-col items-center group/tt cursor-pointer"
+              >
+                <div className={`px-3 md:px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-black shadow-lg whitespace-normal break-keep text-center min-w-[max-content] transition bg-[#FFB300] text-white hover:bg-[#E6A100]`}>
+                  여기부터 시작하기
+                </div>
+                <div className={`w-2.5 h-2.5 md:w-3 md:h-3 rotate-45 -mt-1.5 md:-mt-2 shadow-sm transition bg-[#FFB300] group-hover/tt:bg-[#E6A100]`}></div>
+              </button>
+            ) : null;
+
             return (
               <PokemonCard
                 key={node.id}
@@ -317,6 +339,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                 xpReward={xpPerLesson}
                 progress={progress}
                 totalLessons={totalLessons}
+                tooltip={tooltip}
                 onStart={() => setSelectedNode(node)}
                 onHover={() => handleCardHover(node.id)}
                 onLeave={handleCardLeave}

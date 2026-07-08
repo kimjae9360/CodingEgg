@@ -124,19 +124,19 @@ body {
 
 /* Dark Theme Scrollbar */
 .scrollbar-dark::-webkit-scrollbar-track {
-  background: #181A20;
+  background: #0B1120;
   border-radius: 10px;
 }
 .scrollbar-dark::-webkit-scrollbar-thumb {
-  background: #3b4a52;
+  background: #475569;
   border-radius: 10px;
 }
 .scrollbar-dark::-webkit-scrollbar-thumb:hover {
-  background: #00C4B5;
-  box-shadow: 0 0 10px #00C4B5;
+  background: #FFB300;
+  box-shadow: 0 0 10px #FFB300;
 }
 .scrollbar-dark {
-  scrollbar-color: #3b4a52 #181A20;
+  scrollbar-color: #475569 #0B1120;
 }
 
 /* Sidebar edge scroll: the scrollable region owns the full width of its

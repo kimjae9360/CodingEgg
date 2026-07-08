@@ -43,7 +43,7 @@ export function LeaderboardScreen({ theme = 'light', xp = 0, leagueTier = 0, wee
         {leagueTier === LEAGUE_TIERS.length - 1 ? ' · 최고 리그예요, 강등만 조심하세요!' : ''}
       </p>
 
-      <div className={`rounded-3xl border-2 overflow-hidden ${isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-white border-gray-100 shadow-md'}`}>
+      <div className={`rounded-3xl border-2 overflow-hidden ${isDark ? 'bg-[#334155] border-[#475569]' : 'bg-white border-gray-100 shadow-md'}`}>
         {standings.map((row, i) => {
           const isPromoteZone = leagueTier < LEAGUE_TIERS.length - 1 && row.rank <= PROMOTE_COUNT;
           const isDemoteZone = leagueTier > 0 && row.rank > totalParticipants - DEMOTE_COUNT;
@@ -63,8 +63,8 @@ export function LeaderboardScreen({ theme = 'light', xp = 0, leagueTier = 0, wee
                 </div>
               )}
               <div
-                className={`flex items-center gap-3 px-5 py-3 border-b last:border-b-0 ${isDark ? 'border-[#3b4a52]' : 'border-gray-100'}
-                  ${row.isUser ? (isDark ? 'bg-[#00C4B5]/15' : 'bg-[#00C4B5]/10') : ''}`}
+                className={`flex items-center gap-3 px-5 py-3 border-b last:border-b-0 ${isDark ? 'border-[#475569]' : 'border-gray-100'}
+                  ${row.isUser ? (isDark ? 'bg-[#FFB300]/15' : 'bg-[#FFB300]/10') : ''}`}
               >
                 <div className={`w-7 text-center font-black text-sm ${
                   row.rank === 1 ? 'text-[#FFB300]' : isPromoteZone ? 'text-emerald-500' : isDemoteZone ? 'text-red-400' : isDark ? 'text-gray-500' : 'text-gray-400'
@@ -74,7 +74,7 @@ export function LeaderboardScreen({ theme = 'light', xp = 0, leagueTier = 0, wee
                 <div className="w-9 h-9 rounded-full bg-black/5 flex items-center justify-center text-xl flex-none">
                   {row.avatar}
                 </div>
-                <div className={`flex-1 font-bold text-sm truncate ${row.isUser ? (isDark ? 'text-[#00C4B5]' : 'text-[#00A396]') : isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                <div className={`flex-1 font-bold text-sm truncate ${row.isUser ? (isDark ? 'text-[#FFB300]' : 'text-[#CC8F00]') : isDark ? 'text-gray-200' : 'text-gray-700'}`}>
                   {row.isUser ? `${row.name} (나)` : row.name}
                 </div>
                 <div className={`font-black text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{row.xp} XP</div>
@@ -92,7 +92,7 @@ export function StoreScreen({ theme = 'light', gems = 0, hearts = 5, maxHearts =
   const heartCost = 50;
   const freezeCost = 200;
   const heartsFull = hearts >= maxHearts;
-  const cardClass = isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-white border-gray-100 shadow-md';
+  const cardClass = isDark ? 'bg-[#334155] border-[#475569]' : 'bg-white border-gray-100 shadow-md';
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
 
   return (
@@ -123,7 +123,7 @@ export function StoreScreen({ theme = 'light', gems = 0, hearts = 5, maxHearts =
           <button
             onClick={onBuyHeartRefill}
             disabled={heartsFull || gems < heartCost}
-            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
+            className="bg-[#FFB300] hover:bg-[#E6A100] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
           >
             <Gem size={20} fill="currentColor" /> {heartCost}
           </button>
@@ -137,7 +137,7 @@ export function StoreScreen({ theme = 'light', gems = 0, hearts = 5, maxHearts =
           <button
             onClick={onBuyStreakFreeze}
             disabled={streakFreezeAvailable || gems < freezeCost}
-            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
+            className="bg-[#FFB300] hover:bg-[#E6A100] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
           >
             <Gem size={20} fill="currentColor" /> {freezeCost}
           </button>
@@ -163,16 +163,16 @@ export function StoreScreen({ theme = 'light', gems = 0, hearts = 5, maxHearts =
 
 export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무', joinDate, streak = 0, xp = 0, gems = 0 }) {
   const isDark = theme === 'dark';
-  const cardClass = isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-white border-gray-100 shadow-md';
-  const statCardClass = isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-gray-50 border-gray-100';
+  const cardClass = isDark ? 'bg-[#334155] border-[#475569]' : 'bg-white border-gray-100 shadow-md';
+  const statCardClass = isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-gray-50 border-gray-100';
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
 
   return (
     <div className="w-full max-w-2xl mx-auto pt-8 px-4 animate-pop pb-20">
       <div className={`rounded-3xl p-8 border-2 flex flex-col md:flex-row items-center gap-6 mb-8 ${cardClass}`}>
-        <div className={`w-28 h-28 rounded-full flex items-center justify-center text-5xl relative ${isDark ? 'bg-[#181A20]' : 'bg-gray-50'}`}>
+        <div className={`w-28 h-28 rounded-full flex items-center justify-center text-5xl relative ${isDark ? 'bg-[#0B1120]' : 'bg-gray-50'}`}>
           🥚
-          <div className="absolute -bottom-2 -right-2 bg-[#00C4B5] w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-[#2b3a42]">
+          <div className="absolute -bottom-2 -right-2 bg-[#FFB300] w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-[#334155]">
             <Trophy size={18} className="text-white" />
           </div>
         </div>
@@ -180,10 +180,10 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
           <h1 className={`font-black text-3xl mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>{profileName}</h1>
           <p className={`font-bold text-sm mb-4 ${textMuted}`}>가입일: {joinDate}</p>
           <div className="flex gap-4 justify-center md:justify-start">
-            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#181A20] border-[#3b4a52] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
+            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#0B1120] border-[#475569] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
               친구 추가하기
             </div>
-            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#181A20] border-[#3b4a52] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
+            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#0B1120] border-[#475569] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
               프로필 수정
             </div>
           </div>
@@ -199,7 +199,7 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
           <div className={`font-bold text-sm ${textMuted}`}>연속 학습일</div>
         </div>
         <div className={`rounded-2xl p-5 border-2 ${statCardClass}`}>
-          <div className="flex items-center gap-2 text-[#00C4B5] font-black text-2xl mb-2">
+          <div className="flex items-center gap-2 text-[#FFB300] font-black text-2xl mb-2">
             <Trophy size={26} fill="currentColor" /> {xp}
           </div>
           <div className={`font-bold text-sm ${textMuted}`}>총 누적 XP</div>
@@ -213,7 +213,7 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
       </div>
 
       <h2 className={`text-2xl font-black mb-4 px-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>업적</h2>
-      <div className={`rounded-3xl border-2 ${cardClass} divide-y-2 ${isDark ? 'divide-[#3b4a52]' : 'divide-gray-100'}`}>
+      <div className={`rounded-3xl border-2 ${cardClass} divide-y-2 ${isDark ? 'divide-[#475569]' : 'divide-gray-100'}`}>
         <div className="p-6 flex items-center gap-5">
           <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center text-3xl shrink-0">
             🔥
@@ -221,7 +221,7 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
           <div className="flex-1">
             <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>불꽃 전사</h3>
             <p className={`font-bold text-sm mb-3 ${textMuted}`}>7일 연속 학습을 달성하세요.</p>
-            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#181A20]' : 'bg-gray-100'}`}>
+            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#0B1120]' : 'bg-gray-100'}`}>
               <div className="bg-[#FFB300] h-full" style={{ width: `${Math.min(100, (streak / 7) * 100)}%` }}></div>
             </div>
           </div>
@@ -233,8 +233,8 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
           <div className="flex-1">
             <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>경험치 마스터</h3>
             <p className={`font-bold text-sm mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>총 1,000 XP를 획득하세요.</p>
-            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#181A20]' : 'bg-gray-100'}`}>
-              <div className="bg-[#00C4B5] h-full" style={{ width: `${Math.min(100, (xp / 1000) * 100)}%` }}></div>
+            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#0B1120]' : 'bg-gray-100'}`}>
+              <div className="bg-[#FFB300] h-full" style={{ width: `${Math.min(100, (xp / 1000) * 100)}%` }}></div>
             </div>
           </div>
         </div>
