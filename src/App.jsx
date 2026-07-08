@@ -7,7 +7,8 @@ import ConfirmModal from './components/ConfirmModal';
 import { LeaderboardScreen, StoreScreen, ProfileScreen } from './components/PlaceholderScreens';
 import { getCourse } from './data/courses';
 import { loadState, saveState, applyLessonCompletion, regenHearts, loseHeart, refillHearts, MAX_HEARTS, XP_PER_LESSON, GEMS_PER_LESSON } from './lib/storage';
-import { Home, Trophy, Store, User, Flame, Gem, Heart, Moon, Sun, Lock, X } from 'lucide-react';
+import GuidebookPanel from './components/GuidebookPanel';
+import { Home, Trophy, Store, User, Flame, Gem, Heart, Moon, Sun, Lock, X, BookOpen } from 'lucide-react';
 
 export default function App() {
   const [save, setSave] = useState(() => regenHearts(loadState()));
@@ -21,6 +22,9 @@ export default function App() {
   const [pendingExit, setPendingExit] = useState(false); // exit-lesson confirm modal
   const [toast, setToast] = useState(null);
   const [nudgeDismissed, setNudgeDismissed] = useState(false); // streak reminder banner, dismissible per session
+  
+  const [showGuidebook, setShowGuidebook] = useState(false);
+  const [appSectionIdx, setAppSectionIdx] = useState(0);
 
   const theme = save.theme;
   const isDark = theme === 'dark';
@@ -164,9 +168,9 @@ export default function App() {
 
   const handleBuyHeartRefill = () => {
     setSave(prev => {
-      const fresh = regenHearts(prev);
-      if (fresh.hearts >= MAX_HEARTS || fresh.gems < 50) return fresh;
-      return refillHearts({ ...fresh, gems: fresh.gems - 50 });
+      const needed = MAX_HEARTS - prev.hearts;
+      if (needed <= 0 || prev.gems < 50) return prev;
+      return { ...prev, hearts: MAX_HEARTS, gems: prev.gems - 50 };
     });
   };
 
@@ -200,6 +204,7 @@ export default function App() {
           onComplete={skipTest ? handleSkipTestComplete : handleLessonComplete}
           onBack={requestExitLesson}
           hearts={save.hearts}
+          gems={save.gems}
           onLoseHeart={handleLoseHeart}
           onRefillHearts={handleBuyHeartRefill}
           xpPerLesson={XP_PER_LESSON}
@@ -274,10 +279,20 @@ export default function App() {
           <NavItem icon={User} label="프로필" targetView="profile" />
         </div>
 
+        {/* Guidebook Button */}
+        <button
+          onClick={() => setShowGuidebook(true)}
+          className={`mt-auto w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent
+            ${isDark ? 'text-gray-400 hover:bg-[#2b3a42]' : 'text-gray-500 hover:bg-gray-100'}`}
+        >
+          <BookOpen size={28} className="text-[#00C4B5]" />
+          <span className="hidden xl:block">가이드북</span>
+        </button>
+
         {/* Theme Toggle Button */}
         <button
           onClick={() => setSave(prev => ({ ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' }))}
-          className={`mt-auto w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent
+          className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent mt-2
             ${isDark ? 'text-gray-400 hover:bg-[#2b3a42]' : 'text-gray-500 hover:bg-gray-100'}`}
         >
           {isDark ? <Sun size={28} className="text-[#FFB300]" /> : <Moon size={28} className="text-gray-500" />}
@@ -316,9 +331,12 @@ export default function App() {
             theme={theme}
             onRequestSkipTest={handleRequestSkipTest}
             onChangeCourse={() => setView('courses')}
+            onSectionChange={setAppSectionIdx}
+            onStoreClick={() => setView('store')}
             xpPerLesson={XP_PER_LESSON}
             save={save}
             maxHearts={MAX_HEARTS}
+            currentCourse={course}
           />
         )}
         {view === 'leaderboard' && (
@@ -353,8 +371,6 @@ export default function App() {
         )}
       </div>
 
-
-
       {/* Mobile bottom nav (phones only — the sidebar above is desktop/tablet) */}
       <div className={`md:hidden fixed bottom-0 inset-x-0 z-20 flex border-t-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-200'}`}>
         <MobileNavItem icon={Home} targetView="tree" />
@@ -362,10 +378,10 @@ export default function App() {
         <MobileNavItem icon={Store} targetView="store" />
         <MobileNavItem icon={User} targetView="profile" />
         <button
-          onClick={() => setSave(prev => ({ ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' }))}
-          className={`flex-1 flex flex-col items-center justify-center py-2 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}
+          onClick={() => setShowGuidebook(true)}
+          className={`flex-1 flex flex-col items-center justify-center py-2 text-[#00C4B5]`}
         >
-          {isDark ? <Sun size={22} /> : <Moon size={22} />}
+          <BookOpen size={22} />
         </button>
       </div>
 
@@ -375,6 +391,15 @@ export default function App() {
           {toast}
         </div>
       )}
+
+      {/* Global Guidebook Panel */}
+      <GuidebookPanel
+        isOpen={showGuidebook}
+        onClose={() => setShowGuidebook(false)}
+        trackData={trackData}
+        activeSectionIdx={appSectionIdx}
+        theme={theme}
+      />
     </div>
   );
 }

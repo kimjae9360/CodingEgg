@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import LessonStartModal from './LessonStartModal';
-import GuidebookPanel from './GuidebookPanel';
 import PokemonCard from './PokemonCard';
 import { FastForward, ChevronLeft, ChevronRight, BookOpen, CheckCircle2, Lock, Play, Flame, Trophy, Gem, Heart, RotateCcw } from 'lucide-react';
 
@@ -20,10 +19,24 @@ function getShortTitle(fullTitle) {
 
 
 
-export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData, theme = 'light', onRequestSkipTest, onChangeCourse, xpPerLesson = 20, save, maxHearts = 5 }) {
+export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData, theme = 'light', onRequestSkipTest, onChangeCourse, onSectionChange, onStoreClick, xpPerLesson = 20, save, maxHearts = 5, currentCourse }) {
   const isDark = theme === 'dark';
   const [selectedNode, setSelectedNode] = useState(null); 
-  const [showGuidebook, setShowGuidebook] = useState(false); 
+  const [activePopover, setActivePopover] = useState(null);
+  const popoverRef = React.useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (popoverRef.current && !popoverRef.current.contains(event.target)) {
+        setActivePopover(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
   const hoverTimeout = React.useRef(null);
 
@@ -51,13 +64,17 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
     return completedNodes.includes(nodes[nodes.length - 1].id);
   };
 
-  // Find the first uncompleted section to show on mount
   const [activeSectionIdx, setActiveSectionIdx] = useState(() => {
     const uncompletedSecIdx = trackData.sections.findIndex(sec => 
       !sec.nodes.every(n => completedNodes.includes(n.id))
     );
     return Math.max(0, uncompletedSecIdx);
   });
+
+  // Report activeSectionIdx to App.jsx for the Guidebook
+  useEffect(() => {
+    if (onSectionChange) onSectionChange(activeSectionIdx);
+  }, [activeSectionIdx, onSectionChange]);
 
   const currentSection = trackData.sections[activeSectionIdx];
   const isLocked = isSectionLocked(activeSectionIdx);
@@ -69,44 +86,133 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
     <div className={`w-full min-h-screen flex flex-col relative py-8 px-4 md:px-8 xl:px-12 ${isDark ? 'bg-[#181A20]' : 'bg-[#F8FAFC]'}`}>
       
       {/* ── Top Header with Stats (Mobile Optimized) ── */}
-      <div className="max-w-6xl mx-auto w-full flex flex-col-reverse md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="max-w-6xl mx-auto w-full flex flex-col-reverse md:flex-row md:items-center justify-end gap-4 mb-6">
         
-        {/* Left Side: Buttons */}
-        <div className="flex gap-2 w-full sm:w-auto">
-           <button
-             onClick={() => setShowGuidebook(true)}
-             className={`flex-1 sm:flex-none flex items-center justify-center gap-2 font-black px-4 py-2 rounded-xl transition shadow-sm border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-white border-transparent' : 'bg-white hover:bg-gray-50 text-gray-800 border-gray-200'}`}
-           >
-             <BookOpen size={18} className="text-[#00C4B5] shrink-0" /> 
-             <span className="text-left leading-tight text-xs md:text-sm">가이드북</span>
-           </button>
-           {onChangeCourse && (
-             <button
-               onClick={onChangeCourse}
-               className={`flex-1 sm:flex-none flex items-center justify-center gap-2 font-black px-4 py-2 rounded-xl transition shadow-sm border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-white border-transparent' : 'bg-white hover:bg-gray-50 text-gray-800 border-gray-200'}`}
-             >
-               <ChevronLeft size={18} className="shrink-0" /> 
-               <span className="text-left leading-tight text-xs md:text-sm">코스<br/>변경</span>
-             </button>
-           )}
-        </div>
-
-        {/* Right Side: Stats */}
-        <div className="flex flex-wrap items-center justify-end gap-2 md:gap-3">
+        {/* Right Side: Stats with Popovers */}
+        <div ref={popoverRef} className="flex flex-wrap items-center justify-end gap-2 md:gap-3 relative">
          {save && (
            <>
-             <div className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#FFB300] px-3 md:px-4 py-1.5 md:py-2 rounded-xl border ${isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-yellow-50 border-yellow-100'}`}>
-               <Flame size={18} fill="currentColor" /> {save.streak}
+             {/* Course Popover */}
+             <div className="relative">
+               <button onClick={() => setActivePopover(activePopover === 'course' ? null : 'course')} className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition shadow-sm border overflow-hidden p-1 ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] text-white border-transparent' : 'bg-white hover:bg-gray-50 text-[#FFD43B] border-gray-200'}`}>
+                 {currentCourse?.logoUrl ? (
+                   <img src={currentCourse.logoUrl} alt={currentCourse.name} className="w-full h-full object-contain" />
+                 ) : (
+                   <span className="text-xl md:text-2xl font-black font-mono">Py</span>
+                 )}
+               </button>
+               {activePopover === 'course' && (
+                 <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl shadow-xl z-50 p-2 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                   <div className={`text-xs font-bold uppercase p-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>내 과정</div>
+                   <div className={`flex items-center gap-3 p-3 rounded-xl mb-2 ${isDark ? 'bg-[#2b3a42]' : 'bg-gray-50'}`}>
+                     {currentCourse?.logoUrl ? (
+                       <img src={currentCourse.logoUrl} alt={currentCourse.name} className="w-6 h-6 object-contain" />
+                     ) : (
+                       <span className="text-xl font-black text-[#FFD43B] font-mono">Py</span>
+                     )}
+                     <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{currentCourse?.name || '과정'}</span>
+                   </div>
+                   {onChangeCourse && (
+                     <button onClick={() => { setActivePopover(null); if (confirm('새로운 과정을 추가하시겠습니까?')) onChangeCourse(); }} className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${isDark ? 'hover:bg-[#2b3a42] text-gray-300' : 'hover:bg-gray-50 text-gray-700'}`}>
+                       <span className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center font-black text-xl">+</span>
+                       <span className="font-bold text-sm">새로운 과정 추가하기</span>
+                     </button>
+                   )}
+                 </div>
+               )}
              </div>
-             <div className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#00C4B5] px-3 md:px-4 py-1.5 md:py-2 rounded-xl border ${isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-teal-50 border-teal-100'}`}>
-               <Trophy size={18} /> {save.xp}
+
+             {/* Streak Popover */}
+             <div className="relative">
+               <button onClick={() => setActivePopover(activePopover === 'streak' ? null : 'streak')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#FFB300] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-yellow-50 border-gray-200'}`}>
+                 <Flame size={18} fill={save.streak > 0 ? "currentColor" : "none"} /> {save.streak}
+               </button>
+               {activePopover === 'streak' && (
+                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                   <div className="flex items-start gap-4">
+                     <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center shrink-0">
+                       <Flame size={24} className="text-orange-500" fill="currentColor" />
+                     </div>
+                     <div>
+                       <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>{save.streak}일 연속 학습</h3>
+                       <p className={`text-sm font-bold leading-tight ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                         {save.streak > 0 ? '불꽃이 타오르고 있습니다! 매일 접속해 불꽃을 유지하세요.' : '오늘 레슨을 완료하여 불꽃을 피우세요!'}
+                       </p>
+                     </div>
+                   </div>
+                 </div>
+               )}
              </div>
-             <div className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#B96CE8] px-3 md:px-4 py-1.5 md:py-2 rounded-xl border ${isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-purple-50 border-purple-100'}`}>
-               <Gem size={18} /> {save.gems}
+
+             {/* Gems Popover */}
+             <div className="relative">
+               <button onClick={() => setActivePopover(activePopover === 'gem' ? null : 'gem')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#B96CE8] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-purple-50 border-gray-200'}`}>
+                 <Gem size={18} /> {save.gems}
+               </button>
+               {activePopover === 'gem' && (
+                 <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                   <div className="flex items-start gap-4">
+                     <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center shrink-0">
+                       <Gem size={24} className="text-purple-500" />
+                     </div>
+                     <div>
+                       <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>보석</h3>
+                       <p className={`text-sm font-bold leading-tight mb-3 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                         보석이 {save.gems}개 있습니다.
+                       </p>
+                       <button onClick={() => { setActivePopover(null); if (onStoreClick) onStoreClick(); }} className="text-purple-500 font-black text-sm hover:underline">
+                         스토어로 이동하기
+                       </button>
+                     </div>
+                   </div>
+                 </div>
+               )}
              </div>
-             <div className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#ff4b4b] px-3 md:px-4 py-1.5 md:py-2 rounded-xl border ${isDark ? 'bg-[#2b3a42] border-[#3b4a52]' : 'bg-red-50 border-red-100'}`}>
-               <Heart size={18} fill="currentColor" /> {save.hearts}/{maxHearts}
+
+             {/* Hearts Popover */}
+             <div className="relative">
+               <button onClick={() => setActivePopover(activePopover === 'heart' ? null : 'heart')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#ff4b4b] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#2b3a42] hover:bg-[#3b4a52] border-transparent' : 'bg-white hover:bg-red-50 border-gray-200'}`}>
+                 <Heart size={18} fill="currentColor" /> {save.hearts}
+               </button>
+               {activePopover === 'heart' && (
+                 <div className={`absolute top-full right-0 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#181A20] border-[#2b3a42]' : 'bg-white border-gray-100'}`}>
+                   <div className="flex items-start gap-4 mb-4">
+                     <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+                       <Heart size={24} className="text-red-500" fill="currentColor" />
+                     </div>
+                     <div>
+                       <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>하트</h3>
+                       <p className={`text-sm font-bold leading-tight ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                         {save.hearts >= maxHearts ? '하트가 가득 찼습니다! 계속 학습하세요.' : '아직 하트가 남아 있습니다. 계속 학습하세요.'}
+                       </p>
+                     </div>
+                   </div>
+                   <div className="space-y-2">
+                     <button className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#3b4a52] hover:bg-[#2b3a42]' : 'border-gray-200 hover:bg-gray-50'}`}>
+                       <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                         <span className="text-xl">♾️</span> 무제한 하트
+                       </span>
+                       <span className="text-pink-500 font-bold text-sm">슈퍼 구독하기</span>
+                     </button>
+                     <button 
+                        onClick={() => {
+                          setActivePopover(null);
+                          if (onStoreClick) onStoreClick(); // Store handles refill 
+                        }} 
+                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#3b4a52] hover:bg-[#2b3a42]' : 'border-gray-200 hover:bg-gray-50'}`}
+                      >
+                       <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                         <Heart size={20} className="text-red-500" fill="none" /> 하트 리필하기
+                       </span>
+                       <span className="text-blue-500 font-bold text-sm flex items-center gap-1">
+                         <Gem size={14} fill="currentColor" /> 350
+                       </span>
+                     </button>
+                   </div>
+                 </div>
+               )}
              </div>
+
            </>
          )}
         </div>
@@ -234,14 +340,6 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
         xpReward={xpPerLesson}
       />
 
-      {/* Guidebook Drawer */}
-      <GuidebookPanel
-        isOpen={showGuidebook}
-        onClose={() => setShowGuidebook(false)}
-        trackData={trackData}
-        activeSectionIdx={activeSectionIdx}
-        theme={theme}
-      />
     </div>
   );
 }

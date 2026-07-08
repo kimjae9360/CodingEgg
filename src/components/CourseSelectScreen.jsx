@@ -40,7 +40,13 @@ export default function CourseSelectScreen({ theme = 'light', selectedCourseId, 
                   <Lock size={14} />
                 </div>
               )}
-              <div className="text-5xl mb-1">{course.emoji}</div>
+              {course.logoUrl ? (
+                <div className="w-16 h-16 mb-2 flex items-center justify-center">
+                  <img src={course.logoUrl} alt={course.name} className="max-w-full max-h-full object-contain" />
+                </div>
+              ) : (
+                <div className="text-5xl mb-1">{course.emoji}</div>
+              )}
               <div className="font-black text-lg">{course.name}</div>
               <div className={`text-xs font-bold text-center ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
                 {course.available ? course.subtitle : '준비 중이에요'}

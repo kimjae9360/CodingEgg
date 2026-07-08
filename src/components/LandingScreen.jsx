@@ -29,19 +29,18 @@ export default function LandingScreen({ onLogin }) {
       {/* Hero Section */}
       <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto flex flex-col xl:flex-row items-center gap-16">
         <div className="flex-1 space-y-8">
-          <div className="inline-block bg-white/10 backdrop-blur-sm border border-white/20 text-[#00C4B5] font-bold py-2 px-6 rounded-full text-sm md:text-base animate-pulse">
-            AI 시대 생존을 위한 코딩 학습 플랫폼 🚀
+          <div className="inline-block bg-white/10 backdrop-blur-sm border border-[#FFB300]/50 text-[#FFB300] font-bold py-2 px-6 rounded-full text-sm md:text-base animate-pulse">
+            듀오링고처럼 재미있는 코딩 학습 플랫폼 🎮
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight break-keep">
-            코딩은 외우는 것이 아니라 <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C4B5] to-[#FFB300] whitespace-nowrap">지휘하는 것입니다.</span>
+            어학은 듀오링고, <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00C4B5] to-[#FFB300] whitespace-nowrap">코딩은 코딩에그.</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-400 font-bold leading-relaxed max-w-2xl break-keep">
-            어린아이부터 어른까지 남녀노소 누구나 무료로 코딩을 배울 수 있습니다.<br/><br/>
-            챗GPT가 코드를 대신 짜주는 시대,<br/>
-            문법 암기식 교육은 도태됩니다.<br/><br/>
-            코딩에그와 함께 AI를 부리는<br/>
-            <span className="text-white text-2xl md:text-3xl inline-block mt-2">최고의 설계자(Builder)로 부화하세요.</span>
+            지루한 인강과 두꺼운 책은 버리세요.<br/><br/>
+            단어 칩을 맞추고, 하트를 지키며 퀘스트를 깨다 보면<br/>
+            어느새 빈 화면에서도 코딩을 술술 짜는<br/>
+            <span className="text-white text-2xl md:text-3xl inline-block mt-2">최고의 설계자(Builder)가 되어 있을 겁니다.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <button onClick={handleStart} className="bg-white hover:bg-gray-100 text-gray-900 font-black py-4 px-8 rounded-full text-lg shadow-[0_0_30px_rgba(255,255,255,0.2)] transition transform hover:-translate-y-1 flex items-center justify-center gap-3">
@@ -54,9 +53,6 @@ export default function LandingScreen({ onLogin }) {
               구글 계정으로 시작하기
             </button>
           </div>
-          <p className="text-sm text-gray-500 font-bold">
-            ※ 데모 버전에서는 실제 구글 로그인 대신 닉네임만 입력하면 바로 시작할 수 있어요.
-          </p>
         </div>
 
         <div className="flex-1 relative flex justify-center w-full max-w-lg xl:max-w-none animate-float">
@@ -66,9 +62,16 @@ export default function LandingScreen({ onLogin }) {
              <div className="w-64 h-64 rounded-full border-8 border-[#FFB300] bg-white overflow-hidden shadow-[0_0_50px_rgba(255,179,0,0.5)] mb-8">
                 <img src={eggCharacter} alt="Egg Tutor" className="w-[120%] h-[120%] object-cover" />
              </div>
-             <div className="w-full bg-[#181A20] text-white p-5 rounded-2xl border border-gray-700 shadow-lg font-bold text-lg">
-               <span className="text-[#00C4B5] mr-2">Egg Tutor:</span>
-               "코드에 버그가 있어요. 어디를 고치면 될까요?"
+             <div className="w-full bg-[#1e1e1e] text-white p-5 rounded-2xl border border-gray-700 shadow-lg font-mono text-lg text-left overflow-hidden relative group">
+               <div className="flex gap-2 mb-3">
+                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
+               </div>
+               <div>
+                 <span className="text-[#569cd6]">print</span><span className="text-[#d4d4d4]">(</span><span className="text-[#ce9178]">"당신의 코딩 실력을 부화시켜보세요!"</span><span className="text-[#d4d4d4]">)</span>
+                 <span className="inline-block w-2 h-5 ml-1 bg-white animate-pulse align-middle"></span>
+               </div>
              </div>
           </div>
         </div>
@@ -78,32 +81,32 @@ export default function LandingScreen({ onLogin }) {
       <section className="py-24 px-6 max-w-7xl mx-auto border-t border-white/10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black mb-6">타 사이트와 무엇이 다른가요?</h2>
-          <p className="text-xl text-gray-400 font-bold">단순 알고리즘 기계가 아닌, AI 시대를 리드할 역량을 키웁니다.</p>
+          <p className="text-xl text-gray-400 font-bold">단순 암기식 동영상 강의가 아닌, 완전히 새로운 게이미피케이션 플랫폼입니다.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 p-10 rounded-3xl hover:bg-white/10 transition transform hover:-translate-y-2">
-            <div className="text-6xl mb-6">💬</div>
-            <h3 className="text-2xl font-black mb-4 text-[#00C4B5]">대화형 AI 페어 프로그래밍</h3>
+            <div className="text-6xl mb-6">🎯</div>
+            <h3 className="text-2xl font-black mb-4 text-[#00C4B5]">단어 블록 & 점진적 하드 트레이닝</h3>
             <p className="text-gray-400 font-bold leading-relaxed text-lg">
-              이론 따로, 실습 따로? NO! 스플릿 화면에서 나만의 에그 튜터와 실시간으로 대화하며 코드를 검증하고 논리를 설계합니다.
+              객관식부터 단어 칩 맞추기, 오타 수정, 빈칸 채우기, 그리고 완벽한 백지 코딩까지. 자전거 보조바퀴를 떼듯 자연스럽게 실력이 상승합니다.
             </p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 p-10 rounded-3xl hover:bg-white/10 transition transform hover:-translate-y-2">
-            <div className="text-6xl mb-6">🧩</div>
-            <h3 className="text-2xl font-black mb-4 text-[#FFB300]">문법 암기보다 논리적 사고</h3>
+            <div className="text-6xl mb-6">❤️</div>
+            <h3 className="text-2xl font-black mb-4 text-[#FFB300]">스킬 트리와 하트 시스템</h3>
             <p className="text-gray-400 font-bold leading-relaxed text-lg">
-              하트 시스템과 오답 큐(Queue)를 통한 듀오링고식 게이미피케이션. 정답을 맞출 때까지 멈추지 않는 지독한 튜터링을 경험하세요.
+              MMORPG의 스킬 트리를 찍듯 나만의 테크 트리를 완성하세요. 틀리면 하트가 깎이고, 오답은 정답을 맞출 때까지 다시 등장합니다!
             </p>
           </div>
 
           <div className="bg-white/5 backdrop-blur-md border border-white/10 p-10 rounded-3xl hover:bg-white/10 transition transform hover:-translate-y-2">
             <div className="text-6xl mb-6">🏆</div>
-            <h3 className="text-2xl font-black mb-4 text-white">실전 AI 자격증 마스터 트랙</h3>
+            <h3 className="text-2xl font-black mb-4 text-white">실전 마스터 자격증 트랙</h3>
             <p className="text-gray-400 font-bold leading-relaxed text-lg">
-              흥미 위주의 기초 학습을 넘어서, 기업이 요구하는 AICE 실무 자격증 등 강력한 커리어 스킬 트리 라인업이 준비되어 있습니다.
+              흥미 위주의 기초 학습으로 코딩의 장벽을 허물고 나면, 기업이 요구하는 AICE 등 실무 자격증 마스터 트랙이 여러분을 기다립니다.
             </p>
           </div>
 

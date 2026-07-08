@@ -24,12 +24,10 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
   const currentSection = trackData.sections[activeSectionIdx];
   if (!currentSection) return null;
 
-  // Extract theory points only for the current section
+  // Extract guidebook data directly from the nodes
   const nodesWithTheory = currentSection.nodes.map((node) => {
-    const theoryPoints = (node.lessons || [])
-      .map((lesson) => (Array.isArray(lesson) ? lesson[0] : lesson))
-      .filter((step) => step && step.type === 'theory')
-      .map((step) => step.content);
+    // Some nodes might not have a guidebook if they are newly added or not generated properly, fallback safely
+    const theoryPoints = node.guidebook || [];
     return { id: node.id, title: node.title, theoryPoints };
   }).filter((n) => n.theoryPoints.length > 0);
 

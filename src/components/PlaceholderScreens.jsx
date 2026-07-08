@@ -96,42 +96,64 @@ export function StoreScreen({ theme = 'light', gems = 0, hearts = 5, maxHearts =
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
 
   return (
-    <div className="w-full max-w-2xl mx-auto pt-8 px-4 animate-pop">
-      <div className="bg-[#FFB300] rounded-2xl p-6 flex items-center justify-between gap-4 mb-8 shadow-[0_4px_0_0_#E59F00]">
+    <div className="w-full max-w-2xl mx-auto pt-8 px-4 animate-pop pb-20">
+      <div className="bg-[#B96CE8] rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 mb-8 shadow-[0_4px_0_0_#9A50C9]">
         <div className="flex items-center gap-4">
-          <Store size={40} className="text-white" />
-          <div>
-            <h1 className="font-black text-white text-3xl tracking-wide">상점</h1>
-            <p className="text-white/90 font-bold">학습으로 모은 보석으로 아이템을 구매하세요.</p>
+          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+            <Store size={32} className="text-white" />
+          </div>
+          <div className="text-center md:text-left">
+            <h1 className="font-black text-white text-3xl tracking-wide mb-1">상점</h1>
+            <p className="text-white/90 font-bold text-sm">보석으로 다양한 아이템을 구매하세요!</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-white/20 text-white font-black px-4 py-2 rounded-xl">
-          <Gem size={20} /> {gems}
+        <div className="flex items-center gap-2 bg-white text-[#B96CE8] font-black px-5 py-2.5 rounded-xl shadow-sm text-lg">
+          <Gem size={22} fill="currentColor" /> {gems}
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <h2 className={`font-black text-xl mb-4 px-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>아이템</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div className={`rounded-3xl p-6 border-2 flex flex-col items-center ${cardClass}`}>
-          <Heart size={40} className="mb-4 text-[#ff4b4b]" fill="currentColor" />
+          <div className="w-20 h-20 bg-red-50 rounded-2xl flex items-center justify-center mb-4">
+            <Heart size={40} className="text-[#ff4b4b]" fill="currentColor" />
+          </div>
           <h3 className={`font-bold text-xl mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>하트 충전</h3>
-          <p className={`font-bold mb-4 text-center ${textMuted}`}>{heartsFull ? '이미 하트가 가득 찼어요!' : '하트를 가득 채웁니다.'}</p>
+          <p className={`font-bold text-sm mb-4 text-center h-10 ${textMuted}`}>{heartsFull ? '이미 하트가 가득 찼어요!' : '하트를 가득 채워 계속 학습하세요.'}</p>
           <button
             onClick={onBuyHeartRefill}
             disabled={heartsFull || gems < heartCost}
-            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-2 px-6 rounded-xl transition w-full flex items-center justify-center gap-2"
+            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
           >
-            <Gem size={16} /> 보석 {heartCost}개
+            <Gem size={20} fill="currentColor" /> {heartCost}
           </button>
         </div>
         <div className={`rounded-3xl p-6 border-2 flex flex-col items-center ${cardClass}`}>
-          <Snowflake size={40} className="mb-4 text-[#1cb0f6]" />
+          <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-4">
+            <Snowflake size={40} className="text-[#1cb0f6]" fill="currentColor" />
+          </div>
           <h3 className={`font-bold text-xl mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>스트릭 프리즈</h3>
-          <p className={`font-bold mb-4 text-center ${textMuted}`}>{streakFreezeAvailable ? '이미 프리즈를 보유 중이에요!' : '하루 결석을 막아줍니다.'}</p>
+          <p className={`font-bold text-sm mb-4 text-center h-10 ${textMuted}`}>{streakFreezeAvailable ? '이미 프리즈를 장착하고 있어요!' : '하루 결석해도 불꽃을 지켜줍니다.'}</p>
           <button
             onClick={onBuyStreakFreeze}
             disabled={streakFreezeAvailable || gems < freezeCost}
-            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-2 px-6 rounded-xl transition w-full flex items-center justify-center gap-2"
+            className="bg-[#00C4B5] hover:bg-[#15d8c9] disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition w-full flex items-center justify-center gap-2 text-lg"
           >
-            <Gem size={16} /> 보석 {freezeCost}개
+            <Gem size={20} fill="currentColor" /> {freezeCost}
+          </button>
+        </div>
+      </div>
+
+      <h2 className={`font-black text-xl mb-4 px-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>프리미엄 혜택</h2>
+      <div className={`rounded-3xl p-6 border-2 flex items-center gap-6 ${cardClass}`}>
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-400 flex items-center justify-center flex-none">
+          <span className="text-4xl text-white font-black">S</span>
+        </div>
+        <div className="flex-1">
+          <h3 className={`font-black text-xl mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>Super CodingEgg</h3>
+          <p className={`font-bold text-sm mb-3 ${textMuted}`}>무제한 하트, 맞춤형 오답노트, 무제한 스킵 등 강력한 혜택을 누리세요.</p>
+          <button className="bg-gradient-to-r from-pink-500 to-orange-400 hover:opacity-90 text-white font-black py-2.5 px-6 rounded-xl transition shadow-md">
+            슈퍼 구독하기
           </button>
         </div>
       </div>
@@ -146,35 +168,75 @@ export function ProfileScreen({ theme = 'light', profileName = '코딩 꿈나무
   const textMuted = isDark ? 'text-gray-400' : 'text-gray-500';
 
   return (
-    <div className="w-full max-w-2xl mx-auto pt-8 px-4 animate-pop">
-      <div className={`rounded-3xl p-8 border-2 flex items-center gap-6 mb-8 ${cardClass}`}>
-        <div className={`w-24 h-24 rounded-full flex items-center justify-center text-4xl ${isDark ? 'bg-[#181A20]' : 'bg-gray-50'}`}>
+    <div className="w-full max-w-2xl mx-auto pt-8 px-4 animate-pop pb-20">
+      <div className={`rounded-3xl p-8 border-2 flex flex-col md:flex-row items-center gap-6 mb-8 ${cardClass}`}>
+        <div className={`w-28 h-28 rounded-full flex items-center justify-center text-5xl relative ${isDark ? 'bg-[#181A20]' : 'bg-gray-50'}`}>
           🥚
+          <div className="absolute -bottom-2 -right-2 bg-[#00C4B5] w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-[#2b3a42]">
+            <Trophy size={18} className="text-white" />
+          </div>
         </div>
-        <div>
+        <div className="text-center md:text-left flex-1">
           <h1 className={`font-black text-3xl mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>{profileName}</h1>
-          <p className={`font-bold ${textMuted}`}>가입일: {joinDate}</p>
+          <p className={`font-bold text-sm mb-4 ${textMuted}`}>가입일: {joinDate}</p>
+          <div className="flex gap-4 justify-center md:justify-start">
+            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#181A20] border-[#3b4a52] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
+              친구 추가하기
+            </div>
+            <div className={`px-4 py-2 rounded-xl font-bold text-sm border-2 ${isDark ? 'bg-[#181A20] border-[#3b4a52] text-gray-300' : 'bg-gray-50 border-gray-100 text-gray-600'}`}>
+              프로필 수정
+            </div>
+          </div>
         </div>
       </div>
+      
       <h2 className={`text-2xl font-black mb-4 px-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>통계</h2>
-      <div className="grid grid-cols-3 gap-4">
-        <div className={`rounded-2xl p-6 border-2 ${statCardClass}`}>
-          <div className="flex items-center gap-2 text-[#FFB300] font-black text-2xl mb-1">
-            <Flame size={24} fill="currentColor" /> {streak}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <div className={`rounded-2xl p-5 border-2 ${statCardClass}`}>
+          <div className="flex items-center gap-2 text-[#FFB300] font-black text-2xl mb-2">
+            <Flame size={26} fill="currentColor" /> {streak}
           </div>
-          <div className={`font-bold ${textMuted}`}>연속 학습일</div>
+          <div className={`font-bold text-sm ${textMuted}`}>연속 학습일</div>
         </div>
-        <div className={`rounded-2xl p-6 border-2 ${statCardClass}`}>
-          <div className="flex items-center gap-2 text-[#00C4B5] font-black text-2xl mb-1">
-            <Trophy size={24} /> {xp}
+        <div className={`rounded-2xl p-5 border-2 ${statCardClass}`}>
+          <div className="flex items-center gap-2 text-[#00C4B5] font-black text-2xl mb-2">
+            <Trophy size={26} fill="currentColor" /> {xp}
           </div>
-          <div className={`font-bold ${textMuted}`}>총 누적 XP</div>
+          <div className={`font-bold text-sm ${textMuted}`}>총 누적 XP</div>
         </div>
-        <div className={`rounded-2xl p-6 border-2 ${statCardClass}`}>
-          <div className="flex items-center gap-2 text-[#B96CE8] font-black text-2xl mb-1">
-            <Gem size={24} /> {gems}
+        <div className={`rounded-2xl p-5 border-2 ${statCardClass}`}>
+          <div className="flex items-center gap-2 text-[#B96CE8] font-black text-2xl mb-2">
+            <Gem size={26} fill="currentColor" /> {gems}
           </div>
-          <div className={`font-bold ${textMuted}`}>보유 보석</div>
+          <div className={`font-bold text-sm ${textMuted}`}>보유 보석</div>
+        </div>
+      </div>
+
+      <h2 className={`text-2xl font-black mb-4 px-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>업적</h2>
+      <div className={`rounded-3xl border-2 ${cardClass} divide-y-2 ${isDark ? 'divide-[#3b4a52]' : 'divide-gray-100'}`}>
+        <div className="p-6 flex items-center gap-5">
+          <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center text-3xl shrink-0">
+            🔥
+          </div>
+          <div className="flex-1">
+            <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>불꽃 전사</h3>
+            <p className={`font-bold text-sm mb-3 ${textMuted}`}>7일 연속 학습을 달성하세요.</p>
+            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#181A20]' : 'bg-gray-100'}`}>
+              <div className="bg-[#FFB300] h-full" style={{ width: `${Math.min(100, (streak / 7) * 100)}%` }}></div>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 flex items-center gap-5">
+          <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center text-3xl shrink-0 opacity-50 grayscale">
+            🏆
+          </div>
+          <div className="flex-1">
+            <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>경험치 마스터</h3>
+            <p className={`font-bold text-sm mb-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>총 1,000 XP를 획득하세요.</p>
+            <div className={`w-full h-3 rounded-full overflow-hidden ${isDark ? 'bg-[#181A20]' : 'bg-gray-100'}`}>
+              <div className="bg-[#00C4B5] h-full" style={{ width: `${Math.min(100, (xp / 1000) * 100)}%` }}></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

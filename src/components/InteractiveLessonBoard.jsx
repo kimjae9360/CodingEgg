@@ -8,7 +8,7 @@ import { playCorrectSound, playWrongSound, playFinishSound } from '../lib/sound'
 
 export default function InteractiveLessonBoard({ 
   nodeId, trackData, overrideNode, isSkipTest = false, 
-  onComplete, onBack, hearts, onLoseHeart, onRefillHearts,
+  onComplete, onBack, hearts, gems, onLoseHeart, onRefillHearts,
   xpPerLesson = 20, gemsPerLesson = 10,
   currentLessonIndex = 0
 }) {
@@ -64,18 +64,11 @@ export default function InteractiveLessonBoard({
         selectedSteps = node.lessons[currentLessonIndex] || node.lessons[0];
       }
 
-      // Parse theory into hints
+      // Parse steps
       let newQueue = [];
-      let accumulatedTheory = [];
       for (const step of selectedSteps) {
-        if (step.type === 'theory') {
-          accumulatedTheory.push(step.content);
-        } else {
-          newQueue.push({
-            ...step,
-            hintTheory: accumulatedTheory.join('\n\n') || step.hint
-          });
-          accumulatedTheory = [];
+        if (step.type !== 'theory') {
+          newQueue.push(step);
         }
       }
 
@@ -132,8 +125,32 @@ export default function InteractiveLessonBoard({
   };
 
   const handleRefillHearts = () => {
-    if (onRefillHearts) onRefillHearts(); 
-    setShowHeartRefill(false);
+    if (gems >= 50) {
+      if (onRefillHearts) onRefillHearts(); 
+      setShowHeartRefill(false);
+    } else {
+      alert("보석이 부족합니다!");
+    }
+  };
+
+  const handleResetCode = () => {
+    if (currentStep && currentStep.type === 'quiz_code') {
+      setUserAnswer(currentStep.initialCode || '');
+      setOutput('');
+    }
+  };
+
+  const handleEditorDidMount = (editor, monaco) => {
+    // Disable Undo (Ctrl+Z) and Redo (Ctrl+Y / Ctrl+Shift+Z)
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyZ, () => {
+      console.log("Undo disabled");
+    });
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyY, () => {
+      console.log("Redo disabled");
+    });
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyZ, () => {
+      console.log("Redo disabled");
+    });
   };
 
   const checkAnswer = async () => {
@@ -326,11 +343,19 @@ export default function InteractiveLessonBoard({
           {/* Terminal Style Coding */}
           {currentStep.type === 'quiz_code' && (
             <div className="w-full bg-[#1e1e1e] rounded-xl overflow-hidden shadow-2xl mt-4 border border-gray-800 flex flex-col">
-              <div className="bg-[#2d2d2d] px-4 py-3 flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                <span className="ml-4 text-gray-400 text-sm font-mono font-bold">Terminal - Python</span>
+              <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                  <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                  <span className="ml-4 text-gray-400 text-sm font-mono font-bold">Terminal - Python</span>
+                </div>
+                <button 
+                  onClick={handleResetCode}
+                  className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold rounded-md transition"
+                >
+                  🔄 초기화
+                </button>
               </div>
               <div className="flex-1 flex flex-col p-4">
                 <div className="h-[250px] md:h-[300px] border border-gray-700 rounded-lg overflow-hidden bg-[#1e1e1e]">
@@ -340,6 +365,7 @@ export default function InteractiveLessonBoard({
                     theme="vs-dark"
                     value={userAnswer || ''}
                     onChange={(val) => setUserAnswer(val)}
+                    onMount={handleEditorDidMount}
                     options={{
                       minimap: { enabled: false },
                       fontSize: 16,
@@ -406,7 +432,7 @@ export default function InteractiveLessonBoard({
                 )}
                 {submissionState === 'wrong' && currentStep.type === 'quiz_code' && (
                   <div className="text-red-400 font-bold text-sm md:text-base">
-                    힌트: {currentStep.hintTheory || currentStep.hint || "출력 결과를 다시 확인하세요."}
+                    힌트: {currentStep.hint || "출력 결과를 다시 확인하세요."}
                   </div>
                 )}
               </div>
@@ -448,7 +474,7 @@ export default function InteractiveLessonBoard({
           </button>
         </div>
         <div className="p-6 flex-1 overflow-y-auto whitespace-pre-wrap leading-relaxed text-gray-700 text-lg">
-          {currentStep.hintTheory || currentStep.hint || "이번 문제는 스스로 해결해보세요!"}
+          {currentStep.hint || "이번 문제는 스스로 해결해보세요!"}
         </div>
       </div>
 
@@ -459,14 +485,20 @@ export default function InteractiveLessonBoard({
             <Heart size={64} className="text-red-500 mb-6 drop-shadow-md" fill="currentColor" />
             <h2 className="text-2xl font-black text-gray-800 mb-4">하트가 부족해요!</h2>
             <p className="text-gray-500 mb-8 font-bold leading-relaxed">
-              남은 하트가 없습니다.<br/>무료로 리필하여 계속 학습하세요!
+              남은 하트가 없습니다.<br/>보석 50개로 리필하여 계속 학습하세요!
             </p>
-            <button 
-              onClick={handleRefillHearts}
-              className="w-full py-4 bg-blue-500 hover:bg-blue-400 text-white rounded-2xl font-black text-lg shadow-[0_4px_0_rgba(59,130,246,1)] active:translate-y-1 active:shadow-none transition"
-            >
-              무료로 리필하기
-            </button>
+            {gems >= 50 ? (
+              <button 
+                onClick={handleRefillHearts}
+                className="w-full py-4 bg-[#B96CE8] hover:bg-[#9A50C9] text-white rounded-2xl font-black text-lg shadow-[0_4px_0_rgba(154,80,201,1)] active:translate-y-1 active:shadow-none transition flex items-center justify-center gap-2"
+              >
+                💎 50개로 리필하기
+              </button>
+            ) : (
+              <div className="w-full py-4 bg-gray-200 text-gray-500 rounded-2xl font-black text-lg">
+                보석이 부족합니다
+              </div>
+            )}
             <button 
               onClick={onBack}
               className="mt-4 w-full py-4 text-gray-400 hover:text-gray-600 font-bold transition"
