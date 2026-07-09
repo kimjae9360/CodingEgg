@@ -294,9 +294,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '문자열 변수 msg에 \'Hello\'를 넣고 2번 출력되게 하세요.',
-    initialCode: 'msg = \'Hello\'\nprint(msg, msg)  # 그대로 확인해보세요!',
+    initialCode: 'msg = \'Hello\'\nprint(msg msg)  # 쉼표가 빠졌어요!',
     expectedOutputs: ['Hello Hello'],
-    hint: '이미 정답에 가깝습니다. 그대로 입력하세요.'
+    hint: 'msg, msg 처럼 쉼표로 연결하세요.'
   }
           ],
           [
@@ -372,9 +372,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '6과 7을 곱한 값을 출력하세요.',
-    initialCode: 'print(6 * 7)',
+    initialCode: 'print(6 * 7  # 괄호를 닫아주세요!',
     expectedOutputs: ['42'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '괄호를 닫아 print(6 * 7)로 고치세요.'
   }
           ],
           [
@@ -537,9 +537,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '\'Python\'의 길이(6)를 출력하세요.',
-    initialCode: 'print(len(\'Python\'))',
+    initialCode: 'print(ln(\'Python\'))  # 함수 이름 오타를 고치세요!',
     expectedOutputs: ['6'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'len으로 고치세요.'
   }
           ],
           [
@@ -702,9 +702,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '\'Coding\'에서 \'din\' 부분만 슬라이싱해 출력하세요.',
-    initialCode: 'word = \'Coding\'\nprint(word[2:5])',
+    initialCode: 'word = \'Coding\'\nprint(word[1:4])  # 인덱스가 하나씩 밀렸어요!',
     expectedOutputs: ['din'],
-    hint: '이미 정답에 가깝습니다. 실행해보세요.'
+    hint: 'word[2:5]로 고치세요.'
   }
           ],
           [
@@ -1203,9 +1203,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '체력이 0보다 크면 \'생존\', 아니면 \'사망\'을 출력하세요 (hp=0).',
-    initialCode: 'hp = 0\nif hp > 0:\n    print(\'생존\')\nelse:\n    print(\'사망\')',
+    initialCode: 'hp = 0\nif hp >= 0:  # 비교 기호를 확인하세요!\n    print(\'생존\')\nelse:\n    print(\'사망\')',
     expectedOutputs: ['사망'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'hp > 0으로 고치세요.'
   }
           ],
           [
@@ -1283,9 +1283,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '아이템이 \'물약\'이면 \'회복\', 아니면 \'변화 없음\'을 출력하세요 (item=\'검\').',
-    initialCode: 'item = \'검\'\nif item == \'물약\':\n    print(\'회복\')\nelse:\n    print(\'변화 없음\')',
+    initialCode: 'item = \'검\'\nif item == \'물약\'\n    print(\'회복\')\nelse:\n    print(\'변화 없음\')  # 콜론이 빠졌어요!',
     expectedOutputs: ['변화 없음'],
-    hint: '이미 정답에 가깝습니다.'
+    hint: 'if item == \'물약\': 로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -1368,9 +1368,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '온도(temp=25)가 30이상 \'더움\', 10이상 \'적당\', 그 외 \'추움\'을 출력하세요.',
-    initialCode: 'temp = 25\nif temp >= 30:\n    print(\'더움\')\nelif temp >= 10:\n    print(\'적당\')\nelse:\n    print(\'추움\')',
+    initialCode: 'temp = 25\nif temp >= 30:\n    print(\'더움\')\nelif temp >=   :  # 10을 채우세요.\n    print(\'적당\')\nelse:\n    print(\'추움\')',
     expectedOutputs: ['적당'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '10을 넣으면 조건이 완성됩니다.'
   }
           ],
           [
@@ -1441,9 +1441,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '나이(age=8)가 13이상 \'청소년\', 7이상 \'어린이\', 그 외 \'유아\'를 출력하세요.',
-    initialCode: 'age = 8\nif age >= 13:\n    print(\'청소년\')\nelif age >= 7:\n    print(\'어린이\')\nelse:\n    print(\'유아\')',
+    initialCode: 'age = 8\nif age >= 13:\n    print(\'청소년\')\nelif age >= 17:  # 숫자를 확인하세요!\n    print(\'어린이\')\nelse:\n    print(\'유아\')',
     expectedOutputs: ['어린이'],
-    hint: '이미 정답에 가깝습니다.'
+    hint: '7 이상으로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -1565,9 +1565,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '체력(0)이 0 이하이면서 게임오버 상태(True)이면 \'리스폰\'을 출력하는 중첩 조건문을 작성하세요.',
-    initialCode: 'hp = 0\nis_gameover = True\nif hp <= 0:\n    if is_gameover:\n        print(\'리스폰\')',
+    initialCode: 'hp = 0\nis_gameover = True\nif hp < 0:  # 0도 포함해야 해요!\n    if is_gameover:\n        print(\'리스폰\')',
     expectedOutputs: ['리스폰'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'hp <= 0으로 고치면 0도 조건을 만족합니다.'
   }
           ],
           [
@@ -1620,9 +1620,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: 'is_raining=True 일 때, not을 이용해 비가 안 올 때만 외출하는 조건문을 작성하세요.',
-    initialCode: 'is_raining = True\nif not is_raining:\n    print(\'외출\')\nelse:\n    print(\'우산 필요\')',
+    initialCode: 'is_raining = True\n# not을 사용해 비가 오지 않을 때만 \'외출\'을,\n# 그렇지 않으면 \'우산 필요\'를 출력하는 조건문을 작성하세요.',
     expectedOutputs: ['우산 필요'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'if not is_raining:\n    print(\'외출\')\nelse:\n    print(\'우산 필요\')'
   }
           ],
           [
@@ -1704,9 +1704,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 5까지 출력하세요.',
-    initialCode: 'i = 1\nwhile i <= 5:\n    print(i)\n    i += 1',
+    initialCode: 'i = 1\nwhile i <= 4:  # 5까지 나와야 해요!\n    print(i)\n    i += 1',
     expectedOutputs: ['1\n2\n3\n4\n5'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'i <= 5로 고치세요.'
   }
           ],
           [
@@ -1736,9 +1736,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '2부터 10까지 2씩 증가하며 출력하세요.',
-    initialCode: 'i = 2\nwhile i <= 10:\n    print(i)\n    i += 2',
+    initialCode: 'i = 2\nwhile i <= 10:\n    print(i)\n    i += 3  # 증가폭이 달라요!',
     expectedOutputs: ['2\n4\n6\n8\n10'],
-    hint: '이미 정답에 가깝습니다.'
+    hint: 'i += 2로 고치세요.'
   }
           ],
           [
@@ -1869,9 +1869,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 5까지 중 짝수만 건너뛰고 출력하세요 (1,3,5).',
-    initialCode: 'for i in range(1, 6):\n    if i % 2 == 0:\n        continue\n    print(i)',
+    initialCode: 'for i in range(1, 6):\n    if i % 2 != 0:  # 조건을 확인하세요!\n        continue\n    print(i)',
     expectedOutputs: ['1\n3\n5'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'i % 2 == 0으로 고치세요.'
   }
           ],
           [
@@ -1894,9 +1894,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '98부터 1씩 늘려가다 100이 되면 멈추세요.',
-    initialCode: 'i = 98\nwhile True:\n    i += 1\n    print(i)\n    if i == 100:\n        break',
+    initialCode: 'i = 98\nwhile True:\n    i += 1\n    print(i)\n    if i == 99:  # 언제 멈춰야 할까요?\n        break',
     expectedOutputs: ['99\n100'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'i == 100으로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -1949,16 +1949,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 시작해 합이 10을 넘는 순간의 숫자를 출력하세요.',
-    initialCode: 'total = 0\ni = 0\nwhile True:\n    i += 1\n    total += i\n    if total > 10:\n        print(i)\n        break',
+    initialCode: 'total = 0\ni = 0\nwhile True:\n    i += 1\n    total += i\n    if total >   :  # 10을 채우세요.\n        print(i)\n        break',
     expectedOutputs: ['5'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '10을 넣으세요.'
   },
             {
     type: 'quiz_code',
     content: '\'a\',\'b\',\'c\',\'stop\',\'d\' 리스트를 돌다가 \'stop\'을 만나면 멈추세요.',
-    initialCode: 'words = [\'a\', \'b\', \'c\', \'stop\', \'d\']\nfor w in words:\n    if w == \'stop\':\n        break\n    print(w)',
+    initialCode: 'words = [\'a\', \'b\', \'c\', \'stop\', \'d\']\nfor w in words:\n    if w == \'Stop\':  # 대소문자를 확인하세요!\n        break\n    print(w)',
     expectedOutputs: ['a\nb\nc'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '\'stop\'으로 고치세요 (소문자).'
   }
           ],
           [
@@ -2034,9 +2034,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '[\'사과\',\'바나나\',\'포도\']를 순서대로 출력하세요.',
-    initialCode: 'fruits = [\'사과\', \'바나나\', \'포도\']\nfor f in fruits:\n    print(f)',
+    initialCode: 'fruits = [\'사과\', \'바나나\', \'포도\']\nfor f in fruits:\n    print(fruit)  # 변수 이름 오타를 고치세요!',
     expectedOutputs: ['사과\n바나나\n포도'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'print(f)로 고치세요.'
   }
           ],
           [
@@ -2199,9 +2199,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: 'range(0,10,2)를 이용해 0,2,4,6,8을 출력하세요.',
-    initialCode: 'for i in range(0, 10, 2):\n    print(i)',
+    initialCode: 'for i in range(0, 10, 3):  # 간격을 확인하세요!\n    print(i)',
     expectedOutputs: ['0\n2\n4\n6\n8'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'range(0, 10, 2)로 고치세요.'
   }
           ],
           [
@@ -2279,9 +2279,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: 'range(5)의 길이(5)를 len()으로 출력하세요.',
-    initialCode: 'print(len(range(5)))',
+    initialCode: 'print(len(range(  )))  # range에 5를 넣어주세요.',
     expectedOutputs: ['5'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'range(5)'
   },
             {
     type: 'quiz_code',
@@ -2350,9 +2350,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '구구단 2단을 출력하세요.',
-    initialCode: 'for i in range(1, 10):\n    print(\'2 x \' + str(i) + \' = \' + str(2*i))',
+    initialCode: 'for i in range(1, 10):\n    print(\'2 x \' + str(i) + \' = \' + str(3*i))  # 곱셈 숫자를 확인하세요!',
     expectedOutputs: ['2 x 9 = 18'],
-    hint: '이미 정답입니다. 마지막 줄만 맞으면 통과해요.'
+    hint: '2*i로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -2364,9 +2364,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1~3, 1~3 두 숫자의 곱을 모두 출력하는 이중 for문을 작성하세요.',
-    initialCode: 'for i in range(1, 4):\n    for j in range(1, 4):\n        print(i * j)',
+    initialCode: 'for i in range(1, 4):\n    for j in range(1, 3):  # 범위를 확인하세요!\n        print(i * j)',
     expectedOutputs: ['9'],
-    hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+    hint: 'range(1, 4)로 고치세요.'
   }
           ],
           [
@@ -2389,16 +2389,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,4,5]에서 첫 번째 3의 배수를 찾으면 멈추세요.',
-    initialCode: 'nums = [1, 2, 3, 4, 5]\nfor n in nums:\n    if n % 3 == 0:\n        print(n)\n        break',
+    initialCode: 'nums = [1, 2, 3, 4, 5]\nfor n in nums:\n    if n % 2 == 0:  # 3의 배수 조건인지 확인하세요!\n        print(n)\n        break',
     expectedOutputs: ['3'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'n % 3 == 0으로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '별 삼각형을 만드세요 (1줄:\'*\', 2줄:\'**\', 3줄:\'***\').',
-    initialCode: 'for i in range(1, 4):\n    print(\'*\' * i)',
+    initialCode: 'for i in range(1, 3):  # 범위를 확인하세요!\n    print(\'*\' * i)',
     expectedOutputs: ['*\n**\n***'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'range(1, 4)로 고치세요.'
   }
           ],
           [
@@ -2476,9 +2476,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1~9 중 3의 배수만 골라 for+continue로 출력하세요.',
-    initialCode: 'for i in range(1, 10):\n    if i % 3 != 0:\n        continue\n    print(i)',
+    initialCode: '# 1부터 9까지 반복하며, 3의 배수가 아니면 continue로 건너뛰고\n# 3의 배수만 출력하는 for문을 작성하세요.',
     expectedOutputs: ['3\n6\n9'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'for i in range(1, 10):\n    if i % 3 != 0:\n        continue\n    print(i)'
   },
             {
     type: 'quiz_code',
@@ -2535,9 +2535,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '빈 리스트를 만들고 출력하세요.',
-    initialCode: 'my_list = []\nprint(my_list)',
+    initialCode: 'my_list = [1]  # 리스트를 비워주세요!\nprint(my_list)',
     expectedOutputs: ['[]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'my_list = []로 고치세요.'
   }
           ],
           [
@@ -2615,9 +2615,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '게임 아이템 리스트 [\'검\',\'방패\']를 만들고 그대로 출력하세요.',
-    initialCode: 'items = [\'검\', \'방패\']\nprint(items)',
+    initialCode: 'items = [\'검\']  # 방패도 추가하세요!\nprint(items)',
     expectedOutputs: ['[\'검\', \'방패\']'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'items = [\'검\', \'방패\']'
   },
             {
     type: 'quiz_code',
@@ -2700,9 +2700,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [10,20,30,40,50]에서 [1:4]를 슬라이싱해 출력하세요.',
-    initialCode: 'nums = [10, 20, 30, 40, 50]\nprint(nums[1:4])',
+    initialCode: 'nums = [10, 20, 30, 40, 50]\nprint(nums[0:3])  # 시작 인덱스를 확인하세요!',
     expectedOutputs: ['[20, 30, 40]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums[1:4]로 고치세요.'
   }
           ],
           [
@@ -2812,9 +2812,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [100,200,300]의 합을 인덱싱으로 직접 더해 출력하세요.',
-    initialCode: 'nums = [100, 200, 300]\nprint(nums[0] + nums[1] + nums[2])',
+    initialCode: '# nums = [100, 200, 300]\n# 인덱싱(nums[0], nums[1], nums[2])을 이용해 합을 출력하세요.',
     expectedOutputs: ['600'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums = [100, 200, 300]\nprint(nums[0] + nums[1] + nums[2])'
   },
             {
     type: 'quiz_code',
@@ -2865,9 +2865,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,2]에서 2를 하나 제거하세요.',
-    initialCode: 'nums = [1, 2, 3, 2]\nnums.remove(2)\nprint(nums)',
+    initialCode: 'nums = [1, 2, 3, 2]\nnums.remove(3)  # 지울 값을 확인하세요!\nprint(nums)',
     expectedOutputs: ['[1, 3, 2]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums.remove(2)로 고치세요.'
   }
           ],
           [
@@ -2890,9 +2890,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3]에서 마지막 값을 꺼내 출력하세요.',
-    initialCode: 'nums = [1, 2, 3]\nprint(nums.pop())',
+    initialCode: 'nums = [1, 2, 3]\nprint(nums.pop(0))  # 어떤 값을 꺼내야 할까요?',
     expectedOutputs: ['3'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums.pop()으로 고치면 마지막 값이 나옵니다.'
   },
             {
     type: 'quiz_code',
@@ -2977,9 +2977,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [5,3,4,1,2]를 정렬해 출력하세요.',
-    initialCode: 'nums = [5, 3, 4, 1, 2]\nnums.sort()\nprint(nums)',
+    initialCode: '# nums = [5, 3, 4, 1, 2]\n# 정렬 메서드를 사용해 오름차순으로 출력하세요.',
     expectedOutputs: ['[1, 2, 3, 4, 5]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums.sort()\nprint(nums)'
   },
             {
     type: 'quiz_code',
@@ -3023,9 +3023,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [\'a\',\'b\',\'c\']를 인덱스와 함께 출력하세요.',
-    initialCode: 'letters = [\'a\', \'b\', \'c\']\nfor i in range(len(letters)):\n    print(i, letters[i])',
+    initialCode: 'letters = [\'a\', \'b\', \'c\']\nfor i in range(len(letters) - 1):  # 범위를 확인하세요!\n    print(i, letters[i])',
     expectedOutputs: ['2 c'],
-    hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+    hint: 'range(len(letters))로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3055,9 +3055,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,4]에서 가장 큰 값을 for문으로 찾아 출력하세요.',
-    initialCode: 'nums = [1, 2, 3, 4]\nbiggest = nums[0]\nfor n in nums:\n    if n > biggest:\n        biggest = n\nprint(biggest)',
+    initialCode: 'nums = [1, 2, 3, 4]\nbiggest = nums[0]\nfor n in nums:\n    if n < biggest:  # 부등호를 확인하세요!\n        biggest = n\nprint(biggest)',
     expectedOutputs: ['4'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'n > biggest로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3195,9 +3195,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '튜플 (10,20,30)을 리스트로 변환해 출력하세요.',
-    initialCode: 'nums = (10, 20, 30)\nprint(list(nums))',
+    initialCode: 'nums = (10, 20, 30)\nprint(tuple(nums))  # 리스트로 바꾸는 함수가 필요해요!',
     expectedOutputs: ['[10, 20, 30]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'list(nums)로 고치세요.'
   }
           ],
           [
@@ -3227,9 +3227,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '튜플 (1,2,3)의 길이를 출력하세요.',
-    initialCode: 'nums = (1, 2, 3)\nprint(len(nums))',
+    initialCode: 'nums = (1, 2, 3)\nprint(len(  ))  # 괄호 안에 변수를 넣으세요.',
     expectedOutputs: ['3'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'len(nums)'
   }
           ],
           [
@@ -3268,9 +3268,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '좌표를 나타내는 튜플 (3, 4)를 만들고 그대로 출력하세요.',
-    initialCode: 'point = (3, 4)\nprint(point)',
+    initialCode: 'point = (3,   )  # 4를 채워주세요.\nprint(point)',
     expectedOutputs: ['(3, 4)'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'point = (3, 4)'
   },
             {
     type: 'quiz_code',
@@ -3282,9 +3282,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '빈 튜플을 만들고 길이(0)를 출력하세요.',
-    initialCode: 'empty = ()\nprint(len(empty))',
+    initialCode: 'empty = (1,)  # 비어있지 않아요!\nprint(len(empty))',
     expectedOutputs: ['0'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'empty = ()로 고치세요.'
   }
           ],
           [
@@ -3359,9 +3359,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '\'Hello World\'에서 \'World\'만 슬라이싱해 출력하세요.',
-    initialCode: 's = \'Hello World\'\nprint(s[6:])',
+    initialCode: 's = \'Hello World\'\nprint(s[5:])  # 인덱스를 확인하세요!',
     expectedOutputs: ['World'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 's[6:]로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3398,9 +3398,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '점수 변수 score=88을 만들고 그대로 출력하세요.',
-    initialCode: 'score = 88\nprint(score)',
+    initialCode: 'score = 88\nprint(Score)  # 대소문자를 확인하세요!',
     expectedOutputs: ['88'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'print(score)로 고치세요 (소문자).'
   }
           ],
           [
@@ -3439,9 +3439,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '\'banana\'의 길이를 구해 출력하세요.',
-    initialCode: 'word = \'banana\'\nprint(len(word))',
+    initialCode: 'word = \'banana\'\nprint(len(Word))  # 변수 이름을 확인하세요!',
     expectedOutputs: ['6'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'print(len(word))로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3531,9 +3531,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '학점(score=72)에 따라 90+ \'A\', 80+ \'B\', 70+ \'C\', 그 외 \'D\'를 출력하세요.',
-    initialCode: 'score = 72\nif score >= 90:\n    print(\'A\')\nelif score >= 80:\n    print(\'B\')\nelif score >= 70:\n    print(\'C\')\nelse:\n    print(\'D\')',
+    initialCode: 'score = 72\nif score >= 90:\n    print(\'A\')\nelif score >= 80:\n    print(\'B\')\nelif score >=   :  # 70을 채우세요.\n    print(\'C\')\nelse:\n    print(\'D\')',
     expectedOutputs: ['C'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '70을 넣으세요.'
   }
           ],
           [
@@ -3563,9 +3563,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '비가 오지 않으면(is_raining=False) \'산책\'을 출력하는 조건문을 not을 사용해 작성하세요.',
-    initialCode: 'is_raining = False\nif not is_raining:\n    print(\'산책\')',
+    initialCode: 'is_raining = False\nif is_raining:  # not이 빠졌어요!\n    print(\'산책\')',
     expectedOutputs: ['산책'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'if not is_raining:로 고치세요.'
   }
           ],
           [
@@ -3689,9 +3689,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 10까지 중 짝수만 출력하세요.',
-    initialCode: 'for i in range(1, 11):\n    if i % 2 == 0:\n        print(i)',
+    initialCode: 'for i in range(1, 9):  # 범위를 확인하세요!\n    if i % 2 == 0:\n        print(i)',
     expectedOutputs: ['10'],
-    hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+    hint: 'range(1, 11)로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3721,16 +3721,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 20까지 중 7을 만나면 멈추세요.',
-    initialCode: 'for i in range(1, 21):\n    print(i)\n    if i == 7:\n        break',
+    initialCode: 'for i in range(1, 21):\n    print(i)\n    if i == 5:  # 몇에서 멈춰야 할까요?\n        break',
     expectedOutputs: ['1\n2\n3\n4\n5\n6\n7'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'i == 7로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '1부터 10까지 중 3의 배수는 건너뛰고 출력하세요.',
-    initialCode: 'for i in range(1, 11):\n    if i % 3 == 0:\n        continue\n    print(i)',
+    initialCode: 'for i in range(1, 11):\n    if i % 2 == 0:  # 조건을 확인하세요!\n        continue\n    print(i)',
     expectedOutputs: ['10'],
-    hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+    hint: 'i % 3 == 0으로 고치세요.'
   }
           ],
           [
@@ -3769,9 +3769,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '구구단 5단을 출력하세요.',
-    initialCode: 'for i in range(1, 10):\n    print(\'5 x \' + str(i) + \' = \' + str(5*i))',
+    initialCode: 'for i in range(1, 10):\n    print(\'5 x \' + str(i) + \' = \' + str(4*i))  # 곱셈 숫자를 확인하세요!',
     expectedOutputs: ['5 x 9 = 45'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '5*i로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -3854,16 +3854,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,4,5]에서 짝수만 출력하세요.',
-    initialCode: 'nums = [1, 2, 3, 4, 5]\nfor n in nums:\n    if n % 2 == 0:\n        print(n)',
+    initialCode: 'nums = [1, 2, 3, 4, 5]\nfor n in nums:\n    if n % 2 != 0:  # 조건을 확인하세요!\n        print(n)',
     expectedOutputs: ['2\n4'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'n % 2 == 0으로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '튜플 (1,2,3)의 값을 리스트로 바꿔 출력하세요.',
-    initialCode: 't = (1, 2, 3)\nprint(list(t))',
+    initialCode: 't = (1, 2, 3)\nprint(t)  # 리스트로 변환해야 해요!',
     expectedOutputs: ['[1, 2, 3]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'print(list(t))로 고치세요.'
   }
           ],
           [
@@ -3893,9 +3893,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [10,20,30]의 합을 for문으로 구해 출력하세요.',
-    initialCode: 'nums = [10, 20, 30]\ntotal = 0\nfor n in nums:\n    total += n\nprint(total)',
+    initialCode: 'nums = [10, 20, 30]\ntotal = 0\nfor n in nums:\n    total = n  # 누적이 안 되고 있어요!\nprint(total)',
     expectedOutputs: ['60'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'total += n으로 고치세요.'
   }
           ],
           [
@@ -3941,16 +3941,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트에 \'egg\'가 있는지 in으로 확인해 출력하세요.',
-    initialCode: 'cart = [\'milk\', \'egg\', \'bread\']\nprint(\'egg\' in cart)',
+    initialCode: 'cart = [\'milk\', \'egg\', \'bread\']\nprint(\'Egg\' in cart)  # 대소문자를 확인하세요!',
     expectedOutputs: ['True'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: '\'egg\'로 고치세요 (소문자).'
   },
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3]과 튜플 (4,5,6)의 길이를 각각 더해 출력하세요.',
-    initialCode: 'a = [1, 2, 3]\nb = (4, 5, 6)\nprint(len(a) + len(b))',
+    initialCode: 'a = [1, 2, 3]\nb = (4, 5, 6)\nprint(len(a) + len(  ))  # b를 넣어주세요.',
     expectedOutputs: ['6'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'len(b)'
   }
           ],
           [
@@ -3973,9 +3973,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,4,5]에서 최댓값을 max()로 출력하세요.',
-    initialCode: 'nums = [1, 2, 3, 4, 5]\nprint(max(nums))',
+    initialCode: '# nums = [1, 2, 3, 4, 5]\n# max() 함수를 사용해 최댓값을 출력하세요.',
     expectedOutputs: ['5'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums = [1, 2, 3, 4, 5]\nprint(max(nums))'
   },
             {
     type: 'quiz_code',
@@ -4019,16 +4019,16 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 10까지 숫자 중 짝수의 합을 구해 출력하세요.',
-    initialCode: 'total = 0\nfor i in range(1, 11):\n    if i % 2 == 0:\n        total += i\nprint(total)',
+    initialCode: 'total = 0\nfor i in range(1, 11):\n    if i % 2 != 0:  # 조건을 확인하세요!\n        total += i\nprint(total)',
     expectedOutputs: ['30'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'i % 2 == 0으로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '리스트 [1,2,3,4,5]에서 3보다 큰 값만 담은 새 리스트를 만들어 출력하세요.',
-    initialCode: 'nums = [1, 2, 3, 4, 5]\nresult = []\nfor n in nums:\n    if n > 3:\n        result.append(n)\nprint(result)',
+    initialCode: 'nums = [1, 2, 3, 4, 5]\nresult = []\nfor n in nums:\n    if n >= 3:  # 조건을 확인하세요!\n        result.append(n)\nprint(result)',
     expectedOutputs: ['[4, 5]'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'n > 3으로 고치세요.'
   }
           ],
           [
@@ -4051,9 +4051,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '점수 리스트 [70,85,90,60]의 평균을 구해 출력하세요.',
-    initialCode: 'scores = [70, 85, 90, 60]\ntotal = 0\nfor s in scores:\n    total += s\nprint(total / len(scores))',
+    initialCode: 'scores = [70, 85, 90, 60]\ntotal = 0\nfor s in scores:\n    total = s  # 누적이 안 되고 있어요!\nprint(total / len(scores))',
     expectedOutputs: ['76.25'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'total += s로 고치세요.'
   },
             {
     type: 'quiz_code',
@@ -4099,23 +4099,23 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 30까지 숫자 중 3의 배수이면서 5의 배수인 첫 값을 찾아 출력하세요.',
-    initialCode: 'for i in range(1, 31):\n    if i % 3 == 0 and i % 5 == 0:\n        print(i)\n        break',
+    initialCode: 'for i in range(1, 31):\n    if i % 3 == 0 or i % 5 == 0:  # and로 고쳐야 정확해요!\n        print(i)\n        break',
     expectedOutputs: ['15'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'and로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '리스트 [3,1,4,1,5]를 정렬한 뒤 첫 값을 출력하세요.',
-    initialCode: 'nums = [3, 1, 4, 1, 5]\nnums.sort()\nprint(nums[0])',
+    initialCode: 'nums = [3, 1, 4, 1, 5]\nnums.sort()\nprint(nums[-1])  # 첫 번째 값의 인덱스를 확인하세요!',
     expectedOutputs: ['1'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'nums[0]으로 고치세요.'
   },
             {
     type: 'quiz_code',
     content: '\'Python\'이라는 단어를 거꾸로 뒤집어 출력하세요.',
-    initialCode: 'word = \'Python\'\nprint(word[::-1])',
+    initialCode: 'word = \'Python\'\nprint(word[::1])  # 슬라이싱 방향을 확인하세요!',
     expectedOutputs: ['nohtyP'],
-    hint: '이미 정답입니다. 슬라이싱 [::-1]은 문자열을 뒤집어줍니다.'
+    hint: 'word[::-1]로 고치세요.'
   }
           ],
           [
@@ -4138,9 +4138,9 @@ export const tier1 = [
             {
     type: 'quiz_code',
     content: '1부터 5까지의 팩토리얼을 구해 출력하세요.',
-    initialCode: 'result = 1\nfor i in range(1, 6):\n    result *= i\nprint(result)',
+    initialCode: '# result = 1로 시작해서 1부터 5까지 차례로 곱한 값을(팩토리얼) 출력하세요.',
     expectedOutputs: ['120'],
-    hint: '이미 정답입니다. 실행해보세요.'
+    hint: 'result = 1\nfor i in range(1, 6):\n    result *= i\nprint(result)'
   },
             {
     type: 'quiz_code',

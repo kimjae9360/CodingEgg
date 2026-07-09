@@ -6,12 +6,12 @@ import CourseSelectScreen from './components/CourseSelectScreen';
 import ConfirmModal from './components/ConfirmModal';
 import { LeaderboardScreen, StoreScreen, ProfileScreen } from './components/PlaceholderScreens';
 import { getCourse } from './data/courses';
-import { loadState, saveState, applyLessonCompletion, regenHearts, loseHeart, refillHearts, MAX_HEARTS, XP_PER_LESSON, GEMS_PER_LESSON } from './lib/storage';
+import { loadState, saveState, applyLessonCompletion, regenHearts, loseHeart, refillHearts, MAX_HEARTS, XP_PER_LESSON, GEMS_PER_LESSON, addWrongAnswer, resolveWrongAnswer, togglePremium, addFriend, updateProfile, claimAchievement } from './lib/storage';
 import GuidebookPanel from './components/GuidebookPanel';
 import { Home, Trophy, Store, User, Flame, Gem, Heart, Moon, Sun, Lock, X, BookOpen } from 'lucide-react';
 
 export default function App() {
-  const [save, setSave] = useState(() => regenHearts(loadState()));
+  const [save, setSave] = useState(() => loadState());
   const [view, setView] = useState(() => {
     if (!save.profileName) return 'login';
     if (!save.selectedCourseId) return 'courses';
@@ -41,7 +41,7 @@ export default function App() {
   useEffect(() => {
     const id = setInterval(() => {
       setSave(prev => regenHearts(prev));
-    }, 60 * 1000);
+    }, 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -105,7 +105,10 @@ export default function App() {
       let withNode = { ...prev, nodeProgress };
       
       if (newProgress >= nodeLessonsLength) {
-         withNode = { ...withNode, completedNodes: [...prev.completedNodes, selectedNodeId] };
+         withNode = { ...withNode, completedNodes: [...(prev.completedNodes || []), selectedNodeId] };
+         if (result?.accuracy === 100 && !withNode.perfectNodes?.includes(selectedNodeId)) {
+            withNode = { ...withNode, perfectNodes: [...(prev.perfectNodes || []), selectedNodeId] };
+         }
       }
 
       return applyLessonCompletion(withNode, result?.xpEarned, result?.gemsEarned);
@@ -115,6 +118,11 @@ export default function App() {
 
   const handleLoseHeart = useCallback(() => {
     setSave(prev => loseHeart(prev));
+  }, []);
+
+  const handleClaimAchievement = useCallback((id, reward) => {
+    setSave(prev => claimAchievement(prev, id, reward));
+    setToast({ icon: '💎', title: '보상 획득!', message: `${reward} 보석을 받았습니다.` });
   }, []);
 
   // Real Duolingo-style "jump here?": instead of an instant free skip, the
@@ -227,12 +235,25 @@ export default function App() {
     setView('tree');
   };
 
+  const [reviewSession, setReviewSession] = useState(false);
+
+  const handleStartReview = () => {
+    setReviewSession(true);
+    setView('lesson');
+  };
+
+  const handleReviewComplete = () => {
+    setReviewSession(false);
+    setView('profile');
+  };
+
   const requestExitLesson = () => setPendingExit(true);
   const confirmExitLesson = () => {
     setPendingExit(false);
     setSkipTest(null);
     setExamSession(null);
-    setView('tree');
+    setReviewSession(false);
+    setView(reviewSession ? 'profile' : 'tree');
   };
 
   const handleBuyHeartRefill = () => {
@@ -248,6 +269,14 @@ export default function App() {
       if (prev.streakFreezeAvailable || prev.gems < 200) return prev;
       return { ...prev, gems: prev.gems - 200, streakFreezeAvailable: true };
     });
+  };
+
+  const handleBuyGemsWithXp = () => {
+    setSave(prev => {
+      if (prev.xp < 500) return prev;
+      return { ...prev, xp: prev.xp - 500, gems: prev.gems + 50 };
+    });
+    setToast({ icon: '💎', title: '보석 충전!', message: '500 XP를 사용하여 50 보석을 충전했습니다.' });
   };
 
   if (view === 'login') return <LandingScreen onLogin={handleLogin} />;
@@ -267,27 +296,31 @@ export default function App() {
     return (
       <>
         <InteractiveLessonBoard
-          nodeId={skipTest || isExam ? null : selectedNodeId}
+          nodeId={skipTest || isExam || reviewSession ? null : selectedNodeId}
           trackData={trackData}
           overrideNode={isExam ? examSession.node : (skipTest ? skipTest.node : null)}
           isSkipTest={!!skipTest}
           isExamMode={isExam}
-          onComplete={isExam ? handleExamComplete : (skipTest ? handleSkipTestComplete : handleLessonComplete)}
+          isReviewMode={reviewSession}
+          reviewQuestions={reviewSession ? (save.wrongAnswers || []).filter(a => !a.resolved).map(a => a.questionData) : null}
+          isPremium={save.isPremium}
+          onComplete={reviewSession ? handleReviewComplete : (isExam ? handleExamComplete : (skipTest ? handleSkipTestComplete : handleLessonComplete))}
           onBack={requestExitLesson}
           onForceExit={confirmExitLesson}
           hearts={save.hearts}
           gems={save.gems}
           onLoseHeart={handleLoseHeart}
           onRefillHearts={acceptGift}
+          onWrongAnswer={(qData) => setSave(prev => addWrongAnswer(prev, qData))}
           xpPerLesson={XP_PER_LESSON}
           gemsPerLesson={GEMS_PER_LESSON}
-          currentLessonIndex={skipTest || isExam ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
+          currentLessonIndex={skipTest || isExam || reviewSession ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
         />
         <ConfirmModal
           open={pendingExit}
           theme="dark"
-          title={isExam ? '시험을 그만둘까요?' : skipTest ? '건너뛰기 테스트를 그만둘까요?' : '레슨을 종료할까요?'}
-          message={isExam ? '지금 나가면 시험이 취소되고 결과가 기록되지 않아요.' : skipTest ? '지금 나가면 테스트가 취소되고, 유닛은 건너뛴 상태로 처리되지 않아요.' : '지금 나가면 이번 레슨의 진행 상황은 저장되지 않아요.'}
+          title={isExam ? '시험을 그만둘까요?' : skipTest ? '건너뛰기 테스트를 그만둘까요?' : reviewSession ? '오답 복습을 종료할까요?' : '레슨을 종료할까요?'}
+          message={isExam ? '지금 나가면 시험이 취소되고 결과가 기록되지 않아요.' : skipTest ? '지금 나가면 테스트가 취소되고, 유닛은 건너뛴 상태로 처리되지 않아요.' : reviewSession ? '지금 나가면 복습 진행 상황이 저장되지 않아요.' : '지금 나가면 이번 레슨의 진행 상황은 저장되지 않아요.'}
           confirmLabel="나가기"
           cancelLabel="계속하기"
           onConfirm={confirmExitLesson}
@@ -354,10 +387,15 @@ export default function App() {
         {/* Guidebook Button */}
         <button
           onClick={() => setShowGuidebook(true)}
-          className={`mt-auto w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg border-2 border-transparent
-            ${isDark ? 'text-gray-400 hover:bg-[#334155]' : 'text-gray-500 hover:bg-gray-100'}`}
+          className={`mt-auto w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition font-bold text-lg
+            ${showGuidebook
+              ? 'bg-[#FFB300]/10 text-[#FFB300] border-2 border-[#FFB300]/20'
+              : isDark
+                ? 'text-gray-400 hover:bg-[#334155] border-2 border-transparent'
+                : 'text-gray-500 hover:bg-gray-100 border-2 border-transparent'
+            }`}
         >
-          <BookOpen size={28} className="text-[#FFB300]" />
+          <BookOpen size={28} />
           <span className="hidden xl:block">가이드북</span>
         </button>
 
@@ -416,20 +454,26 @@ export default function App() {
           <LeaderboardScreen
             theme={theme}
             xp={save.xp}
-            leagueTier={save.leagueTier}
-            weeklyXp={save.weeklyXp}
+            leagueTier={save.leagueTier || 0}
+            weeklyXp={save.weeklyXp || 0}
             profileName={save.profileName}
+            friends={save.friends || []}
           />
         )}
         {view === 'store' && (
           <StoreScreen
             theme={theme}
+            xp={save.xp}
             gems={save.gems}
             hearts={save.hearts}
             maxHearts={MAX_HEARTS}
             streakFreezeAvailable={save.streakFreezeAvailable}
+            isPremium={save.isPremium}
+            premiumExpiryDate={save.premiumExpiryDate}
             onBuyHeartRefill={handleBuyHeartRefill}
             onBuyStreakFreeze={handleBuyStreakFreeze}
+            onTogglePremium={() => setSave(prev => togglePremium(prev))}
+            onBuyGemsWithXp={handleBuyGemsWithXp}
           />
         )}
         {view === 'profile' && (
@@ -440,6 +484,15 @@ export default function App() {
             streak={save.streak}
             xp={save.xp}
             gems={save.gems}
+            isPremium={save.isPremium}
+            wrongAnswers={save.wrongAnswers || []}
+            friends={save.friends || []}
+            claimedAchievements={save.claimedAchievements || []}
+            onClaimAchievement={handleClaimAchievement}
+            onUpdateProfile={(name) => setSave(prev => updateProfile(prev, { profileName: name }))}
+            onAddFriend={(name) => setSave(prev => addFriend(prev, name))}
+            onResolveWrongAnswer={(id) => setSave(prev => resolveWrongAnswer(prev, id))}
+            onStartReview={handleStartReview}
           />
         )}
       </div>
@@ -452,9 +505,9 @@ export default function App() {
         <MobileNavItem icon={User} targetView="profile" />
         <button
           onClick={() => setShowGuidebook(true)}
-          className={`flex-1 flex flex-col items-center justify-center py-2 text-[#FFB300]`}
+          className={`flex-1 flex flex-col items-center justify-center py-2 transition ${showGuidebook ? 'text-[#FFB300]' : isDark ? 'text-gray-500' : 'text-gray-400'}`}
         >
-          <BookOpen size={22} />
+          <BookOpen size={24} />
         </button>
       </div>
 
@@ -501,6 +554,7 @@ export default function App() {
         onClose={() => setShowGuidebook(false)}
         trackData={trackData}
         activeSectionIdx={appSectionIdx}
+        activeNodeId={selectedNodeId}
         theme={theme}
       />
     </div>

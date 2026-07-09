@@ -8,7 +8,7 @@ const DAILY_QUEST_GOAL = 1; // lessons to complete today for the quest bar
 const XP_PER_LESSON = 20;
 const GEMS_PER_LESSON = 10;
 const MAX_HEARTS = 5;
-const HEART_REGEN_MS = 30 * 60 * 1000; // 1 heart every 30 minutes
+const HEART_REGEN_MS = 5 * 60 * 1000; // 1 heart every 5 minutes
 
 const todayStr = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD
 
@@ -32,6 +32,20 @@ function defaultState() {
     leagueTier: 0,             // index into LEAGUE_TIERS (lib/league.js) — starts at Bronze
     weeklyXp: 0,               // XP earned in the current league week
     weeklyWeekId: getWeekId(), // ISO week id the weeklyXp figure belongs to
+    isPremium: false,
+    wrongAnswers: [],          // { id, questionData, dateMissed, resolved }
+    friends: [],               // { name, xp, tier }
+    claimedAchievements: [],
+    perfectNodes: [],          // track nodes cleared with 0 mistakes
+  };
+}
+
+export function claimAchievement(state, id, gemReward) {
+  if (state.claimedAchievements?.includes(id)) return state;
+  return {
+    ...state,
+    claimedAchievements: [...(state.claimedAchievements || []), id],
+    gems: state.gems + gemReward
   };
 }
 
@@ -45,12 +59,29 @@ export function checkWeekRollover(state) {
   return { ...state, leagueTier: newTier, weeklyXp: 0, weeklyWeekId: currentWeekId };
 }
 
+export function checkPremiumExpiry(state) {
+  if (state.isPremium) {
+    if (state.premiumExpiryDate) {
+      if (new Date(state.premiumExpiryDate) < new Date()) {
+        return { ...state, isPremium: false, premiumExpiryDate: null };
+      }
+    } else {
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 30);
+      return { ...state, premiumExpiryDate: expiry.toISOString() };
+    }
+  }
+  return state;
+}
+
 export function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    return regenHearts({ ...defaultState(), ...parsed });
+    let state = regenHearts({ ...defaultState(), ...parsed });
+    state = checkPremiumExpiry(state);
+    return state;
   } catch {
     return defaultState();
   }
@@ -132,6 +163,49 @@ export function applyLessonCompletion(state, earnedXp = XP_PER_LESSON, earnedGem
   }
 
   return next;
+}
+
+export function addWrongAnswer(state, questionData) {
+  const newAnswer = {
+    id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+    questionData,
+    dateMissed: todayStr(),
+    resolved: false
+  };
+  return { ...state, wrongAnswers: [...(state.wrongAnswers || []), newAnswer] };
+}
+
+export function resolveWrongAnswer(state, answerId) {
+  return {
+    ...state,
+    wrongAnswers: (state.wrongAnswers || []).map(ans => 
+      ans.id === answerId ? { ...ans, resolved: true } : ans
+    )
+  };
+}
+
+export function togglePremium(state) {
+  if (state.isPremium) {
+    return { ...state, isPremium: false, premiumExpiryDate: null };
+  } else {
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 30);
+    return { ...state, isPremium: true, premiumExpiryDate: expiry.toISOString() };
+  }
+}
+
+export function updateProfile(state, { profileName, avatar }) {
+  // We can add avatar to state later if needed. For now just update name.
+  return { ...state, profileName };
+}
+
+export function addFriend(state, friendName) {
+  const newFriend = {
+    name: friendName,
+    xp: Math.floor(Math.random() * 500) + 100, // random mock XP
+    tier: Math.floor(Math.random() * 3)
+  };
+  return { ...state, friends: [...(state.friends || []), newFriend] };
 }
 
 export { DAILY_QUEST_GOAL, XP_PER_LESSON, GEMS_PER_LESSON, MAX_HEARTS, HEART_REGEN_MS, todayStr };

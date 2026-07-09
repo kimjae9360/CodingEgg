@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, BookOpen } from 'lucide-react';
 
-export default function GuidebookPanel({ isOpen, onClose, trackData, activeSectionIdx, theme = 'light' }) {
+export default function GuidebookPanel({ isOpen, onClose, trackData, activeSectionIdx, activeNodeId, theme = 'light' }) {
   const isDark = theme === 'dark';
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isClosing, setIsClosing] = useState(false);
@@ -19,6 +19,16 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
     }
   }, [isOpen, shouldRender]);
 
+  useEffect(() => {
+    if (isOpen && activeNodeId) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`guidebook-node-${activeNodeId}`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, activeNodeId]);
+
   if (!shouldRender || !trackData || activeSectionIdx == null) return null;
 
   const currentSection = trackData.sections[activeSectionIdx];
@@ -31,8 +41,8 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
     return { id: node.id, title: node.title, theoryPoints };
   }).filter((n) => n.theoryPoints.length > 0);
 
-  const shortTitle = currentSection.title.includes('\\n') 
-    ? currentSection.title.split('\\n')[1] 
+  const shortTitle = currentSection.title.includes('\n') 
+    ? currentSection.title.split('\n')[1] 
     : currentSection.title;
 
   return (
@@ -73,18 +83,23 @@ export default function GuidebookPanel({ isOpen, onClose, trackData, activeSecti
             <p className={`text-sm font-bold ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>이 유닛에는 아직 정리된 이론 노트가 없어요.</p>
           ) : (
             <div className="space-y-4">
-              {nodesWithTheory.map((node) => (
-                <div key={node.id} className={`rounded-2xl border-2 p-4 ${isDark ? 'bg-[#1f2937] border-[#334155]' : 'bg-gray-50 border-gray-100'}`}>
-                  <h3 className="font-black text-base mb-3 text-[#FFB300]">{node.title}</h3>
-                  <div className="space-y-3">
-                    {node.theoryPoints.map((text, i) => (
-                      <p key={i} className={`text-sm leading-relaxed whitespace-pre-wrap ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {text}
-                      </p>
-                    ))}
+              {nodesWithTheory.map((node) => {
+                const isActive = node.id === activeNodeId;
+                return (
+                  <div key={node.id} id={`guidebook-node-${node.id}`} className={`rounded-2xl border-2 p-4 transition-all duration-500 ${isActive ? (isDark ? 'bg-[#FFB300]/10 border-[#FFB300]/50 shadow-[0_0_15px_rgba(255,179,0,0.2)]' : 'bg-[#FFB300]/10 border-[#FFB300]/50 shadow-[0_0_15px_rgba(255,179,0,0.2)]') : (isDark ? 'bg-[#1f2937] border-[#334155]' : 'bg-gray-50 border-gray-100')}`}>
+                    <h3 className={`font-black text-base mb-3 ${isActive ? 'text-[#FFB300]' : (isDark ? 'text-white' : 'text-gray-800')}`}>
+                      {node.title} {isActive && <span className="ml-2 text-xs bg-[#FFB300] text-white px-2 py-0.5 rounded-full inline-flex align-middle relative -top-0.5">현재 진행 중</span>}
+                    </h3>
+                    <div className="space-y-3">
+                      {node.theoryPoints.map((text, i) => (
+                        <p key={i} className={`text-sm leading-relaxed whitespace-pre-wrap ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                          {text}
+                        </p>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

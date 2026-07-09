@@ -40,6 +40,26 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
 
   const [hoveredNodeId, setHoveredNodeId] = useState(null);
   const hoverTimeout = React.useRef(null);
+  const scrollContainerRef = React.useRef(null);
+  const isFirstRender = React.useRef(true);
+
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (save.isPremium || save.hearts >= maxHearts) return;
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [save.isPremium, save.hearts, maxHearts]);
+
+  const getTimerString = () => {
+    if (save.isPremium || save.hearts >= maxHearts) return null;
+    // HEART_REGEN_MS is 5 * 60 * 1000
+    const HEART_REGEN_MS = 5 * 60 * 1000;
+    const elapsed = now - (save.heartsUpdatedAt || now);
+    const remainingMs = Math.max(0, HEART_REGEN_MS - (elapsed % HEART_REGEN_MS));
+    const m = Math.floor(remainingMs / 60000);
+    const s = Math.floor((remainingMs % 60000) / 1000);
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
   const handleCardHover = (id) => {
     clearTimeout(hoverTimeout.current);
@@ -72,10 +92,27 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
     return Math.max(0, uncompletedSecIdx);
   });
 
-  // Report activeSectionIdx to App.jsx for the Guidebook
   useEffect(() => {
     if (onSectionChange) onSectionChange(activeSectionIdx);
   }, [activeSectionIdx, onSectionChange]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (scrollContainerRef.current) {
+        const focusCard = scrollContainerRef.current.querySelector('.card-focus');
+        if (focusCard) {
+          const container = scrollContainerRef.current;
+          const scrollTarget = focusCard.offsetLeft - (container.offsetWidth / 2) + (focusCard.offsetWidth / 2);
+          container.scrollTo({ 
+            left: scrollTarget, 
+            behavior: isFirstRender.current ? 'auto' : 'smooth' 
+          });
+          isFirstRender.current = false;
+        }
+      }
+    }, 100);
+    return () => clearTimeout(timeoutId);
+  }, [activeSectionIdx]);
 
   const currentSection = trackData.sections[activeSectionIdx];
   const isLocked = isSectionLocked(activeSectionIdx);
@@ -173,7 +210,12 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
              {/* Hearts Popover */}
              <div className="relative">
                <button onClick={() => setActivePopover(activePopover === 'heart' ? null : 'heart')} className={`flex items-center gap-1.5 md:gap-2 font-bold text-sm md:text-base text-[#ff4b4b] px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition border ${isDark ? 'bg-[#334155] hover:bg-[#475569] border-transparent' : 'bg-white hover:bg-red-50 border-gray-200'}`}>
-                 <Heart size={18} fill="currentColor" /> {save.hearts}
+                 <Heart size={18} fill="currentColor" /> {save.isPremium ? '♾️' : save.hearts}
+                 {!save.isPremium && save.hearts < maxHearts && (
+                   <span className="text-xs md:text-sm font-black tracking-widest text-[#ff4b4b] opacity-80 ml-1">
+                     {getTimerString()}
+                   </span>
+                 )}
                </button>
                {activePopover === 'heart' && (
                  <div className={`absolute top-full right-0 mt-2 w-72 rounded-2xl shadow-xl z-50 p-5 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
@@ -184,31 +226,43 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                      <div>
                        <h3 className={`font-black text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>하트</h3>
                        <p className={`text-sm font-bold leading-tight ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                         {save.hearts >= maxHearts ? '하트가 가득 찼습니다! 계속 학습하세요.' : '아직 하트가 남아 있습니다. 계속 학습하세요.'}
+                         {save.isPremium ? '무제한 하트가 활성화되어 있습니다.' : save.hearts >= maxHearts ? '하트가 가득 찼습니다! 계속 학습하세요.' : (
+                           <span>다음 하트까지: <span className="text-red-500 font-black">{getTimerString()}</span></span>
+                         )}
                        </p>
                      </div>
                    </div>
                    <div className="space-y-2">
-                     <button className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}>
+                     <button 
+                       onClick={() => {
+                         setActivePopover(null);
+                         if (!save.isPremium && onStoreClick) onStoreClick();
+                       }}
+                       className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}
+                     >
                        <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
                          <span className="text-xl">♾️</span> 무제한 하트
                        </span>
-                       <span className="text-pink-500 font-bold text-sm">슈퍼 구독하기</span>
-                     </button>
-                     <button 
-                        onClick={() => {
-                          setActivePopover(null);
-                          if (onStoreClick) onStoreClick(); // Store handles refill 
-                        }} 
-                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}
-                      >
-                       <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                         <Heart size={20} className="text-red-500" fill="none" /> 하트 리필하기
-                       </span>
-                       <span className="text-blue-500 font-bold text-sm flex items-center gap-1">
-                         <Gem size={14} fill="currentColor" /> 350
+                       <span className="text-pink-500 font-bold text-sm">
+                         {save.isPremium ? '활성중' : '슈퍼 구독하기'}
                        </span>
                      </button>
+                     {!save.isPremium && (
+                       <button 
+                          onClick={() => {
+                            setActivePopover(null);
+                            if (onStoreClick) onStoreClick(); // Store handles refill 
+                          }} 
+                          className={`w-full flex justify-between items-center px-4 py-3 rounded-xl border-2 transition ${isDark ? 'border-[#475569] hover:bg-[#334155]' : 'border-gray-200 hover:bg-gray-50'}`}
+                        >
+                         <span className={`font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                           <Heart size={20} className="text-red-500" fill="none" /> 하트 리필하기
+                         </span>
+                         <span className="text-[#B96CE8] font-bold text-sm flex items-center gap-1">
+                           <Gem size={14} fill="currentColor" /> 50
+                         </span>
+                       </button>
+                     )}
                    </div>
                  </div>
                )}
@@ -243,11 +297,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
               <ChevronLeft size={24} />
             </button>
 
-            <div className="flex flex-col items-center justify-center min-w-0 w-[170px] sm:w-[280px] md:w-[320px] text-center">
+            <div className="flex flex-col items-center justify-center min-w-0 w-[200px] sm:w-[280px] md:w-[320px] text-center">
               <span className="text-xs sm:text-sm font-black tracking-wider opacity-60 mb-0.5 truncate w-full" style={{ color: info.iconColor }}>
                 {info.label}
               </span>
-              <span className={`text-sm sm:text-lg font-black truncate w-full ${isDark ? 'text-white' : 'text-gray-800'}`}>
+              <span className={`text-sm sm:text-lg font-black break-keep w-full ${isDark ? 'text-white' : 'text-gray-800'}`}>
                 Unit {activeSectionIdx + 1} : {shortTitle}
               </span>
             </div>
@@ -292,7 +346,10 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
       {/* ── Pokemon Card Display (Nodes as TCG Cards - Apple Cover Flow) ── */}
       {/* On phones/tablets the fanned-out deck is wider than the viewport, so
           it becomes a swipeable horizontal carousel instead of being clipped. */}
-      <div className="w-full max-w-7xl mx-auto pb-8 overflow-x-auto lg:overflow-x-clip snap-x snap-mandatory lg:snap-none scrollbar-hide">
+      <div 
+        ref={scrollContainerRef}
+        className="w-full max-w-7xl mx-auto pb-8 overflow-x-auto lg:overflow-x-clip snap-x snap-mandatory lg:snap-none scrollbar-hide scroll-smooth"
+      >
 
         <div className="relative flex justify-start lg:justify-center items-center w-full min-h-[450px] px-8 sm:px-16 lg:px-8 pt-8">
           
@@ -315,6 +372,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
             const progress = save.nodeProgress?.[node.id] || 0;
             const totalLessons = node.lessons.length;
             const totalNodes = currentSection.nodes.length;
+            const isNodePerfect = save.perfectNodes?.includes(node.id);
 
             const tooltip = (i === 0 && isLocked) ? (
               <button
@@ -342,6 +400,7 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                 isActive={isNodeActive}
                 isFocus={isFocus}
                 isDark={isDark}
+                isPerfect={isNodePerfect}
                 xpReward={xpPerLesson}
                 progress={progress}
                 totalLessons={totalLessons}

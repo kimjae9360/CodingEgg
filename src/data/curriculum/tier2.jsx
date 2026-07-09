@@ -80,9 +80,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '빈 딕셔너리를 만들고 그대로 출력하세요.',
-              initialCode: 'cart = {}\nprint(cart)',
+              initialCode: 'cart = []  # 리스트가 아니라 딕셔너리를 만들어야 해요!\nprint(cart)',
               expectedOutputs: ['{}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'cart = {}로 고치세요.'
             }
           ],
           [
@@ -128,9 +128,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '학생 정보 {\'name\':\'철수\',\'score\':90}을 만들고 그대로 출력하세요.',
-              initialCode: 'student = {\'name\': \'철수\', \'score\': 90}\nprint(student)',
+              initialCode: 'student = {\'name\': \'철수\', \'score\':   }  # 90을 넣어주세요.\nprint(student)',
               expectedOutputs: ['{\'name\': \'철수\', \'score\': 90}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'student = {\'name\': \'철수\', \'score\': 90}'
             },
             {
               type: 'quiz_code',
@@ -244,9 +244,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'get()으로 없는 키 \'mp\'를 조회했을 때 None이 출력되는지 확인하세요.',
-              initialCode: 'stat = {\'hp\': 100}\nprint(stat.get(\'mp\'))',
+              initialCode: 'stat = {\'hp\': 100}\nprint(stat.gt(\'mp\'))  # 메서드 이름이 잘못됐어요!',
               expectedOutputs: ['None'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'stat.get(\'mp\')로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -299,9 +299,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '\'name\' 키가 있는지 in으로 확인해 True를 출력하세요.',
-              initialCode: 'd = {\'name\': \'에그\'}\nprint(\'name\' in d)',
+              initialCode: 'd = {\'name\': \'에그\'}\nprint(   in d)  # 확인할 키를 넣어주세요.',
               expectedOutputs: ['True'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(\'name\' in d)'
             },
             {
               type: 'quiz_code',
@@ -422,16 +422,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '딕셔너리 {\'hp\':100,\'mp\':50}에서 \'mp\' 키를 삭제하고 출력하세요.',
-              initialCode: 'stat = {\'hp\': 100, \'mp\': 50}\ndel stat[\'mp\']\nprint(stat)',
+              initialCode: 'stat = {\'hp\': 100, \'mp\': 50}\ndel stat[\'mmp\']  # 키 이름이 틀렸어요!\nprint(stat)',
               expectedOutputs: ['{\'hp\': 100}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'del stat[\'mp\']로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '딕셔너리 {\'a\':1,\'b\':2}에서 pop()으로 \'a\'를 꺼내 그 값을 출력하세요.',
-              initialCode: 'd = {\'a\': 1, \'b\': 2}\nprint(d.pop(\'a\'))',
+              initialCode: 'd = {\'a\': 1, \'b\': 2}\nprint(d.pop(   ))  # 꺼낼 키를 넣어주세요.',
               expectedOutputs: ['1'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd.pop(\'a\')'
             },
             {
               type: 'quiz_code',
@@ -600,16 +600,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '딕셔너리 {\'hp\':100,\'mp\':50}의 값 목록을 리스트로 출력하세요.',
-              initialCode: 'stat = {\'hp\': 100, \'mp\': 50}\nprint(list(stat.values()))',
+              initialCode: 'stat = {\'hp\': 100, \'mp\': 50}\nprint(list(stat.value()))  # 메서드 이름을 고치세요!',
               expectedOutputs: ['[100, 50]'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'stat.values()'
             },
             {
               type: 'quiz_code',
               content: 'for문으로 딕셔너리 {\'a\':1,\'b\':2}의 키를 하나씩 출력하세요.',
-              initialCode: 'd = {\'a\': 1, \'b\': 2}\nfor k in d:\n    print(k)',
+              initialCode: 'd = {\'a\': 1, \'b\': 2}\nfor k in d:\n    print(key)  # 변수 이름이 틀렸어요!',
               expectedOutputs: ['a\nb'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(k)로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -655,9 +655,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'items()로 딕셔너리 {\'a\':1,\'b\':2}의 키와 값을 \'a=1\' 형태로 출력하세요.',
-              initialCode: 'd = {\'a\': 1, \'b\': 2}\nfor k, v in d.items():\n    print(k + \'=\' + str(v))',
+              initialCode: 'd = {\'a\': 1, \'b\': 2}\nfor k, v in d.items():\n    print(k + \'=\' +   )  # v를 문자열로 바꿔 더하세요.',
               expectedOutputs: ['a=1\nb=2'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(k + \'=\' + str(v))'
             },
             {
               type: 'quiz_code',
@@ -785,16 +785,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '집합 {1,2,3}의 길이를 출력하세요.',
-              initialCode: 's = {1, 2, 3}\nprint(len(s))',
+              initialCode: 's = {1, 2, 3}\nprint(length(s))  # 함수 이름을 고치세요!',
               expectedOutputs: ['3'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'len(s)로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '집합 {1,2,3}에 3(이미 있는 값)을 추가해도 개수가 그대로인지 확인하세요.',
-              initialCode: 's = {1, 2, 3}\ns.add(3)\nprint(len(s))',
+              initialCode: 's = {1, 2, 3}\ns.add( )  # 이미 있는 값 3을 추가하세요.\nprint(len(s))',
               expectedOutputs: ['3'],
-              hint: '이미 정답입니다. 중복은 무시됩니다.'
+              hint: 's.add(3) 중복은 무시되어 길이는 그대로입니다.'
             }
           ],
           [
@@ -840,9 +840,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '3이 집합 {1,2,3}에 있는지 in으로 확인해 출력하세요.',
-              initialCode: 's = {1, 2, 3}\nprint(3 in s)',
+              initialCode: 's = {1, 2, 3}\nprint(3 = s)  # in 연산자가 빠졌어요!',
               expectedOutputs: ['True'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(3 in s)로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -969,16 +969,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수를 정의만 하고 호출하지 않으면 아무것도 출력되지 않음을 확인하세요.',
-              initialCode: 'def hello():\n    print(\'hello\')\n# 호출하지 않았습니다. 그대로 실행해보세요.',
+              initialCode: 'def hello():\n    print(\'hello\')\nhello()  # 이 호출 줄을 지워야 아무것도 출력되지 않아요!',
               expectedOutputs: [''],
-              hint: '이미 정답입니다. 호출하지 않으면 아무 일도 없어요.'
+              hint: 'hello() 호출을 삭제하거나 주석 처리하세요.'
             },
             {
               type: 'quiz_code',
               content: '함수 welcome을 만들어 \'환영합니다\'를 출력하고 2번 호출하세요.',
-              initialCode: 'def welcome():\n    print(\'환영합니다\')\nwelcome()\nwelcome()',
+              initialCode: 'def welcome():\n    print(\'환영합니다\')\nwelcome()\n  # 한 번 더 호출하는 코드를 추가하세요.',
               expectedOutputs: ['환영합니다\n환영합니다'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'welcome()을 한 번 더 추가하세요.'
             }
           ],
           [
@@ -1017,9 +1017,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수 안에서 다른 함수를 호출해보세요 (main이 greet를 호출).',
-              initialCode: 'def greet():\n    print(\'안녕\')\ndef main():\n    greet()\nmain()',
+              initialCode: 'def greet():\n    print(\'안녕\')\ndef main():\n    gret()  # 함수 이름 오타를 고치세요!\nmain()',
               expectedOutputs: ['안녕'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'greet()로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -1147,9 +1147,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '두 매개변수 a, b를 곱해서 출력하는 함수를 만들어 6, 7로 호출하세요.',
-              initialCode: 'def multiply(a, b):\n    print(a * b)\nmultiply(6, 7)',
+              initialCode: 'def multiply(a, b):\n    print(a + b)  # 곱셈이 아니라 덧셈이 되어 있어요!\nmultiply(6, 7)',
               expectedOutputs: ['42'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(a * b)로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -1195,16 +1195,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '이름과 나이를 매개변수로 받아 \'이름은 나이살입니다\' 형태로 출력하는 함수를 만들어 호출하세요.',
-              initialCode: 'def intro(name, age):\n    print(name + \'는 \' + str(age) + \'살입니다\')\nintro(\'에그\', 5)',
+              initialCode: 'def intro(name, age):\n    print(name + \'는 \' +   + \'살입니다\')  # age를 문자열로 바꿔 넣으세요.\nintro(\'에그\', 5)',
               expectedOutputs: ['에그는 5살입니다'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'str(age)를 넣으세요.'
             },
             {
               type: 'quiz_code',
               content: '함수를 두 번 다른 인자로 호출해보세요 (5, 10 각각).',
-              initialCode: 'def show(n):\n    print(n)\nshow(5)\nshow(10)',
+              initialCode: 'def show(n):\n    print(n)\nshow(5)\nshow( )  # 10을 인자로 넣으세요.',
               expectedOutputs: ['5\n10'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'show(10)'
             },
             {
               type: 'quiz_code',
@@ -1325,16 +1325,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '리스트의 합을 반환하는 함수를 만들어 [1,2,3,4]로 호출한 결과를 출력하세요.',
-              initialCode: 'def total(nums):\n    return sum(nums)\nprint(total([1, 2, 3, 4]))',
+              initialCode: 'def total(nums):\n    return sun(nums)  # 함수 이름 오타를 고치세요!\nprint(total([1, 2, 3, 4]))',
               expectedOutputs: ['10'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'sum(nums)로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: 'return이 없는 함수를 호출한 결과가 None인지 확인하세요.',
-              initialCode: 'def do_nothing():\n    pass\nprint(do_nothing())',
+              initialCode: 'def do_nothing():\n    pass\nprint(do_nothin())  # 함수 이름 오타를 고치세요!',
               expectedOutputs: ['None'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'do_nothing()으로 고치세요.'
             }
           ],
           [
@@ -1373,16 +1373,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수의 반환값을 다른 함수의 인자로 사용해보세요.',
-              initialCode: 'def add(a, b):\n    return a + b\ndef square(n):\n    return n * n\nprint(square(add(2, 3)))',
+              initialCode: 'def add(a, b):\n    return a + b\ndef square(n):\n    return n * n\nprint(square(add(  )))  # add에 2, 3을 넣으세요.',
               expectedOutputs: ['25'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'square(add(2, 3))'
             },
             {
               type: 'quiz_code',
               content: 'return 뒤의 코드는 실행되지 않음을 확인하세요.',
-              initialCode: 'def test():\n    return 1\n    print(\'실행 안됨\')\nprint(test())',
+              initialCode: 'def test():\n    return  \n    print(\'실행 안됨\')\nprint(test())  # return 값 1을 채우세요.',
               expectedOutputs: ['1'],
-              hint: '이미 정답입니다. return 뒤 코드는 무시됩니다.'
+              hint: 'return 1로 채우세요.'
             },
             {
               type: 'quiz_code',
@@ -1496,23 +1496,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '이름과 나이를 튜플로 반환하는 함수를 만들어 출력하세요.',
-              initialCode: 'def get_info():\n    return \'에그\', 5\nprint(get_info())',
+              initialCode: 'def get_info():\n    return \'에그\',   \nprint(get_info())  # 5를 채워주세요.',
               expectedOutputs: ['(\'에그\', 5)'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'return \'에그\', 5'
             },
             {
               type: 'quiz_code',
               content: '함수가 반환한 이름, 나이를 각각 변수로 받아 출력하세요.',
-              initialCode: 'def get_info():\n    return \'에그\', 5\nname, age = get_info()\nprint(name, age)',
+              initialCode: 'def get_info():\n    return \'에그\', 5\nname age = get_info()  # 쉼표가 빠졌어요!\nprint(name, age)',
               expectedOutputs: ['에그 5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'name, age = get_info()'
             },
             {
               type: 'quiz_code',
               content: '조건에 따라 다른 값을 반환하는 함수에서 실제 실행되는 return을 확인하세요 (n=5).',
-              initialCode: 'def check(n):\n    if n > 0:\n        return \'양수\'\n    return \'0 이하\'\nprint(check(5))',
+              initialCode: 'def check(n):\n    if n > 0:\n        return \'양수\'\n    return \'0 이하\'\nprint(check(-5))  # 인자를 5로 고치세요!',
               expectedOutputs: ['양수'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'check(5)로 호출하세요.'
             }
           ],
           [
@@ -1558,9 +1558,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수의 반환값이 None일 때 조건문으로 구분해 \'값 없음\'을 출력하세요.',
-              initialCode: 'def maybe():\n    pass\nresult = maybe()\nif result is None:\n    print(\'값 없음\')',
+              initialCode: 'def maybe():\n    pass\nresult = maybe()\nif result is not None:  # 조건이 반대예요!\n    print(\'값 없음\')',
               expectedOutputs: ['값 없음'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'is not None을 is None으로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -1642,16 +1642,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수 안에서 만든 지역 변수는 함수 밖에서 접근할 수 없음을 확인하세요.',
-              initialCode: 'def make():\n    local_var = 5\nmake()\ntry:\n    print(local_var)\nexcept:\n    print(\'접근 불가\')',
+              initialCode: 'def make():\n    local_var = 5\nmake()\ntry:\n    print( )  # 지역 변수 이름을 넣어보세요 (접근 불가능함을 확인).\nexcept:\n    print(\'접근 불가\')',
               expectedOutputs: ['접근 불가'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(local_var) 함수 밖이라 NameError가 나서 except가 실행됩니다.'
             },
             {
               type: 'quiz_code',
               content: '전역 변수 count=0을 global로 선언해 함수 안에서 1 증가시키세요.',
-              initialCode: 'count = 0\ndef increase():\n    global count\n    count += 1\nincrease()\nprint(count)',
+              initialCode: 'count = 0\ndef increase():\n    count += 1  # global 선언이 빠졌어요!\nincrease()\nprint(count)',
               expectedOutputs: ['1'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'global count를 함수 안 첫 줄에 추가하세요.'
             }
           ],
           [
@@ -1674,23 +1674,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'global 없이 함수 안에서 전역 변수와 같은 이름에 값을 대입해도 전역 변수는 그대로임을 확인하세요.',
-              initialCode: 'x = 10\ndef change():\n    x = 20\nchange()\nprint(x)',
+              initialCode: 'x = 10\ndef change():\n    x =    # 아무 숫자나 넣어보세요 (global이 없어 전역엔 영향 없음).\nchange()\nprint(x)',
               expectedOutputs: ['10'],
-              hint: '이미 정답입니다. global 없이는 전역 변수가 바뀌지 않아요.'
+              hint: 'x = 20 등 아무 값을 넣어도 global 선언이 없어 바깥의 x는 그대로 10입니다.'
             },
             {
               type: 'quiz_code',
               content: 'global로 점수(score=0)를 함수 호출마다 10씩 올려 2번 호출 후 출력하세요.',
-              initialCode: 'score = 0\ndef add_score():\n    global score\n    score += 10\nadd_score()\nadd_score()\nprint(score)',
+              initialCode: 'score = 0\ndef add_score():\n    global score\n    score += 10\nadd_score()\n  # 한 번 더 호출해야 20이 됩니다.\nprint(score)',
               expectedOutputs: ['20'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'add_score()를 한 번 더 추가하세요.'
             },
             {
               type: 'quiz_code',
               content: '함수 안에서 지역 변수 total을 만들어 리스트 합을 구하고 반환하세요.',
-              initialCode: 'def total(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total\nprint(total([1, 2, 3]))',
+              initialCode: 'def total(nums):\n    total = 0\n    for n in nums:\n        total = n  # 누적이 안 되고 있어요! += 로 고치세요.\n    return total\nprint(total([1, 2, 3]))',
               expectedOutputs: ['6'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'total += n으로 고치세요.'
             }
           ],
           [
@@ -1729,16 +1729,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '전역 변수 hp=100을 함수에서 20 깎고, 그 결과를 전역 변수에 반영해 출력하세요.',
-              initialCode: 'hp = 100\ndef damage():\n    global hp\n    hp -= 20\ndamage()\nprint(hp)',
+              initialCode: 'hp = 100\ndef damage():\n    hp -= 20  # global 선언이 빠졌어요!\ndamage()\nprint(hp)',
               expectedOutputs: ['80'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'global hp를 추가하세요.'
             },
             {
               type: 'quiz_code',
               content: '전역 리스트 cart=[]에 함수 안에서 \'egg\'를 추가하세요.',
-              initialCode: 'cart = []\ndef add_item():\n    cart.append(\'egg\')\nadd_item()\nprint(cart)',
+              initialCode: 'cart = []\ndef add_item():\n    cart.append(  )  # \'egg\'를 추가하세요.\nadd_item()\nprint(cart)',
               expectedOutputs: ['[\'egg\']'],
-              hint: '이미 정답입니다. 리스트/딕셔너리는 global 없이도 내용 수정이 가능해요.'
+              hint: 'cart.append(\'egg\')'
             },
             {
               type: 'quiz_code',
@@ -1775,9 +1775,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '지역 변수와 전역 변수의 이름이 같을 때, 함수 안에서는 지역 변수가 우선됨을 확인하세요.',
-              initialCode: 'name = \'전역이\'\ndef show():\n    name = \'지역이\'\n    print(name)\nshow()',
+              initialCode: 'name = \'전역이\'\ndef show():\n    name = \n    print(name)\nshow()  # 지역 변수에 \'지역이\'를 대입하세요.',
               expectedOutputs: ['지역이'],
-              hint: '이미 정답입니다. 함수 안에서는 지역 변수가 우선 사용됩니다.'
+              hint: 'name = \'지역이\'로 채우세요.'
             },
             {
               type: 'quiz_code',
@@ -1833,9 +1833,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '기본값 \'치킨\'을 가진 함수를 인자 없이, 그리고 \'피자\'로 각각 호출하세요.',
-              initialCode: 'def order(food=\'치킨\'):\n    print(food)\norder()\norder(\'피자\')',
+              initialCode: 'def order(food=\'치킨\'):\n    print(food)\norder()\norder(피자)  # 문자열에 따옴표가 빠졌어요!',
               expectedOutputs: ['치킨\n피자'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'order(\'피자\')로 고치세요.'
             }
           ],
           [
@@ -1858,23 +1858,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '기본 인사말 \'안녕\'을 가진 함수에 이름을 넣어 호출하세요.',
-              initialCode: 'def greet(name, msg=\'안녕\'):\n    print(msg + \', \' + name)\ngreet(\'에그\')',
+              initialCode: 'def greet(name, msg=\'안녕\'):\n    print(msg + \', \' + name)\ngreet( )  # \'에그\'를 인자로 넣으세요.',
               expectedOutputs: ['안녕, 에그'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'greet(\'에그\')'
             },
             {
               type: 'quiz_code',
               content: '할인율 기본값 10을 가진 함수로 가격 1000의 할인 후 가격을 계산하세요.',
-              initialCode: 'def discount(price, rate=10):\n    print(price - price * rate // 100)\ndiscount(1000)',
+              initialCode: 'def discount(price, rate=10):\n    print(price - price * rate // 100)\ndiscount(2000)  # 인자를 1000으로 고치세요!',
               expectedOutputs: ['900'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'discount(1000)으로 호출하세요.'
             },
             {
               type: 'quiz_code',
               content: '기본값을 무시하고 직접 넘긴 인자가 우선 사용되는지 확인하세요.',
-              initialCode: 'def power(base, exp=2):\n    print(base ** exp)\npower(2, 3)',
+              initialCode: 'def power(base, exp=2):\n    print(base ** exp)\npower(2,  )  # exp에 3을 넣어 기본값을 덮어쓰세요.',
               expectedOutputs: ['8'],
-              hint: '이미 정답입니다. exp=3이 우선 사용됩니다.'
+              hint: 'power(2, 3)'
             }
           ],
           [
@@ -1913,9 +1913,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '레벨 기본값 1을 가진 캐릭터 생성 함수를 이름만으로, 그리고 이름+레벨로 호출하세요.',
-              initialCode: 'def create(name, level=1):\n    print(name + \' Lv.\' + str(level))\ncreate(\'전사\')\ncreate(\'마법사\', 5)',
+              initialCode: 'def create(name, level=1):\n    print(name + \' Lv.\' + str(level))\ncreate(\'전사\')\ncreate(\'마법사\',  )  # 레벨 5를 넣으세요.',
               expectedOutputs: ['전사 Lv.1\n마법사 Lv.5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'create(\'마법사\', 5)'
             },
             {
               type: 'quiz_code',
@@ -2011,9 +2011,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '*args로 받은 숫자들의 최댓값을 출력하는 함수를 만들어 3,7,2로 호출하세요.',
-              initialCode: 'def biggest(*nums):\n    print(max(nums))\nbiggest(3, 7, 2)',
+              initialCode: 'def biggest(*nums):\n    print(mx(nums))  # 함수 이름 오타를 고치세요!\nbiggest(3, 7, 2)',
               expectedOutputs: ['7'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'max(nums)로 고치세요.'
             }
           ],
           [
@@ -2036,23 +2036,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '*args를 인자 없이 호출하면 빈 튜플이 되는지 확인하세요.',
-              initialCode: 'def show(*args):\n    print(args)\nshow()',
+              initialCode: 'def show(*args):\n    print(  )  # args를 출력하세요.\nshow()',
               expectedOutputs: ['()'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(args)'
             },
             {
               type: 'quiz_code',
               content: '*args로 받은 문자열들을 공백으로 이어붙여 출력하세요.',
-              initialCode: 'def join_words(*words):\n    print(\' \'.join(words))\njoin_words(\'나는\', \'코딩을\', \'좋아해\')',
+              initialCode: 'def join_words(*words):\n    print(\',\'.join(words))  # 구분자를 공백으로 고치세요!\njoin_words(\'나는\', \'코딩을\', \'좋아해\')',
               expectedOutputs: ['나는 코딩을 좋아해'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '\' \'.join(words)로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '고정 매개변수(title)와 *args를 함께 받는 함수를 만들어 호출하세요.',
-              initialCode: 'def show(title, *items):\n    print(title, items)\nshow(\'장바구니\', \'사과\', \'바나나\')',
+              initialCode: 'def show(title, items):  # 별표가 빠졌어요!\n    print(title, items)\nshow(\'장바구니\', \'사과\', \'바나나\')',
               expectedOutputs: ['장바구니 (\'사과\', \'바나나\')'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'def show(title, *items):로 고치세요.'
             }
           ],
           [
@@ -2091,9 +2091,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '*args로 받은 숫자들의 개수를 len()으로 출력하세요.',
-              initialCode: 'def count(*nums):\n    print(len(nums))\ncount(1, 2, 3, 4, 5)',
+              initialCode: 'def count(*nums):\n    print(len(nums))\ncount(1, 2, 3, 4)  # 인자를 5개로 맞추세요.',
               expectedOutputs: ['5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'count(1, 2, 3, 4, 5)'
             },
             {
               type: 'quiz_code',
@@ -2189,9 +2189,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '**kwargs로 받은 딕셔너리의 키 개수를 출력하세요.',
-              initialCode: 'def count_info(**info):\n    print(len(info))\ncount_info(name=\'에그\', age=5, job=\'학생\')',
+              initialCode: 'def count_info(**info):\n    print(length(info))  # 함수 이름을 고치세요!\ncount_info(name=\'에그\', age=5, job=\'학생\')',
               expectedOutputs: ['3'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'len(info)로 고치세요.'
             }
           ],
           [
@@ -2214,23 +2214,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '**kwargs를 인자 없이 호출하면 빈 딕셔너리가 되는지 확인하세요.',
-              initialCode: 'def show(**kwargs):\n    print(kwargs)\nshow()',
+              initialCode: 'def show(  kwargs):\n    print(kwargs)\nshow()  # 별표 두 개를 채워주세요.',
               expectedOutputs: ['{}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'def show(**kwargs):'
             },
             {
               type: 'quiz_code',
               content: '**kwargs로 받은 값 중 \'name\'만 꺼내 출력하세요.',
-              initialCode: 'def show(**info):\n    print(info[\'name\'])\nshow(name=\'에그\', age=5)',
+              initialCode: 'def show(**info):\n    print(info[\'names\'])  # 키 이름 오타를 고치세요!\nshow(name=\'에그\', age=5)',
               expectedOutputs: ['에그'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'info[\'name\']으로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '고정 매개변수(title)와 **kwargs를 함께 받는 함수를 만들어 호출하세요.',
-              initialCode: 'def show(title, **details):\n    print(title, details)\nshow(\'프로필\', name=\'에그\', age=5)',
+              initialCode: 'def show(title, details):  # 별표 두 개가 빠졌어요!\n    print(title, details)\nshow(\'프로필\', name=\'에그\', age=5)',
               expectedOutputs: ['프로필 {\'name\': \'에그\', \'age\': 5}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'def show(title, **details):로 고치세요.'
             }
           ],
           [
@@ -2269,9 +2269,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '**kwargs를 items()로 순회하며 \'키: 값\' 형태로 출력하세요.',
-              initialCode: 'def show(**info):\n    for k, v in info.items():\n        print(k + \': \' + str(v))\nshow(name=\'에그\', age=5)',
+              initialCode: 'def show(**info):\n    for k, v in info.items():\n        print(k + \': \' +   )  # v를 문자열로 바꿔 더하세요.\nshow(name=\'에그\', age=5)',
               expectedOutputs: ['name: 에그\nage: 5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'str(v)를 넣으세요.'
             },
             {
               type: 'quiz_code',
@@ -2283,9 +2283,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '**kwargs로 여러 과목 점수를 받아 총합을 출력하세요.',
-              initialCode: 'def total_score(**scores):\n    print(sum(scores.values()))\ntotal_score(math=90, english=85)',
+              initialCode: 'def total_score(**scores):\n    print(sum(scores))  # .values()가 빠졌어요!\ntotal_score(math=90, english=85)',
               expectedOutputs: ['175'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'sum(scores.values())로 고치세요.'
             }
           ],
           [
@@ -2308,16 +2308,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '*args와 **kwargs를 함께 받는 함수를 만들어 각각 출력하세요.',
-              initialCode: 'def show(*args, **kwargs):\n    print(args)\n    print(kwargs)\nshow(1, 2, name=\'에그\')',
+              initialCode: 'def show(*args, **kwargs):\n    print(args)\n    print(  )  # kwargs를 출력하세요.\nshow(1, 2, name=\'에그\')',
               expectedOutputs: ['(1, 2)\n{\'name\': \'에그\'}'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(kwargs)'
             },
             {
               type: 'quiz_code',
               content: '**kwargs로 받은 값 중 특정 키(\'age\')가 있는지 확인해 출력하세요.',
-              initialCode: 'def check(**info):\n    print(\'age\' in info)\ncheck(name=\'에그\', age=5)',
+              initialCode: 'def check(**info):\n    print(   in info)  # 확인할 키 \'age\'를 넣으세요.\ncheck(name=\'에그\', age=5)',
               expectedOutputs: ['True'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'print(\'age\' in info)'
             },
             {
               type: 'quiz_code',
@@ -2367,9 +2367,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '두 수 중 큰 값을 반환하는 lambda 함수를 만들어 7, 3으로 호출하세요.',
-              initialCode: 'bigger = lambda a, b: a if a > b else b\nprint(bigger(7, 3))',
+              initialCode: 'bigger = lambda a, b: a if a < b else b  # 부등호가 반대예요!\nprint(bigger(7, 3))',
               expectedOutputs: ['7'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'a > b로 고치세요.'
             }
           ],
           [
@@ -2392,16 +2392,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '이름을 받아 인사말을 반환하는 lambda 함수를 만들어 \'에그\'로 호출하세요.',
-              initialCode: 'greet = lambda name: \'안녕, \' + name\nprint(greet(\'에그\'))',
+              initialCode: 'greet = lambda name: \'안녕, \' +   \nprint(greet(\'에그\'))  # name을 더하세요.',
               expectedOutputs: ['안녕, 에그'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '\'안녕, \' + name'
             },
             {
               type: 'quiz_code',
               content: '숫자가 짝수인지 확인하는 lambda 함수를 만들어 4로 호출하세요.',
-              initialCode: 'is_even = lambda n: n % 2 == 0\nprint(is_even(4))',
+              initialCode: 'is_even = lambda n: n % 2 == 1  # 짝수가 아니라 홀수 조건이에요!\nprint(is_even(4))',
               expectedOutputs: ['True'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'n % 2 == 0으로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -2447,23 +2447,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '리스트를 정렬할 때 key로 lambda를 사용해보세요 (문자열 길이 기준).',
-              initialCode: 'words = [\'banana\', \'kiwi\', \'fig\']\nwords.sort(key=lambda w: len(w))\nprint(words)',
+              initialCode: 'words = [\'banana\', \'kiwi\', \'fig\']\nwords.sort(key=lambda w:   )  # 문자열 길이를 반환하세요.\nprint(words)',
               expectedOutputs: ['[\'fig\', \'kiwi\', \'banana\']'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'lambda w: len(w)'
             },
             {
               type: 'quiz_code',
               content: '딕셔너리 리스트를 나이 기준으로 정렬해보세요.',
-              initialCode: 'people = [{\'name\': \'철수\', \'age\': 30}, {\'name\': \'영희\', \'age\': 20}]\npeople.sort(key=lambda p: p[\'age\'])\nprint(people[0][\'name\'])',
+              initialCode: 'people = [{\'name\': \'철수\', \'age\': 30}, {\'name\': \'영희\', \'age\': 20}]\npeople.sort(key=lambda p: p[\'ages\'])  # 키 이름 오타를 고치세요!\nprint(people[0][\'name\'])',
               expectedOutputs: ['영희'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'p[\'age\']로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: 'lambda로 만든 함수를 변수 없이 즉시 호출해보세요.',
-              initialCode: 'print((lambda x: x * 2)(5))',
+              initialCode: 'print((lambda x: x *  )(5))  # 2를 곱하세요.',
               expectedOutputs: ['10'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'lambda x: x * 2'
             }
           ],
           [
@@ -2493,9 +2493,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '숫자 리스트를 lambda로 내림차순 정렬해보세요.',
-              initialCode: 'nums = [3, 1, 4, 1, 5]\nnums.sort(key=lambda x: -x)\nprint(nums)',
+              initialCode: 'nums = [3, 1, 4, 1, 5]\nnums.sort(key=lambda x: x)  # 내림차순이 안 돼요! 부호를 바꾸세요.\nprint(nums)',
               expectedOutputs: ['[5, 4, 3, 1, 1]'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'lambda x: -x로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -2545,9 +2545,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '문자열 리스트 [\'1\',\'2\',\'3\']을 숫자로 변환해 출력하세요.',
-              initialCode: 'strs = [\'1\', \'2\', \'3\']\nprint(list(map(int, strs)))',
+              initialCode: 'strs = [\'1\', \'2\', \'3\']\nprint(list(map(str, strs)))  # int로 바꿔야 숫자가 돼요!',
               expectedOutputs: ['[1, 2, 3]'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'map(int, strs)로 고치세요.'
             }
           ],
           [
@@ -2570,9 +2570,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '숫자 리스트 [1,2,3]을 문자열로 변환해 출력하세요.',
-              initialCode: 'nums = [1, 2, 3]\nprint(list(map(str, nums)))',
+              initialCode: 'nums = [1, 2, 3]\nprint(list(map(  , nums)))  # 문자열로 바꿀 함수를 넣으세요.',
               expectedOutputs: ['[\'1\', \'2\', \'3\']'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'map(str, nums)'
             },
             {
               type: 'quiz_code',
@@ -2584,9 +2584,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'map()의 결과를 for문으로 바로 순회하며 출력하세요.',
-              initialCode: 'nums = [1, 2, 3]\nfor n in map(lambda x: x * 2, nums):\n    print(n)',
+              initialCode: 'nums = [1, 2, 3]\nfor n in map(lambda x: x * 3, nums):  # 2배가 아니라 3배가 되어 있어요!\n    print(n)',
               expectedOutputs: ['2\n4\n6'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'lambda x: x * 2로 고치세요.'
             }
           ],
           [
@@ -2625,9 +2625,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '두 리스트 [1,2,3]과 [10,20,30]을 더해 [11,22,33]을 만드세요.',
-              initialCode: 'a = [1, 2, 3]\nb = [10, 20, 30]\nprint(list(map(lambda x, y: x + y, a, b)))',
+              initialCode: 'a = [1, 2, 3]\nb = [10, 20, 30]\nprint(list(map(lambda x, y: x + y, a,  )))  # 두 번째 리스트 b를 넣으세요.',
               expectedOutputs: ['[11, 22, 33]'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'map(lambda x, y: x + y, a, b)'
             },
             {
               type: 'quiz_code',
@@ -2664,9 +2664,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'map()의 결과 리스트의 합을 sum()으로 구해 출력하세요.',
-              initialCode: 'nums = [1, 2, 3]\nsquared = list(map(lambda x: x ** 2, nums))\nprint(sum(squared))',
+              initialCode: 'nums = [1, 2, 3]\nsquared = list(map(lambda x: x ** 3, nums))  # 세제곱이 아니라 제곱이어야 해요!\nprint(sum(squared))',
               expectedOutputs: ['14'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'x ** 2로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -2729,9 +2729,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '정수 변환 실패를 try-except로 처리해 \'변환 실패\'를 출력하세요.',
-              initialCode: 'try:\n    print(int(\'abc\'))\nexcept:\n    print(\'변환 실패\')',
+              initialCode: 'try:\n    print(int(  ))  # 변환 실패할 문자열을 넣으세요.\nexcept:\n    print(\'변환 실패\')',
               expectedOutputs: ['변환 실패'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'int(\'abc\')'
             }
           ],
           [
@@ -2754,23 +2754,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '에러가 없는 코드를 try로 감싸도 정상 실행되는지 확인하세요.',
-              initialCode: 'try:\n    print(10 / 2)\nexcept:\n    print(\'에러\')',
+              initialCode: 'try:\n    print(10 /  )  # 2를 넣어 정상적으로 나누세요.\nexcept:\n    print(\'에러\')',
               expectedOutputs: ['5.0'],
-              hint: '이미 정답입니다. 에러가 없으면 try 블록만 실행됩니다.'
+              hint: '10 / 2'
             },
             {
               type: 'quiz_code',
               content: '딕셔너리에서 없는 키 접근을 try-except로 처리하세요.',
-              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[\'b\'])\nexcept:\n    print(\'키 없음\')',
+              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[  ])  # 없는 키 \'b\'를 넣으세요.\nexcept:\n    print(\'키 없음\')',
               expectedOutputs: ['키 없음'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd[\'b\']'
             },
             {
               type: 'quiz_code',
               content: '변수로 나눗셈을 try-except로 안전하게 처리하세요 (0으로 나누기).',
-              initialCode: 'a = 10\nb = 0\ntry:\n    print(a / b)\nexcept:\n    print(\'0으로 나눌 수 없어요\')',
+              initialCode: 'a = 10\nb = 2  # 0으로 고쳐야 에러가 발생해요!\ntry:\n    print(a / b)\nexcept:\n    print(\'0으로 나눌 수 없어요\')',
               expectedOutputs: ['0으로 나눌 수 없어요'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'b = 0으로 고치세요.'
             }
           ],
           [
@@ -2809,23 +2809,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '리스트 순회 중 특정 인덱스에서 에러가 나도 계속 진행되도록 for문 안에 try-except를 넣으세요.',
-              initialCode: 'nums = [1, 2, 3]\nfor i in range(5):\n    try:\n        print(nums[i])\n    except:\n        print(\'없음\')',
+              initialCode: 'nums = [1, 2, 3]\nfor i in range(3):  # 범위를 벗어나야 \'없음\'이 나와요! 5로 고치세요.\n    try:\n        print(nums[i])\n    except:\n        print(\'없음\')',
               expectedOutputs: ['없음'],
-              hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+              hint: 'range(5)로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '함수 안에서 예외 처리를 해 안전하게 나눗셈을 수행하는 함수를 만드세요.',
-              initialCode: 'def safe_div(a, b):\n    try:\n        return a / b\n    except:\n        return None\nprint(safe_div(10, 0))',
+              initialCode: 'def safe_div(a, b):\n    try:\n        return a / b\n    except:\n        return None\nprint(safe_div(10, 2))  # 0으로 나누도록 인자를 고치세요!',
               expectedOutputs: ['None'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'safe_div(10, 0)으로 호출하세요.'
             },
             {
               type: 'quiz_code',
               content: '문자열을 숫자로 변환하는 안전한 함수를 만들어 실패 시 0을 반환하세요.',
-              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except:\n        return 0\nprint(to_int(\'hello\'))',
+              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except:\n        return 0\nprint(to_int(  ))  # 변환 실패할 문자열을 넣으세요.',
               expectedOutputs: ['0'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'to_int(\'hello\')'
             }
           ],
           [
@@ -2848,16 +2848,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '성공 케이스도 확인해보세요 (to_int(\'42\')는 42를 반환해야 함).',
-              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except:\n        return 0\nprint(to_int(\'42\'))',
+              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except:\n        return 0\nprint(to_int(   ))  # 성공할 값 \'42\'를 넣으세요.',
               expectedOutputs: ['42'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'to_int(\'42\')'
             },
             {
               type: 'quiz_code',
               content: '리스트 여러 개의 나눗셈을 순회하며 에러가 나는 것만 건너뛰고 계속 진행하세요.',
-              initialCode: 'pairs = [(10, 2), (5, 0), (8, 4)]\nfor a, b in pairs:\n    try:\n        print(a / b)\n    except:\n        continue',
+              initialCode: 'pairs = [(10, 2), (5, 0), (8, 4)]\nfor a, b in pairs:\n    try:\n        print(a / b)\n    except:\n        break  # continue로 고쳐야 계속 진행돼요!',
               expectedOutputs: ['2.0'],
-              hint: '이미 정답입니다. 마지막 줄(2.0)만 확인해요.'
+              hint: 'continue로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -2907,9 +2907,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'KeyError를 잡아 \'키 없음\'을 출력하세요.',
-              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[\'b\'])\nexcept KeyError:\n    print(\'키 없음\')',
+              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[  ])  # 없는 키 \'b\'를 넣으세요.\nexcept KeyError:\n    print(\'키 없음\')',
               expectedOutputs: ['키 없음'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd[\'b\']'
             }
           ],
           [
@@ -2932,23 +2932,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'IndexError를 잡아 \'범위 초과\'를 출력하세요.',
-              initialCode: 'nums = [1, 2, 3]\ntry:\n    print(nums[10])\nexcept IndexError:\n    print(\'범위 초과\')',
+              initialCode: 'nums = [1, 2, 3]\ntry:\n    print(nums[  ])  # 범위를 벗어난 인덱스(10)를 넣으세요.\nexcept IndexError:\n    print(\'범위 초과\')',
               expectedOutputs: ['범위 초과'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'nums[10]'
             },
             {
               type: 'quiz_code',
               content: 'ZeroDivisionError와 ValueError를 각각 다르게 처리하는 코드에서 ZeroDivisionError 케이스를 확인하세요.',
-              initialCode: 'try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept ValueError:\n    print(\'값 에러\')',
+              initialCode: 'try:\n    print(10 / 1)  # 0으로 나누도록 고쳐야 에러가 발생해요!\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept ValueError:\n    print(\'값 에러\')',
               expectedOutputs: ['0으로 나눔'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '10 / 0으로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '같은 코드에서 ValueError 케이스도 확인해보세요 (int(\'abc\')로 변경).',
-              initialCode: 'try:\n    print(int(\'abc\'))\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept ValueError:\n    print(\'값 에러\')',
+              initialCode: 'try:\n    print(int(  ))  # 변환 실패할 문자열을 넣으세요.\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept ValueError:\n    print(\'값 에러\')',
               expectedOutputs: ['값 에러'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'int(\'abc\')'
             }
           ],
           [
@@ -2987,23 +2987,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '딕셔너리 접근에서 KeyError만 잡아보세요.',
-              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[\'x\'])\nexcept KeyError:\n    print(\'키 에러\')',
+              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[\'x\'])\nexcept IndexError:  # 에러 종류가 틀렸어요!\n    print(\'키 에러\')',
               expectedOutputs: ['키 에러'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'except KeyError:로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '함수 안에서 ValueError만 잡아 안전하게 숫자로 변환하는 함수를 만드세요.',
-              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except ValueError:\n        return -1\nprint(to_int(\'hello\'))',
+              initialCode: 'def to_int(s):\n    try:\n        return int(s)\n    except ValueError:\n        return -1\nprint(to_int(  ))  # 변환 실패할 문자열을 넣으세요.',
               expectedOutputs: ['-1'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'to_int(\'hello\')'
             },
             {
               type: 'quiz_code',
               content: '딕셔너리 키에 안전하게 접근하는 함수를 KeyError만 잡아 만드세요.',
-              initialCode: 'def safe_get(d, key):\n    try:\n        return d[key]\n    except KeyError:\n        return \'없음\'\nprint(safe_get({\'a\': 1}, \'b\'))',
+              initialCode: 'def safe_get(d, key):\n    try:\n        return d[key]\n    except KeyError:\n        return \'없음\'\nprint(safe_get({\'a\': 1},  ))  # 없는 키 \'b\'를 넣으세요.',
               expectedOutputs: ['없음'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'safe_get({\'a\': 1}, \'b\')'
             }
           ],
           [
@@ -3026,16 +3026,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '지정하지 않은 에러 종류가 발생하면 어떻게 되는지 확인하세요 (TypeError 예시).',
-              initialCode: 'try:\n    print(\'a\' + 1)\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept TypeError:\n    print(\'타입 에러\')',
+              initialCode: 'try:\n    print(\'a\' +  )  # TypeError를 일으킬 숫자 1을 넣으세요.\nexcept ZeroDivisionError:\n    print(\'0으로 나눔\')\nexcept TypeError:\n    print(\'타입 에러\')',
               expectedOutputs: ['타입 에러'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '\'a\' + 1'
             },
             {
               type: 'quiz_code',
               content: '세 가지 에러를 각각 처리하는 함수를 만들어 KeyError 케이스로 테스트하세요.',
-              initialCode: 'def handle(d):\n    try:\n        return d[\'x\'] / int(d[\'y\'])\n    except ZeroDivisionError:\n        return \'0으로 나눔\'\n    except ValueError:\n        return \'값 에러\'\n    except KeyError:\n        return \'키 에러\'\nprint(handle({\'y\': \'5\'}))',
+              initialCode: 'def handle(d):\n    try:\n        return d[\'x\'] / int(d[\'y\'])\n    except ZeroDivisionError:\n        return \'0으로 나눔\'\n    except ValueError:\n        return \'값 에러\'\n    except KeyError:\n        return \'키 에러\'\nprint(handle({\'y\':  }))  # \'x\' 키가 없는 딕셔너리를 만드세요 (\'5\' 값 채우기).',
               expectedOutputs: ['키 에러'],
-              hint: '이미 정답입니다. \'x\' 키가 없어서 KeyError가 납니다.'
+              hint: 'handle({\'y\': \'5\'}) \'x\' 키가 없어 KeyError가 발생합니다.'
             },
             {
               type: 'quiz_code',
@@ -3085,9 +3085,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '에러 메시지를 e로 받아 그대로 출력하세요.',
-              initialCode: 'try:\n    x = 1 / 0\nexcept Exception as e:\n    print(e)',
+              initialCode: 'try:\n    x = 1 / 1  # 0으로 나누도록 고쳐야 에러가 발생해요!\nexcept Exception as e:\n    print(e)',
               expectedOutputs: ['division by zero'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '1 / 0으로 고치세요.'
             }
           ],
           [
@@ -3110,23 +3110,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'KeyError의 에러 메시지를 확인하세요.',
-              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[\'b\'])\nexcept KeyError as e:\n    print(e)',
+              initialCode: 'd = {\'a\': 1}\ntry:\n    print(d[  ])  # 없는 키 \'b\'를 넣으세요.\nexcept KeyError as e:\n    print(e)',
               expectedOutputs: ['\'b\''],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd[\'b\']'
             },
             {
               type: 'quiz_code',
               content: '일반 Exception으로 에러를 잡아 타입 이름을 출력하세요.',
-              initialCode: 'try:\n    print(1 + \'1\')\nexcept Exception as e:\n    print(type(e).__name__)',
+              initialCode: 'try:\n    print(1 +  )  # TypeError를 일으킬 문자열 \'1\'을 넣으세요.\nexcept Exception as e:\n    print(type(e).__name__)',
               expectedOutputs: ['TypeError'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '1 + \'1\''
             },
             {
               type: 'quiz_code',
               content: '에러 메시지를 활용해 \'에러: 메시지\' 형태로 출력하세요.',
-              initialCode: 'try:\n    print(10 / 0)\nexcept Exception as e:\n    print(\'에러: \' + str(e))',
+              initialCode: 'try:\n    print(10 / 0)\nexcept Exception as e:\n    print(\'에러: \' +  )  # e를 문자열로 바꿔 더하세요.',
               expectedOutputs: ['에러: division by zero'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'str(e)'
             }
           ],
           [
@@ -3165,23 +3165,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수 안에서 예외를 잡아 메시지를 반환하세요.',
-              initialCode: 'def safe_div(a, b):\n    try:\n        return a / b\n    except Exception as e:\n        return str(e)\nprint(safe_div(5, 0))',
+              initialCode: 'def safe_div(a, b):\n    try:\n        return a / b\n    except Exception as e:\n        return str(e)\nprint(safe_div(5, 1))  # 0으로 나누도록 인자를 고치세요!',
               expectedOutputs: ['division by zero'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'safe_div(5, 0)으로 호출하세요.'
             },
             {
               type: 'quiz_code',
               content: '여러 나눗셈을 시도하며 에러가 난 경우 메시지를 출력하세요.',
-              initialCode: 'pairs = [(10, 2), (5, 0)]\nfor a, b in pairs:\n    try:\n        print(a / b)\n    except Exception as e:\n        print(str(e))',
+              initialCode: 'pairs = [(10, 2), (5,  )]  # 0을 넣어 에러를 발생시키세요.\nfor a, b in pairs:\n    try:\n        print(a / b)\n    except Exception as e:\n        print(str(e))',
               expectedOutputs: ['division by zero'],
-              hint: '이미 정답입니다. 마지막 줄만 확인해요.'
+              hint: '(5, 0)'
             },
             {
               type: 'quiz_code',
               content: '에러 타입 이름만 추출해 출력하세요.',
-              initialCode: 'try:\n    print([1, 2][10])\nexcept Exception as e:\n    print(type(e).__name__)',
+              initialCode: 'try:\n    print([1, 2][  ])  # 범위를 벗어난 인덱스(10)를 넣으세요.\nexcept Exception as e:\n    print(type(e).__name__)',
               expectedOutputs: ['IndexError'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '[1, 2][10]'
             }
           ],
           [
@@ -3204,16 +3204,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '딕셔너리 접근 에러의 타입 이름을 출력하세요.',
-              initialCode: 'd = {}\ntry:\n    print(d[\'x\'])\nexcept Exception as e:\n    print(type(e).__name__)',
+              initialCode: 'd = {\'x\': 1}  # \'x\' 키를 빼야 에러가 발생해요!\ntry:\n    print(d[\'x\'])\nexcept Exception as e:\n    print(type(e).__name__)',
               expectedOutputs: ['KeyError'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd = {}로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '함수에서 에러 타입에 따라 다른 메시지를 만들어 반환하세요.',
-              initialCode: 'def describe(f):\n    try:\n        f()\n    except Exception as e:\n        return type(e).__name__ + \': \' + str(e)\nprint(describe(lambda: 1 / 0))',
+              initialCode: 'def describe(f):\n    try:\n        f()\n    except Exception as e:\n        return type(e).__name__ + \': \' + str(e)\nprint(describe(lambda:  ))  # 1 / 0을 넣으세요.',
               expectedOutputs: ['ZeroDivisionError: division by zero'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'lambda: 1 / 0'
             },
             {
               type: 'quiz_code',
@@ -3263,9 +3263,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '에러가 나는 경우에도 finally가 실행되는지 확인하세요.',
-              initialCode: 'try:\n    print(1 / 0)\nexcept:\n    print(\'에러 발생\')\nfinally:\n    print(\'종료\')',
+              initialCode: 'try:\n    print(1 / 1)  # 0으로 나누도록 고쳐야 에러가 발생해요!\nexcept:\n    print(\'에러 발생\')\nfinally:\n    print(\'종료\')',
               expectedOutputs: ['에러 발생\n종료'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '1 / 0으로 고치세요.'
             }
           ],
           [
@@ -3288,23 +3288,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '에러가 안 나는 케이스도 확인하세요.',
-              initialCode: 'try:\n    print(10 / 2)\nexcept:\n    print(\'에러 발생\')\nfinally:\n    print(\'종료\')',
+              initialCode: 'try:\n    print(10 /  )  # 2를 넣어 정상적으로 나누세요.\nexcept:\n    print(\'에러 발생\')\nfinally:\n    print(\'종료\')',
               expectedOutputs: ['5.0\n종료'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '10 / 2'
             },
             {
               type: 'quiz_code',
               content: '함수 안에서 return이 있어도 finally가 실행되는지 확인하세요.',
-              initialCode: 'def test():\n    try:\n        return \'결과\'\n    finally:\n        print(\'finally 실행\')\nprint(test())',
+              initialCode: 'def test():\n    try:\n        return  \n    finally:\n        print(\'finally 실행\')\nprint(test())  # \'결과\'를 반환하세요.',
               expectedOutputs: ['finally 실행\n결과'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'return \'결과\''
             },
             {
               type: 'quiz_code',
               content: '자원 정리 패턴을 만들어보세요 (\'열기\'->에러->\'닫기\').',
-              initialCode: 'try:\n    print(\'열기\')\n    print(1 / 0)\nexcept:\n    print(\'에러 처리\')\nfinally:\n    print(\'닫기\')',
+              initialCode: 'try:\n    print(\'열기\')\n    print(1 / 1)  # 0으로 나누도록 고쳐야 에러가 발생해요!\nexcept:\n    print(\'에러 처리\')\nfinally:\n    print(\'닫기\')',
               expectedOutputs: ['열기\n에러 처리\n닫기'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '1 / 0으로 고치세요.'
             }
           ],
           [
@@ -3343,23 +3343,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'finally 안에서 변수를 정리하는 코드를 작성해보세요.',
-              initialCode: 'connected = True\ntry:\n    print(1 / 0)\nexcept:\n    print(\'에러\')\nfinally:\n    connected = False\n    print(\'연결 상태:\', connected)',
+              initialCode: 'connected = True\ntry:\n    print(1 / 0)\nexcept:\n    print(\'에러\')\nfinally:\n    connected =   \n    print(\'연결 상태:\', connected)  # False로 정리하세요.',
               expectedOutputs: ['연결 상태: False'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'connected = False'
             },
             {
               type: 'quiz_code',
               content: 'try-except-finally를 모두 갖춘 안전한 나눗셈 함수를 만드세요.',
-              initialCode: 'def safe_div(a, b):\n    try:\n        result = a / b\n    except ZeroDivisionError:\n        result = None\n    finally:\n        print(\'계산 시도 완료\')\n    return result\nprint(safe_div(10, 0))',
+              initialCode: 'def safe_div(a, b):\n    try:\n        result = a / b\n    except ValueError:  # 에러 종류가 틀렸어요!\n        result = None\n    finally:\n        print(\'계산 시도 완료\')\n    return result\nprint(safe_div(10, 0))',
               expectedOutputs: ['계산 시도 완료\nNone'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'except ZeroDivisionError:로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '여러 값에 대해 안전한 나눗셈을 시도하며 finally로 매 시도마다 로그를 남기세요.',
-              initialCode: 'for b in [2, 0]:\n    try:\n        print(10 / b)\n    except:\n        print(\'실패\')\n    finally:\n        print(\'시도 완료\')',
+              initialCode: 'for b in [ , 0]:  # 2를 채우세요.\n    try:\n        print(10 / b)\n    except:\n        print(\'실패\')\n    finally:\n        print(\'시도 완료\')',
               expectedOutputs: ['5.0\n시도 완료\n실패\n시도 완료'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '[2, 0]'
             }
           ],
           [
@@ -3382,16 +3382,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'finally 블록에서 카운터를 증가시켜 몇 번 시도했는지 세어보세요.',
-              initialCode: 'count = 0\nfor b in [1, 0, 2]:\n    try:\n        10 / b\n    except:\n        pass\n    finally:\n        count += 1\nprint(count)',
+              initialCode: 'count = 0\nfor b in [1, 0, 2]:\n    try:\n        10 / b\n    except:\n        pass\n    finally:\n        count = 1  # 누적이 안 돼요! += 로 고치세요.\nprint(count)',
               expectedOutputs: ['3'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'count += 1로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '리소스 사용 흉내를 내는 함수를 만들어보세요 (성공/실패 모두 \'정리\'가 출력되어야 함).',
-              initialCode: 'def use_resource(fail):\n    try:\n        if fail:\n            raise ValueError(\'실패\')\n        print(\'작업 성공\')\n    except ValueError:\n        print(\'작업 실패\')\n    finally:\n        print(\'정리\')\nuse_resource(True)',
+              initialCode: 'def use_resource(fail):\n    try:\n        if fail:\n            raise ValueError(\'실패\')\n        print(\'작업 성공\')\n    except ValueError:\n        print(\'작업 실패\')\n    finally:\n        print(\'정리\')\nuse_resource( )  # True를 넣어 실패 경로를 실행하세요.',
               expectedOutputs: ['작업 실패\n정리'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'use_resource(True)'
             },
             {
               type: 'quiz_code',
@@ -3441,9 +3441,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '함수 안에서 잘못된 값이면 raise로 에러를 발생시키고 호출부에서 잡으세요.',
-              initialCode: 'def set_age(age):\n    if age < 0:\n        raise ValueError(\'음수 불가\')\n    return age\ntry:\n    set_age(-1)\nexcept ValueError as e:\n    print(e)',
+              initialCode: 'def set_age(age):\n    if age < 0:\n        raise ValueError(\'음수 불가\')\n    return age\ntry:\n    set_age(1)  # 음수를 넣어야 에러가 발생해요!\nexcept ValueError as e:\n    print(e)',
               expectedOutputs: ['음수 불가'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'set_age(-1)로 호출하세요.'
             }
           ],
           [
@@ -3466,23 +3466,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: 'raise로 발생시킨 에러가 정상적으로 잡히는지 확인하세요.',
-              initialCode: 'def check_divisor(b):\n    if b == 0:\n        raise ZeroDivisionError(\'0으로 나눌 수 없어요\')\n    return 10 / b\ntry:\n    check_divisor(0)\nexcept ZeroDivisionError as e:\n    print(e)',
+              initialCode: 'def check_divisor(b):\n    if b == 0:\n        raise ZeroDivisionError(\'0으로 나눌 수 없어요\')\n    return 10 / b\ntry:\n    check_divisor( )  # 0을 넣어 에러를 발생시키세요.\nexcept ZeroDivisionError as e:\n    print(e)',
               expectedOutputs: ['0으로 나눌 수 없어요'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'check_divisor(0)'
             },
             {
               type: 'quiz_code',
               content: 'raise된 에러 메시지에 값을 포함시켜보세요.',
-              initialCode: 'age = -3\ntry:\n    if age < 0:\n        raise ValueError(\'나이 \' + str(age) + \'는 유효하지 않습니다\')\nexcept ValueError as e:\n    print(e)',
+              initialCode: 'age =   \ntry:\n    if age < 0:\n        raise ValueError(\'나이 \' + str(age) + \'는 유효하지 않습니다\')\nexcept ValueError as e:\n    print(e)  # age에 -3을 넣으세요.',
               expectedOutputs: ['나이 -3는 유효하지 않습니다'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'age = -3'
             },
             {
               type: 'quiz_code',
               content: '함수에서 raise된 에러를 넓은 Exception으로 감싸 잡아보세요.',
-              initialCode: 'def validate(n):\n    if n < 0:\n        raise ValueError(\'음수 불가\')\ntry:\n    validate(-1)\nexcept Exception as e:\n    print(str(e))',
+              initialCode: 'def validate(n):\n    if n < 0:\n        raise ValueError(\'음수 불가\')\ntry:\n    validate(-1)\nexcept TypeError as e:  # Exception으로 고쳐야 잡을 수 있어요!\n    print(str(e))',
               expectedOutputs: ['음수 불가'],
-              hint: '이미 정답입니다. Exception은 ValueError도 잡을 수 있어요.'
+              hint: 'except Exception as e:로 고치세요.'
             }
           ],
           [
@@ -3521,23 +3521,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '비밀번호 길이가 4 미만이면 raise로 에러를 발생시키세요.',
-              initialCode: 'pw = \'123\'\ntry:\n    if len(pw) < 4:\n        raise ValueError(\'비밀번호가 너무 짧아요\')\nexcept ValueError as e:\n    print(e)',
+              initialCode: 'pw =   \ntry:\n    if len(pw) < 4:\n        raise ValueError(\'비밀번호가 너무 짧아요\')\nexcept ValueError as e:\n    print(e)  # 4자 미만의 문자열 \'123\'을 넣으세요.',
               expectedOutputs: ['비밀번호가 너무 짧아요'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'pw = \'123\''
             },
             {
               type: 'quiz_code',
               content: '함수에서 입력값을 검증해 조건에 어긋나면 raise하세요 (재고가 음수인 경우).',
-              initialCode: 'def add_stock(n):\n    if n < 0:\n        raise ValueError(\'재고는 음수가 될 수 없어요\')\n    return n\ntry:\n    add_stock(-5)\nexcept ValueError as e:\n    print(e)',
+              initialCode: 'def add_stock(n):\n    if n < 0:\n        raise ValueError(\'재고는 음수가 될 수 없어요\')\n    return n\ntry:\n    add_stock(5)  # 음수를 넣어야 에러가 발생해요!\nexcept ValueError as e:\n    print(e)',
               expectedOutputs: ['재고는 음수가 될 수 없어요'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'add_stock(-5)로 호출하세요.'
             },
             {
               type: 'quiz_code',
               content: 'raise한 에러를 잡아 원래 값 대신 기본값을 반환하는 안전한 함수를 만드세요.',
-              initialCode: 'def safe_set(age):\n    try:\n        if age < 0:\n            raise ValueError(\'음수 불가\')\n        return age\n    except ValueError:\n        return 0\nprint(safe_set(-10))',
+              initialCode: 'def safe_set(age):\n    try:\n        if age < 0:\n            raise ValueError(\'음수 불가\')\n        return age\n    except ValueError:\n        return 0\nprint(safe_set(  ))  # 음수를 넣으세요.',
               expectedOutputs: ['0'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'safe_set(-10)'
             }
           ],
           [
@@ -3560,16 +3560,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '여러 유효성 검사를 하나의 함수에서 처리하며 각각 다른 메시지로 raise하세요.',
-              initialCode: 'def validate_age(age):\n    if age < 0:\n        raise ValueError(\'음수 불가\')\n    if age > 150:\n        raise ValueError(\'나이가 너무 큽니다\')\n    return age\ntry:\n    validate_age(200)\nexcept ValueError as e:\n    print(e)',
+              initialCode: 'def validate_age(age):\n    if age < 0:\n        raise ValueError(\'음수 불가\')\n    if age > 150:\n        raise ValueError(\'나이가 너무 큽니다\')\n    return age\ntry:\n    validate_age(  )  # 150을 초과하는 값을 넣으세요.\nexcept ValueError as e:\n    print(e)',
               expectedOutputs: ['나이가 너무 큽니다'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'validate_age(200)'
             },
             {
               type: 'quiz_code',
               content: 'raise된 에러를 잡아 로그를 남기고 기본값을 반환하는 함수를 만들어보세요.',
-              initialCode: 'def parse_score(s):\n    try:\n        score = int(s)\n        if score < 0 or score > 100:\n            raise ValueError(\'점수 범위 초과\')\n        return score\n    except ValueError as e:\n        print(\'경고: \' + str(e))\n        return -1\nprint(parse_score(\'150\'))',
+              initialCode: 'def parse_score(s):\n    try:\n        score = int(s)\n        if score < 0 or score > 100:\n            raise ValueError(\'점수 범위 초과\')\n        return score\n    except ValueError as e:\n        print(\'경고: \' + str(e))\n        return -1\nprint(parse_score(   ))  # 100을 초과하는 문자열 \'150\'을 넣으세요.',
               expectedOutputs: ['경고: 점수 범위 초과\n-1'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'parse_score(\'150\')'
             },
             {
               type: 'quiz_code',
@@ -3625,9 +3625,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스 Car로 객체 두 개를 만들어 서로 다른 객체인지 확인하세요.',
-              initialCode: 'class Car:\n    pass\ncar1 = Car()\ncar2 = Car()\nprint(car1 is car2)',
+              initialCode: 'class Car:\n    pass\ncar1 = Car()\ncar2 = Car()\nprint(car1   car2)  # is 를 넣어 같은 객체인지 비교하세요.',
               expectedOutputs: ['False'],
-              hint: '이미 정답입니다. 서로 다른 객체입니다.'
+              hint: 'car1 is car2'
             }
           ],
           [
@@ -3650,23 +3650,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스 Robot으로 만든 객체의 타입을 확인하세요.',
-              initialCode: 'class Robot:\n    pass\nr = Robot()\nprint(type(r).__name__)',
+              initialCode: 'class Robot:\n    pass\nr = Robot()\nprint(type(r).__name_)  # 언더바 개수가 틀렸어요!',
               expectedOutputs: ['Robot'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: '__name__으로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '클래스 Robot으로 3개의 객체를 만들고 개수를 확인하세요.',
-              initialCode: 'class Robot:\n    pass\nrobots = [Robot(), Robot(), Robot()]\nprint(len(robots))',
+              initialCode: 'class Robot:\n    pass\nrobots = [Robot(), Robot()]  # 객체를 하나 더 추가하세요.\nprint(len(robots))',
               expectedOutputs: ['3'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'robots = [Robot(), Robot(), Robot()]'
             },
             {
               type: 'quiz_code',
               content: '클래스 Fish로 객체를 만들고 isinstance()로 타입을 확인하세요.',
-              initialCode: 'class Fish:\n    pass\nnemo = Fish()\nprint(isinstance(nemo, Fish))',
+              initialCode: 'class Fish:\n    pass\nnemo = Fish()\nprint(isinstanceof(nemo, Fish))  # 함수 이름을 고치세요!',
               expectedOutputs: ['True'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'isinstance(nemo, Fish)로 고치세요.'
             }
           ],
           [
@@ -3705,23 +3705,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '서로 다른 두 클래스로 만든 객체가 다른 타입인지 확인하세요.',
-              initialCode: 'class Dog:\n    pass\nclass Cat:\n    pass\nd = Dog()\nc = Cat()\nprint(type(d) == type(c))',
+              initialCode: 'class Dog:\n    pass\nclass Cat:\n    pass\nd = Dog()\nc =   \nprint(type(d) == type(c))  # Cat()으로 채우세요.',
               expectedOutputs: ['False'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'c = Cat()'
             },
             {
               type: 'quiz_code',
               content: '클래스 Student로 3개의 객체를 만들어 각 타입 이름을 출력하세요.',
-              initialCode: 'class Student:\n    pass\nstudents = [Student(), Student(), Student()]\nfor s in students:\n    print(type(s).__name__)',
+              initialCode: 'class Student:\n    pass\nstudents = [Student(), Student(), Student()]\nfor s in students:\n    print(type(students).__name__)  # s를 써야 하는데 students를 썼어요!',
               expectedOutputs: ['Student\nStudent\nStudent'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'type(s).__name__으로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '클래스로 만든 객체에 속성을 나중에 추가해보세요.',
-              initialCode: 'class Point:\n    pass\np = Point()\np.x = 3\np.y = 4\nprint(p.x, p.y)',
+              initialCode: 'class Point:\n    pass\np = Point()\np.x = 3\np.y =   \nprint(p.x, p.y)  # 4를 넣으세요.',
               expectedOutputs: ['3 4'],
-              hint: '이미 정답입니다. 객체에 속성을 나중에 추가할 수도 있어요.'
+              hint: 'p.y = 4'
             }
           ],
           [
@@ -3744,16 +3744,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스 Point의 객체 두 개에 각각 다른 속성값을 부여해보세요.',
-              initialCode: 'class Point:\n    pass\np1 = Point()\np1.x = 1\np2 = Point()\np2.x = 2\nprint(p1.x, p2.x)',
+              initialCode: 'class Point:\n    pass\np1 = Point()\np1.x = 1\np2 = Point()\np2.x =   \nprint(p1.x, p2.x)  # 2를 넣으세요.',
               expectedOutputs: ['1 2'],
-              hint: '이미 정답입니다. 각 객체는 독립적인 속성을 가집니다.'
+              hint: 'p2.x = 2'
             },
             {
               type: 'quiz_code',
               content: '클래스 Animal로 만든 5개의 객체 개수를 세는 코드를 작성해보세요.',
-              initialCode: 'class Animal:\n    pass\nzoo = []\nfor i in range(5):\n    zoo.append(Animal())\nprint(len(zoo))',
+              initialCode: 'class Animal:\n    pass\nzoo = []\nfor i in range(3):  # 5마리가 되도록 range를 고치세요!\n    zoo.append(Animal())\nprint(len(zoo))',
               expectedOutputs: ['5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'range(5)로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -3803,9 +3803,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스 Person에 greet 메서드를 만들어 호출하세요.',
-              initialCode: 'class Person:\n    def greet(self):\n        print(\'안녕하세요\')\np = Person()\np.greet()',
+              initialCode: 'class Person:\n    def greet(self):\n        print(\'안녕하세요\')\np = Person()\np.greets()  # 메서드 이름 오타를 고치세요!',
               expectedOutputs: ['안녕하세요'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'p.greet()로 고치세요.'
             }
           ],
           [
@@ -3828,23 +3828,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스에 메서드 두 개를 정의해 각각 호출하세요.',
-              initialCode: 'class Robot:\n    def move(self):\n        print(\'이동\')\n    def stop(self):\n        print(\'정지\')\nr = Robot()\nr.move()\nr.stop()',
+              initialCode: 'class Robot:\n    def move(self):\n        print(\'이동\')\n    def stop(self):\n        print(\'정지\')\nr = Robot()\nr.move()\n  # stop() 메서드를 호출하세요.',
               expectedOutputs: ['이동\n정지'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'r.stop()'
             },
             {
               type: 'quiz_code',
               content: '같은 클래스로 만든 두 객체가 각각 메서드를 독립적으로 호출하는지 확인하세요.',
-              initialCode: 'class Dog:\n    def bark(self):\n        print(\'멍멍\')\nd1 = Dog()\nd2 = Dog()\nd1.bark()\nd2.bark()',
+              initialCode: 'class Dog:\n    def bark(self):\n        print(\'멍멍\')\nd1 = Dog()\nd2 =   \nd1.bark()\nd2.bark()  # Dog()로 채우세요.',
               expectedOutputs: ['멍멍\n멍멍'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd2 = Dog()'
             },
             {
               type: 'quiz_code',
               content: '메서드 안에서 값을 반환해보세요.',
-              initialCode: 'class Calculator:\n    def add(self, a, b):\n        return a + b\ncalc = Calculator()\nprint(calc.add(3, 4))',
+              initialCode: 'class Calculator:\n    def add(self, a, b):\n        return a - b  # 뺄셈이 아니라 덧셈이어야 해요!\ncalc = Calculator()\nprint(calc.add(3, 4))',
               expectedOutputs: ['7'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'return a + b로 고치세요.'
             }
           ],
           [
@@ -3883,23 +3883,23 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '메서드가 매개변수를 받아 사용하는 것을 확인하세요.',
-              initialCode: 'class Greeter:\n    def greet(self, name):\n        print(\'안녕, \' + name)\ng = Greeter()\ng.greet(\'에그\')',
+              initialCode: 'class Greeter:\n    def greet(self, name):\n        print(\'안녕, \' + name)\ng = Greeter()\ng.greet(  )  # \'에그\'를 넣으세요.',
               expectedOutputs: ['안녕, 에그'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'g.greet(\'에그\')'
             },
             {
               type: 'quiz_code',
               content: '클래스 안에서 한 메서드가 다른 메서드를 호출하도록 만드세요.',
-              initialCode: 'class Robot:\n    def beep(self):\n        print(\'삐빅\')\n    def greet(self):\n        self.beep()\n        print(\'안녕\')\nr = Robot()\nr.greet()',
+              initialCode: 'class Robot:\n    def beep(self):\n        print(\'삐빅\')\n    def greet(self):\n        beep()  # self.가 빠졌어요!\n        print(\'안녕\')\nr = Robot()\nr.greet()',
               expectedOutputs: ['삐빅\n안녕'],
-              hint: '이미 정답입니다. self.메서드()로 같은 클래스의 다른 메서드를 호출합니다.'
+              hint: 'self.beep()로 고치세요.'
             },
             {
               type: 'quiz_code',
               content: '클래스 Calculator에 곱셈 메서드를 추가해 호출하세요.',
-              initialCode: 'class Calculator:\n    def add(self, a, b):\n        return a + b\n    def multiply(self, a, b):\n        return a * b\ncalc = Calculator()\nprint(calc.multiply(6, 7))',
+              initialCode: 'class Calculator:\n    def add(self, a, b):\n        return a + b\n    def multiply(self, a, b):\n        return a * b\ncalc = Calculator()\nprint(calc.multiply(6,  ))  # 7을 넣으세요.',
               expectedOutputs: ['42'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'calc.multiply(6, 7)'
             }
           ],
           [
@@ -3929,9 +3929,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '클래스 메서드가 조건문을 포함하도록 만들어보세요.',
-              initialCode: 'class Judge:\n    def check(self, score):\n        if score >= 60:\n            return \'합격\'\n        return \'불합격\'\nj = Judge()\nprint(j.check(75))',
+              initialCode: 'class Judge:\n    def check(self, score):\n        if score >= 90:  # 기준을 60으로 고치세요!\n            return \'합격\'\n        return \'불합격\'\nj = Judge()\nprint(j.check(75))',
               expectedOutputs: ['합격'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'score >= 60으로 고치세요.'
             },
             {
               type: 'quiz_code',
@@ -3981,9 +3981,9 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '객체 두 개에 서로 다른 name 속성을 부여해 출력하세요.',
-              initialCode: 'class Dog:\n    pass\nd1 = Dog()\nd1.name = \'초코\'\nd2 = Dog()\nd2.name = \'뭉치\'\nprint(d1.name, d2.name)',
+              initialCode: 'class Dog:\n    pass\nd1 = Dog()\nd1.name = \'초코\'\nd2 = Dog()\nd2.name =   \nprint(d1.name, d2.name)  # \'뭉치\'를 넣으세요.',
               expectedOutputs: ['초코 뭉치'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'd2.name = \'뭉치\''
             }
           ],
           [
@@ -4006,16 +4006,16 @@ export const tier2 = [
             {
               type: 'quiz_code',
               content: '객체의 속성값을 나중에 바꿔보세요.',
-              initialCode: 'class Counter:\n    pass\nc = Counter()\nc.count = 0\nc.count = 5\nprint(c.count)',
+              initialCode: 'class Counter:\n    pass\nc = Counter()\nc.count = 0\nc.count =   \nprint(c.count)  # 5로 바꾸세요.',
               expectedOutputs: ['5'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'c.count = 5'
             },
             {
               type: 'quiz_code',
               content: '객체에 여러 속성(hp, mp)을 부여해 출력하세요.',
-              initialCode: 'class Character:\n    pass\nchar = Character()\nchar.hp = 100\nchar.mp = 50\nprint(char.hp, char.mp)',
+              initialCode: 'class Character:\n    pass\nchar = Character()\nchar.hp = 100\nchar.mp =   \nprint(char.hp, char.mp)  # 50을 넣으세요.',
               expectedOutputs: ['100 50'],
-              hint: '이미 정답입니다. 실행해보세요.'
+              hint: 'char.mp = 50'
             },
             {
               type: 'quiz_code',

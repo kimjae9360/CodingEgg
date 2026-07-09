@@ -1,4 +1,4 @@
-import { PYTHON_TRACK } from './curriculum';
+import { PYTHON_TRACK, ML_TRACK } from './curriculum';
 
 // Course/subject registry — mirrors Duolingo's language picker, but for
 // coding subjects. Only Python has real curriculum content right now;
@@ -40,7 +40,8 @@ export const COURSES = [
     emoji: '🤖',
     logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/numpy/numpy-original.svg',
     color: '#FF9600',
-    available: false,
+    available: true,
+    track: ML_TRACK,
   },
   {
     id: 'dl',

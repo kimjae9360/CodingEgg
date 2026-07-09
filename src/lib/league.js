@@ -59,13 +59,16 @@ function isoDayOfWeek(date = new Date()) {
 // bot ends the week with; `currentXp` is a live, day-scaled snapshot so the
 // board fills in gradually as the real week progresses instead of showing
 // every bot at full strength on day one.
-function generateBots(weekId, tierIndex, now = new Date()) {
+function generateBots(weekId, tierIndex, now = new Date(), count = BOT_COUNT) {
   const rand = mulberry32(hashSeed(`${weekId}::tier${tierIndex}`));
-  const dayFraction = Math.min(1, isoDayOfWeek(now) / 7);
+  const nowMs = now.getTime();
+  const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const timeOfDayFraction = (nowMs - dayStart) / 86400000;
+  const dayFraction = Math.min(1, (isoDayOfWeek(now) - 1 + timeOfDayFraction) / 7);
   const tierBase = 120 + tierIndex * 110; // higher leagues grind harder
 
   const bots = [];
-  for (let i = 0; i < BOT_COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const adjective = ADJECTIVES[Math.floor(rand() * ADJECTIVES.length)];
     const noun = NOUNS[Math.floor(rand() * NOUNS.length)];
     const avatar = AVATARS[Math.floor(rand() * AVATARS.length)];
@@ -78,11 +81,14 @@ function generateBots(weekId, tierIndex, now = new Date()) {
 }
 
 // Live standings for display while the week is still in progress.
-export function getLeagueStandings(weekId, tierIndex, userWeeklyXp, userName) {
-  const bots = generateBots(weekId, tierIndex);
+export function getLeagueStandings(weekId, tierIndex, userWeeklyXp, userName, friends = []) {
+  const botCountToGenerate = Math.max(0, BOT_COUNT - friends.length);
+  const bots = generateBots(weekId, tierIndex, new Date(), botCountToGenerate);
+  const friendRows = friends.map(f => ({ name: f.name, avatar: '😎', xp: f.xp, isUser: false, isFriend: true }));
   const rows = [
-    ...bots.map((b) => ({ name: b.name, avatar: b.avatar, xp: b.currentXp, isUser: false })),
-    { name: userName || '나', avatar: '🥚', xp: userWeeklyXp || 0, isUser: true },
+    ...bots.map((b) => ({ name: b.name, avatar: b.avatar, xp: b.currentXp, isUser: false, isFriend: false })),
+    ...friendRows,
+    { name: userName || '나', avatar: '🥚', xp: userWeeklyXp || 0, isUser: true, isFriend: false },
   ];
   rows.sort((a, b) => b.xp - a.xp);
   return rows.map((row, i) => ({ ...row, rank: i + 1 }));
@@ -90,10 +96,13 @@ export function getLeagueStandings(weekId, tierIndex, userWeeklyXp, userName) {
 
 // Called once a new week id is detected: resolves the *previous* week using
 // full-strength bot totals and returns the learner's new tier.
-export function resolveWeekEnd(prevWeekId, tierIndex, userFinalXp) {
-  const bots = generateBots(prevWeekId, tierIndex);
+export function resolveWeekEnd(prevWeekId, tierIndex, userFinalXp, friends = []) {
+  const botCountToGenerate = Math.max(0, BOT_COUNT - friends.length);
+  const bots = generateBots(prevWeekId, tierIndex, new Date(), botCountToGenerate);
+  const friendRows = friends.map(f => ({ xp: f.xp, isUser: false }));
   const rows = [
     ...bots.map((b) => ({ xp: b.finalXp, isUser: false })),
+    ...friendRows,
     { xp: userFinalXp || 0, isUser: true },
   ];
   rows.sort((a, b) => b.xp - a.xp);

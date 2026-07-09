@@ -1,1 +1,1 @@
-export { PYTHON_TRACK } from './curriculum/index';
+export { PYTHON_TRACK, ML_TRACK } from './curriculum/index';

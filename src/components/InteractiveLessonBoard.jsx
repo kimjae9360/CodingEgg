@@ -8,7 +8,8 @@ import { playCorrectSound, playWrongSound, playFinishSound } from '../lib/sound'
 
 export default function InteractiveLessonBoard({
   nodeId, trackData, overrideNode, isSkipTest = false, isExamMode = false,
-  onComplete, onBack, onForceExit, hearts, gems, onLoseHeart, onRefillHearts,
+  isReviewMode = false, reviewQuestions = null, isPremium = false,
+  onComplete, onBack, onForceExit, hearts, gems, onLoseHeart, onRefillHearts, onWrongAnswer,
   xpPerLesson = 20, gemsPerLesson = 10,
   currentLessonIndex = 0, examDurationSec = 600
 }) {
@@ -26,29 +27,45 @@ export default function InteractiveLessonBoard({
   const [submissionState, setSubmissionState] = useState('idle'); // 'idle' | 'correct' | 'wrong'
   const [isHintDrawerOpen, setIsHintDrawerOpen] = useState(false);
   const [showHeartRefill, setShowHeartRefill] = useState(false);
+  const [autoRunEnabled, setAutoRunEnabled] = useState(true); // New state for Auto-Run
 
   const pyodideRef = useRef(null);
   const startTimeRef = useRef(Date.now());
   const finishTimeRef = useRef(null);
+  const [isPyodideLoading, setIsPyodideLoading] = useState(true);
 
   // Init Pyodide
   useEffect(() => {
     async function initPyodide() {
       try {
         if (window.loadPyodide) {
-          pyodideRef.current = await window.loadPyodide({
+          const pyodide = await window.loadPyodide({
             indexURL: "https://cdn.jsdelivr.net/pyodide/v0.25.0/full/"
           });
+          pyodideRef.current = pyodide;
+          
+          if (trackData && trackData.id === 'ml_master') {
+            await pyodide.loadPackage('micropip');
+            const micropip = pyodide.pyimport('micropip');
+            await micropip.install(['pandas', 'scikit-learn']);
+          }
+          setIsPyodideLoading(false);
         }
       } catch (err) {
         console.error("Pyodide load failed:", err);
+        setIsPyodideLoading(false);
       }
     }
     initPyodide();
-  }, []);
+  }, [trackData]);
 
   // Initialize Queue & Parse Theory
   useEffect(() => {
+    if (isReviewMode && reviewQuestions) {
+      setStepsQueue([...reviewQuestions]);
+      return;
+    }
+
     let node = overrideNode || null;
     if (!node) {
       for (const section of trackData.sections) {
@@ -121,6 +138,37 @@ export default function InteractiveLessonBoard({
     return () => clearTimeout(id);
   }, [isExamMode, isFinished, timeLeft]);
 
+  // Pyodide raises the full multi-line traceback; learners only need the
+  // final "ErrorType: message" line to understand what went wrong.
+  const cleanPyError = (err) => {
+    const raw = (err && err.message) ? err.message : String(err);
+    const lines = raw.trim().split('\n').filter(Boolean);
+    return lines[lines.length - 1] || raw;
+  };
+
+  const runCode = async () => {
+    if (!pyodideRef.current || userAnswer === null) {
+      return;
+    }
+    try {
+      let printOutput = [];
+      pyodideRef.current.setStdout({ batched: (str) => printOutput.push(str) });
+      await pyodideRef.current.runPythonAsync(userAnswer);
+      setOutput(printOutput.join('\n').trim() || '(출력 없음)');
+    } catch (err) {
+      setOutput('오류: ' + cleanPyError(err));
+    }
+  };
+
+  // Auto-run effect
+  useEffect(() => {
+    if (!autoRunEnabled || currentStep?.type !== 'quiz_code' || userAnswer === null || submissionState !== 'idle') return;
+    const timer = setTimeout(() => {
+      runCode();
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [userAnswer, autoRunEnabled, currentStep, submissionState]);
+
   if (!currentStep) return null;
 
   if (isFinished) {
@@ -189,9 +237,30 @@ export default function InteractiveLessonBoard({
     });
   };
 
+
+
+  const handlePremiumSkip = () => {
+    if (currentStepIndex >= stepsQueue.length - 1) {
+      finishNow();
+    } else {
+      setCurrentStepIndex(i => i + 1);
+    }
+  };
+
   const recordExamResult = (isCorrect) => {
     if (!isExamMode) return;
     setTopicResults(prev => [...prev, { correct: isCorrect, topic: currentStep._topic || '기타' }]);
+  };
+
+  const handleWrong = () => {
+    playWrongSound();
+    if (!isPremium && onLoseHeart) onLoseHeart();
+    setMistakeCount(c => c + 1);
+    setSubmissionState('wrong');
+    recordExamResult(false);
+    if (onWrongAnswer && !isReviewMode) {
+      onWrongAnswer(currentStep);
+    }
   };
 
   const checkAnswer = async () => {
@@ -203,11 +272,7 @@ export default function InteractiveLessonBoard({
         setSubmissionState('correct');
         recordExamResult(true);
       } else {
-        playWrongSound();
-        onLoseHeart();
-        setMistakeCount(c => c + 1);
-        setSubmissionState('wrong');
-        recordExamResult(false);
+        handleWrong();
       }
     } else if (currentStep.type === 'quiz_word_bank') {
       // userAnswer is an array of selected word indices
@@ -218,11 +283,7 @@ export default function InteractiveLessonBoard({
         setSubmissionState('correct');
         recordExamResult(true);
       } else {
-        playWrongSound();
-        onLoseHeart();
-        setMistakeCount(c => c + 1);
-        setSubmissionState('wrong');
-        recordExamResult(false);
+        handleWrong();
       }
     } else if (currentStep.type === 'quiz_code') {
       // Evaluate python code
@@ -235,7 +296,7 @@ export default function InteractiveLessonBoard({
         pyodideRef.current.setStdout({ batched: (str) => printOutput.push(str) });
         await pyodideRef.current.runPythonAsync(userAnswer);
         const finalOutput = printOutput.join('\n').trim();
-        setOutput(finalOutput);
+        setOutput(finalOutput || '(출력 없음)');
 
         const expected = currentStep.expectedOutputs || [];
         const isCorrect = expected.some(exp => {
@@ -248,18 +309,12 @@ export default function InteractiveLessonBoard({
           setSubmissionState('correct');
           recordExamResult(true);
         } else {
-          playWrongSound();
-          onLoseHeart();
-          setMistakeCount(c => c + 1);
-          setSubmissionState('wrong');
-          recordExamResult(false);
+          handleWrong();
         }
       } catch (err) {
-        setOutput(err.toString());
-        playWrongSound();
-        onLoseHeart();
-        setMistakeCount(c => c + 1);
-        setSubmissionState('wrong');
+        console.error(err);
+        setOutput('오류: ' + cleanPyError(err));
+        handleWrong();
       }
     }
   };
@@ -310,30 +365,46 @@ export default function InteractiveLessonBoard({
         ) : null}
         
         <div className="flex items-center gap-2 font-black text-xl text-red-500">
-          <Heart size={28} fill="currentColor" /> {hearts}
+          <Heart size={28} fill="currentColor" /> {isPremium ? '♾️' : hearts}
         </div>
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pb-32 md:pb-40 px-4 md:px-8 flex justify-center">
-        <div className="w-full max-w-3xl mt-2 md:mt-10 flex flex-col">
+        <div className={`w-full ${currentStep.type === 'quiz_code' ? 'max-w-6xl' : 'max-w-3xl'} mt-2 md:mt-10 flex flex-col transition-all duration-300`}>
           
           <div className="flex justify-between items-start mb-6 md:mb-8">
             <h1 className="text-xl md:text-3xl font-black text-gray-800 leading-snug break-keep">
               {currentStep.content.replace(/\[.*?\]\s*/g, '')} {/* Remove [복습] tags from UI display */}
             </h1>
-            {!isExamMode && (
-              <button 
-                onClick={() => setIsHintDrawerOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-500 hover:bg-blue-100 rounded-full font-bold transition whitespace-nowrap"
-              >
-                <Lightbulb size={20} /> 힌트 보기
-              </button>
-            )}
+            <div className="flex gap-2">
+              {isPremium && !isExamMode && submissionState === 'idle' && (
+                <button
+                  onClick={handlePremiumSkip}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-100 to-orange-100 text-pink-600 hover:from-pink-200 hover:to-orange-200 rounded-full font-bold transition whitespace-nowrap"
+                >
+                  스킵하기 PRO
+                </button>
+              )}
+              {!isExamMode && (
+                <button 
+                  onClick={() => setIsHintDrawerOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-500 hover:bg-blue-100 rounded-full font-bold transition whitespace-nowrap"
+                >
+                  <Lightbulb size={20} /> 힌트 보기
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Multiple Choice Card Grid */}
           {currentStep.type === 'quiz_multiple_choice' && (
+            <>
+            {currentStep.codeSnippet && (
+              <pre className="w-full bg-[#1e1e1e] text-green-300 font-mono text-sm md:text-base rounded-xl p-4 mb-4 overflow-x-auto whitespace-pre border border-gray-800">
+                {currentStep.codeSnippet}
+              </pre>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {currentStep.options.map((opt, i) => (
                 <button 
@@ -350,6 +421,7 @@ export default function InteractiveLessonBoard({
                 </button>
               ))}
             </div>
+            </>
           )}
 
           {/* Word Bank / Fill in the blanks */}
@@ -398,45 +470,88 @@ export default function InteractiveLessonBoard({
             </div>
           )}
 
-          {/* Terminal Style Coding */}
+          {/* Split View Terminal Style Coding */}
           {currentStep.type === 'quiz_code' && (
-            <div className="w-full bg-[#1e1e1e] rounded-xl overflow-hidden shadow-2xl mt-4 border border-gray-800 flex flex-col">
-              <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                  <span className="ml-4 text-gray-400 text-sm font-mono font-bold">Terminal - Python</span>
+            <div className="flex flex-col lg:flex-row w-full gap-4 mt-4 h-[500px]">
+              {/* Left: Code Editor */}
+              <div className="flex-1 bg-[#1e1e1e] rounded-xl overflow-hidden shadow-2xl border border-gray-800 flex flex-col relative min-h-[300px]">
+                <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                    <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                    <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                    <span className="ml-4 text-gray-400 text-sm font-mono font-bold">editor.py</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 text-gray-300 text-xs font-bold cursor-pointer hover:text-white transition">
+                      <input 
+                        type="checkbox" 
+                        checked={autoRunEnabled} 
+                        onChange={(e) => setAutoRunEnabled(e.target.checked)} 
+                        className="rounded text-blue-500 bg-gray-700 border-gray-600 focus:ring-0 w-4 h-4" 
+                      />
+                      Auto-Run
+                    </label>
+                    <button
+                      onClick={() => {
+                        setUserAnswer(currentStep.initialCode || '');
+                        setOutput('');
+                        setSubmissionState('idle');
+                      }}
+                      className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold rounded-md transition"
+                    >
+                      🔄 초기화
+                    </button>
+                  </div>
                 </div>
-                <button 
-                  onClick={handleResetCode}
-                  className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold rounded-md transition"
-                >
-                  🔄 초기화
-                </button>
-              </div>
-              <div className="flex-1 flex flex-col p-3 md:p-4">
-                <div className="h-[200px] md:h-[300px] border border-gray-700 rounded-lg overflow-hidden bg-[#1e1e1e]">
+                <div className="flex-1 bg-[#1e1e1e]">
                   <Editor
                     height="100%"
                     language="python"
                     theme="vs-dark"
                     value={userAnswer || ''}
                     onChange={(val) => setUserAnswer(val)}
-                    onMount={handleEditorDidMount}
                     options={{
                       minimap: { enabled: false },
                       fontSize: 16,
                       lineNumbers: 'on',
                       scrollBeyondLastLine: false,
                       wordWrap: 'on',
-                      padding: { top: 16 }
+                      padding: { top: 16 },
+                      fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace"
                     }}
                   />
                 </div>
-                {output && (
-                  <div className="mt-4 p-4 bg-black text-green-400 font-mono rounded-lg border border-gray-800 whitespace-pre-wrap max-h-[150px] overflow-y-auto">
-                    {output}
+              </div>
+
+              {/* Right: Console & Diff Output */}
+              <div className="w-full lg:w-[400px] flex flex-col gap-4">
+                <div className="flex-1 bg-black rounded-xl shadow-2xl border border-gray-800 flex flex-col overflow-hidden">
+                  <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between border-b border-gray-800">
+                    <span className="text-gray-400 text-sm font-mono font-bold uppercase tracking-wider">Console Output</span>
+                    {!autoRunEnabled && (
+                      <button
+                        onClick={runCode}
+                        className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-md transition"
+                      >
+                        ▶ 실행
+                      </button>
+                    )}
+                  </div>
+                  <div className={`flex-1 p-4 font-mono text-sm overflow-y-auto whitespace-pre-wrap ${output.startsWith('오류:') ? 'text-red-400' : 'text-green-400'}`}>
+                    {output || <span className="text-gray-600 italic">결과가 이곳에 표시됩니다...</span>}
+                  </div>
+                </div>
+
+                {submissionState === 'wrong' && currentStep.expectedOutputs?.length > 0 && (
+                  <div className="h-[180px] bg-red-950/30 rounded-xl shadow-2xl border border-red-800/50 flex flex-col overflow-hidden animate-pulse">
+                    <div className="bg-red-900/40 px-4 py-2 border-b border-red-800/50 flex items-center justify-between">
+                      <span className="text-red-300 text-xs font-bold uppercase tracking-wider">Expected Output (정답)</span>
+                      <X size={14} className="text-red-400" />
+                    </div>
+                    <div className="flex-1 p-4 text-red-200 font-mono text-sm overflow-y-auto whitespace-pre-wrap">
+                      {currentStep.expectedOutputs[0]}
+                    </div>
                   </div>
                 )}
               </div>
@@ -527,14 +642,35 @@ export default function InteractiveLessonBoard({
       >
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-black text-xl text-gray-800 flex items-center gap-2">
-            <Lightbulb className="text-yellow-400" /> 힌트 및 이론
+            <Lightbulb className="text-yellow-400" /> 힌트 및 가이드
           </h2>
           <button onClick={() => setIsHintDrawerOpen(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition">
             <X size={24} strokeWidth={3} />
           </button>
         </div>
-        <div className="p-6 flex-1 overflow-y-auto whitespace-pre-wrap leading-relaxed text-gray-700 text-lg">
-          {currentStep.hint || "이번 문제는 스스로 해결해보세요!"}
+        <div className="p-6 flex-1 overflow-y-auto whitespace-pre-wrap leading-relaxed text-gray-700 text-lg flex flex-col gap-6">
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+            <h3 className="font-bold text-blue-800 mb-2 flex items-center gap-2">💡 1단계 힌트 (가이드)</h3>
+            <p className="text-blue-900 text-base">
+              {currentStep.type === 'quiz_code' ? "문법 오류가 없는지, 들여쓰기(Indent)가 올바른지 먼저 확인해보세요. 코드 에디터 우측 결과창의 오답 피드백을 활용하세요." : 
+               currentStep.type === 'quiz_word_bank' ? "주어진 단어 블록들의 순서와 문맥을 다시 한 번 소리내어 읽어보세요." :
+               "문제를 다시 천천히 읽어보고 가장 관련 없는 오답부터 하나씩 지워나가 보세요."}
+            </p>
+          </div>
+          
+          <div className={`p-4 rounded-xl border transition-all duration-500 ${mistakeCount > 0 ? 'bg-yellow-50 border-yellow-200 opacity-100' : 'bg-gray-50 border-gray-200 opacity-50 relative overflow-hidden'}`}>
+            <h3 className={`font-bold mb-2 flex items-center gap-2 ${mistakeCount > 0 ? 'text-yellow-800' : 'text-gray-500'}`}>
+              🗝️ 2단계 힌트 (결정적 힌트)
+            </h3>
+            {mistakeCount === 0 && (
+              <div className="absolute inset-0 bg-gray-100/80 backdrop-blur-[2px] flex items-center justify-center z-10">
+                <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">1회 이상 틀리면 해금됩니다 🔒</span>
+              </div>
+            )}
+            <p className={`text-base ${mistakeCount > 0 ? 'text-yellow-900' : 'text-transparent select-none blur-sm'}`}>
+              {currentStep.hint || "이 문제에는 추가 힌트가 없습니다. 배운 내용을 복습해 보세요!"}
+            </p>
+          </div>
         </div>
       </div>
 
