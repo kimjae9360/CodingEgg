@@ -1,12 +1,23 @@
 import React from 'react';
 import { COURSES } from '../data/courses';
-import { Lock, Check } from 'lucide-react';
+import { Lock, Check, ChevronLeft } from 'lucide-react';
 
 // Premium dark grid layout inspired by smithery.ai
-export default function CourseSelectScreen({ selectedCourseId, onSelect }) {
+export default function CourseSelectScreen({ selectedCourseId, onSelect, onBack }) {
   // Force dark premium theme for this specific screen
   return (
     <div className="min-h-screen w-full flex flex-col items-center px-4 md:px-6 py-8 md:py-16 bg-[#0B1120] text-white overflow-hidden relative">
+      <div className="w-full max-w-3xl flex justify-start mb-4">
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="flex items-center gap-1 px-4 py-2 bg-[#1E293B] hover:bg-[#334155] rounded-xl text-gray-300 font-bold transition-colors"
+          >
+            <ChevronLeft size={20} />
+            <span>돌아가기</span>
+          </button>
+        )}
+      </div>
       <div className="text-6xl mb-4">🥚</div>
       <h1 className="text-3xl md:text-4xl font-black mb-2 text-center tracking-tight text-gray-100">어떤 과목을 배워볼까요?</h1>
       <p className="font-bold mb-12 text-center text-gray-400">
@@ -76,11 +87,12 @@ export default function CourseSelectScreen({ selectedCourseId, onSelect }) {
 
       {/* Floating Sunglasses Character — hidden on small screens since the
           fixed position would otherwise sit on top of the course cards */}
-      <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-10 md:right-10 items-end gap-3 z-50 pointer-events-none">
-        <div className="bg-[#1E293B] text-gray-300 font-bold text-sm px-4 py-2 rounded-2xl rounded-br-none border border-gray-800 shadow-2xl animate-fade-in">
+      <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-10 md:right-10 flex-col items-center gap-2 z-50 pointer-events-none animate-bounce">
+        <div className="bg-[#1E293B] text-gray-300 font-bold text-sm px-4 py-2 rounded-2xl rounded-br-none border border-gray-800 shadow-2xl relative">
           어떤 코딩을 마스터해볼까?
+          <div className="absolute -bottom-2 right-4 w-4 h-4 bg-[#1E293B] border-b border-r border-gray-800 rotate-45"></div>
         </div>
-        <div className="text-6xl md:text-7xl animate-bounce" style={{ filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.5))' }}>
+        <div className="text-6xl md:text-7xl" style={{ filter: 'drop-shadow(0 10px 15px rgba(0,0,0,0.5))' }}>
           😎🔥
         </div>
       </div>

@@ -16,6 +16,7 @@ function defaultState() {
   return {
     profileName: null,        // null until the user picks a name on first login
     selectedCourseId: null,    // null until the user picks a course (Python, SQL, ...)
+    enrolledCourses: [],      // list of course IDs the user has enrolled in
     joinDate: todayStr(),
     theme: 'light',
     completedNodes: [],

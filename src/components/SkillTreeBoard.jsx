@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LessonStartModal from './LessonStartModal';
+import { getCourse } from '../data/courses';
 import PokemonCard from './PokemonCard';
 import { FastForward, ChevronLeft, ChevronRight, BookOpen, CheckCircle2, Lock, Play, Flame, Trophy, Gem, Heart, RotateCcw } from 'lucide-react';
 
@@ -142,16 +143,24 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                {activePopover === 'course' && (
                  <div className={`absolute top-full right-0 mt-2 w-64 rounded-2xl shadow-xl z-50 p-2 border-2 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
                    <div className={`text-xs font-bold uppercase p-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>내 과정</div>
-                   <div className={`flex items-center gap-3 p-3 rounded-xl mb-2 ${isDark ? 'bg-[#334155]' : 'bg-gray-50'}`}>
-                     {currentCourse?.logoUrl ? (
-                       <img src={currentCourse.logoUrl} alt={currentCourse.name} className="w-6 h-6 object-contain" />
-                     ) : (
-                       <span className="text-xl font-black text-[#FFD43B] font-mono">Py</span>
-                     )}
-                     <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{currentCourse?.name || '과정'}</span>
-                   </div>
+                   {(save.enrolledCourses || [save.selectedCourseId]).map(cid => {
+                     const c = getCourse(cid);
+                     if (!c || !c.available) return null;
+                     const isCurrent = c.id === currentCourse?.id;
+                     return (
+                       <div key={c.id} onClick={() => { if (!isCurrent && onChangeCourse) { setActivePopover(null); onChangeCourse(c.id); } }} className={`flex items-center gap-3 p-3 rounded-xl mb-2 cursor-pointer transition ${isCurrent ? (isDark ? 'bg-[#334155]' : 'bg-gray-50') : (isDark ? 'hover:bg-[#334155]' : 'hover:bg-gray-50')}`}>
+                         {c.logoUrl ? (
+                           <img src={c.logoUrl} alt={c.name} className="w-6 h-6 object-contain" />
+                         ) : (
+                           <span className="text-xl font-black text-[#FFD43B] font-mono">Py</span>
+                         )}
+                         <span className={`font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{c.name || '과정'}</span>
+                         {isCurrent && <span className="ml-auto text-xs font-bold text-blue-500 bg-blue-100 px-2 py-0.5 rounded-full">현재</span>}
+                       </div>
+                     );
+                   })}
                    {onChangeCourse && (
-                     <button onClick={() => { setActivePopover(null); if (confirm('새로운 과정을 추가하시겠습니까?')) onChangeCourse(); }} className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${isDark ? 'hover:bg-[#334155] text-gray-300' : 'hover:bg-gray-50 text-gray-700'}`}>
+                     <button onClick={() => { setActivePopover(null); onChangeCourse('new'); }} className={`w-full flex items-center gap-3 p-3 rounded-xl transition ${isDark ? 'hover:bg-[#334155] text-gray-300' : 'hover:bg-gray-50 text-gray-700'}`}>
                        <span className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center font-black text-xl">+</span>
                        <span className="font-bold text-sm">새로운 과정 추가하기</span>
                      </button>
@@ -380,20 +389,30 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
                   e.stopPropagation(); 
                   setSkipConfirmModal({ isOpen: true, sectionIdx: activeSectionIdx });
                 }}
-                className="flex flex-col items-center group/tt cursor-pointer animate-bounce"
+                className="flex flex-col items-center group/tt cursor-pointer relative"
               >
-                <div className={`p-2 rounded-full shadow-lg transition bg-[#FFB300] text-white hover:bg-[#E6A100] border-2 border-white/20`}>
-                  <Play size={24} fill="currentColor" className="ml-0.5" />
+                <div className="whitespace-nowrap bg-[#1a2133] border border-[#334155] px-4 py-2 rounded-xl text-pink-400 font-black text-sm shadow-md animate-bounce hover:bg-[#252f47] hover:border-pink-500 transition-colors">
+                  여기로 건너뛸까요?
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-inherit border-b border-r border-inherit rotate-45"></div>
                 </div>
-                <div className={`w-2 h-2 rotate-45 -mt-1 shadow-sm transition bg-[#FFB300] group-hover/tt:bg-[#E6A100]`}></div>
               </button>
             ) : null;
+
+            // Calculate global index for continuous card numbering
+            let globalIndex = i;
+            for (let s = 0; s < activeSectionIdx; s++) {
+              if (trackData.sections[s] && trackData.sections[s].nodes) {
+                globalIndex += trackData.sections[s].nodes.length;
+              }
+            }
 
             return (
               <PokemonCard
                 key={node.id}
                 node={node}
                 index={i}
+                globalIndex={globalIndex}
+                courseId={currentCourse?.id}
                 totalNodes={totalNodes}
                 isLocked={isNodeLocked}
                 isCompleted={isNodeCompleted}

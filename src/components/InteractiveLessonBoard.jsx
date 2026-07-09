@@ -18,8 +18,10 @@ export default function InteractiveLessonBoard({
   const [isFinished, setIsFinished] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [mistakeCount, setMistakeCount] = useState(0);
+  const [skippedCount, setSkippedCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(examDurationSec);
   const [topicResults, setTopicResults] = useState([]); // exam mode only: { correct, topic }[]
+  const [totalLessonsInNode, setTotalLessonsInNode] = useState(1);
 
   // New UI States
   const [userAnswer, setUserAnswer] = useState(null); // stores selected index OR code string
@@ -29,11 +31,14 @@ export default function InteractiveLessonBoard({
   const [showHeartRefill, setShowHeartRefill] = useState(false);
   const [autoRunEnabled, setAutoRunEnabled] = useState(true); // New state for Auto-Run
   const [showSkipConfirmModal, setShowSkipConfirmModal] = useState(false);
+  const [editorTouched, setEditorTouched] = useState(false); // hides the "type here" cue once the learner engages the editor
 
   const pyodideRef = useRef(null);
+  const sqlDbRef = useRef(null); // sql.js SQLite instance
   const startTimeRef = useRef(Date.now());
   const finishTimeRef = useRef(null);
   const [isPyodideLoading, setIsPyodideLoading] = useState(true);
+  const [isSqlLoading, setIsSqlLoading] = useState(false);
 
   // Init Pyodide
   useEffect(() => {
@@ -60,6 +65,27 @@ export default function InteractiveLessonBoard({
     initPyodide();
   }, [trackData]);
 
+  // Init sql.js for SQL track
+  useEffect(() => {
+    if (!trackData || trackData.id !== 'sql_master') return;
+    setIsSqlLoading(true);
+    async function initSql() {
+      try {
+        if (window.initSqlJs) {
+          const SQL = await window.initSqlJs({
+            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${file}`
+          });
+          sqlDbRef.current = { SQL }; // store constructor, create DB per question
+        }
+      } catch (err) {
+        console.error('sql.js init failed:', err);
+      } finally {
+        setIsSqlLoading(false);
+      }
+    }
+    initSql();
+  }, [trackData]);
+
   // Initialize Queue & Parse Theory
   useEffect(() => {
     if (isReviewMode && reviewQuestions) {
@@ -76,6 +102,12 @@ export default function InteractiveLessonBoard({
     }
     if (node) {
       let selectedSteps = [];
+      if (Array.isArray(node.lessons) && Array.isArray(node.lessons[0])) {
+        setTotalLessonsInNode(node.lessons.length);
+      } else {
+        setTotalLessonsInNode(1);
+      }
+
       if (isSkipTest || !Array.isArray(node.lessons[0])) {
         selectedSteps = node.lessons.map(lesson => 
           Array.isArray(lesson) ? lesson[Math.floor(Math.random() * lesson.length)] : lesson
@@ -93,13 +125,19 @@ export default function InteractiveLessonBoard({
       }
 
       setStepsQueue([...newQueue]);
+      setCurrentStepIndex(0);
+      setIsFinished(false);
+      setShowConfetti(false);
+      setMistakeCount(0);
+      setSkippedCount(0);
+      startTimeRef.current = Date.now();
     }
   }, [nodeId, trackData, overrideNode, isSkipTest, currentLessonIndex]);
 
   const currentStep = stepsQueue[currentStepIndex];
   useEffect(() => {
     if (currentStep) {
-      if (currentStep.type === 'quiz_code') {
+      if (currentStep.type === 'quiz_code' || currentStep.type === 'quiz_sql') {
         setUserAnswer(currentStep.initialCode || '');
       } else if (currentStep.type === 'quiz_word_bank') {
         setUserAnswer([]);
@@ -109,6 +147,7 @@ export default function InteractiveLessonBoard({
       setOutput('');
       setSubmissionState('idle');
       setIsHintDrawerOpen(false);
+      setEditorTouched(false);
     }
   }, [currentStepIndex, currentStep]);
 
@@ -147,6 +186,25 @@ export default function InteractiveLessonBoard({
     return lines[lines.length - 1] || raw;
   };
 
+  // Compares the learner's query result against a precomputed reference
+  // result (columns/rows/ordered captured by actually running the hint
+  // query) instead of just row count + column names — a wrong-but-right-
+  // shaped query (correct row count, wrong values) used to pass grading.
+  const gradeSqlResult = (rows, expected) => {
+    if (!expected) return true;
+    if (expected.rows) {
+      if (rows.length !== expected.rows.length) return false;
+      const canon = (r) => JSON.stringify(r.map(v => (typeof v === 'number' ? Math.round(v * 1e6) / 1e6 : v)));
+      if (expected.ordered) {
+        return rows.every((r, i) => canon(r) === canon(expected.rows[i]));
+      }
+      const actualSorted = rows.map(canon).sort();
+      const expectedSorted = expected.rows.map(canon).sort();
+      return actualSorted.every((v, i) => v === expectedSorted[i]);
+    }
+    return expected.rowCount === undefined || rows.length === expected.rowCount;
+  };
+
   const runCode = async () => {
     if (!pyodideRef.current || userAnswer === null) {
       return;
@@ -176,6 +234,14 @@ export default function InteractiveLessonBoard({
     const examScore = topicResults.length > 0 ? Math.round((topicResults.filter(r => r.correct).length / topicResults.length) * 100) : 0;
     const examPass = examScore >= 70;
     const weakTopics = [...new Set(topicResults.filter(r => !r.correct).map(r => r.topic))];
+    const solvedCount = stepsQueue.length - skippedCount;
+    const totalAttempts = solvedCount + mistakeCount;
+    const accuracy = totalAttempts > 0 ? Math.round((solvedCount / totalAttempts) * 100) : 100;
+
+    const totalSeconds = Math.floor((finishTimeRef.current - startTimeRef.current) / 1000);
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    const timeLabelStr = `${m}:${s.toString().padStart(2, '0')}`;
     return (
       <>
         {showConfetti && <Confetti />}
@@ -188,14 +254,20 @@ export default function InteractiveLessonBoard({
           weakTopics={weakTopics}
           xpEarned={isSkipTest ? xpPerLesson * 2 : xpPerLesson}
           gemsEarned={gemsPerLesson}
-          accuracy={stepsQueue.length > 0 ? Math.round(((stepsQueue.length - mistakeCount) / stepsQueue.length) * 100) : 100}
-          timeSpentMs={finishTimeRef.current - startTimeRef.current}
-          onContinue={() => onComplete({
+          accuracy={accuracy}
+          timeLabel={timeLabelStr}
+          mistakeCount={mistakeCount}
+          currentLessonIndex={currentLessonIndex}
+          totalLessonsInNode={totalLessonsInNode}
+          onContinue={(continueNextLesson) => onComplete({
             score: isExamMode ? examScore : undefined,
             pass: isExamMode ? examPass : undefined,
             weakTopics: isExamMode ? weakTopics : undefined,
             xpEarned: isSkipTest ? xpPerLesson * 2 : xpPerLesson,
-            gemsEarned: gemsPerLesson
+            gemsEarned: gemsPerLesson,
+            hasNextLesson: !isExamMode && !isSkipTest && !isReviewMode && currentLessonIndex < totalLessonsInNode - 1,
+            nextLessonIndex: currentLessonIndex + 1,
+            continueNextLesson
           })}
         />
       </>
@@ -206,6 +278,7 @@ export default function InteractiveLessonBoard({
     // skip acts as a wrong answer to enforce learning
     playWrongSound();
     onLoseHeart();
+    setSkippedCount(c => c + 1);
     setSubmissionState('wrong');
   };
 
@@ -236,6 +309,9 @@ export default function InteractiveLessonBoard({
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyZ, () => {
       console.log("Redo disabled");
     });
+    // First-time learners often don't realize the dark panel is editable —
+    // dismiss the "type here" cue the instant they click into it.
+    editor.onDidFocusEditorText(() => setEditorTouched(true));
   };
 
 
@@ -317,6 +393,51 @@ export default function InteractiveLessonBoard({
         setOutput('오류: ' + cleanPyError(err));
         handleWrong();
       }
+    } else if (currentStep.type === 'quiz_sql') {
+      // SQL 채점: sql.js 사용
+      if (!sqlDbRef.current) {
+        alert('SQL 엔진을 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+      }
+      let db;
+      try {
+        const { SQL } = sqlDbRef.current;
+        db = new SQL.Database();
+        // Setup test data
+        if (currentStep.setupSQL) {
+          db.run(currentStep.setupSQL);
+        }
+        // Run user query
+        const results = db.exec(userAnswer);
+        if (results.length === 0) {
+          setOutput('(결과 없음)');
+          handleWrong();
+          return;
+        }
+        const result = results[results.length - 1]; // last SELECT result
+        const rows = result.values || [];
+        const cols = result.columns || [];
+        // Build display string
+        const header = cols.join(' | ');
+        const body = rows.map(r => r.join(' | ')).join('\n');
+        setOutput(header + '\n' + '─'.repeat(header.length) + '\n' + body);
+        // Grade — compares actual row values against a precomputed reference
+        // result, not just row count/columns (see gradeSqlResult above).
+        const isCorrect = gradeSqlResult(rows, currentStep.expectedResult);
+        if (isCorrect) {
+          playCorrectSound();
+          setSubmissionState('correct');
+          recordExamResult(true);
+        } else {
+          handleWrong();
+        }
+      } catch (err) {
+        const msg = err.message || String(err);
+        setOutput('SQL 오류: ' + msg);
+        handleWrong();
+      } finally {
+        if (db) db.close();
+      }
     }
   };
 
@@ -372,7 +493,7 @@ export default function InteractiveLessonBoard({
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pb-32 md:pb-40 px-4 md:px-8 flex justify-center">
-        <div className={`w-full ${currentStep.type === 'quiz_code' ? 'max-w-6xl' : 'max-w-3xl'} mt-2 md:mt-10 flex flex-col transition-all duration-300`}>
+        <div className={`w-full ${(currentStep.type === 'quiz_code' || currentStep.type === 'quiz_sql') ? 'max-w-6xl' : 'max-w-3xl'} mt-2 md:mt-10 flex flex-col transition-all duration-300`}>
           
           <div className="flex justify-between items-start mb-6 md:mb-8">
             <h1 className="text-xl md:text-3xl font-black text-gray-800 leading-snug break-keep">
@@ -505,13 +626,14 @@ export default function InteractiveLessonBoard({
                     </button>
                   </div>
                 </div>
-                <div className="flex-1 bg-[#1e1e1e]">
+                <div className="flex-1 bg-[#1e1e1e] relative">
                   <Editor
                     height="100%"
                     language="python"
                     theme="vs-dark"
                     value={userAnswer || ''}
                     onChange={(val) => setUserAnswer(val)}
+                    onMount={handleEditorDidMount}
                     options={{
                       minimap: { enabled: false },
                       fontSize: 16,
@@ -522,6 +644,11 @@ export default function InteractiveLessonBoard({
                       fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace"
                     }}
                   />
+                  {!editorTouched && (
+                    <div className="absolute top-3 right-3 z-10 pointer-events-none flex items-center gap-1.5 bg-[#FFB300] text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg animate-bounce">
+                      👆 여기를 클릭해서 입력하세요
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -555,6 +682,53 @@ export default function InteractiveLessonBoard({
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* SQL Editor + Result Panel */}
+          {currentStep.type === 'quiz_sql' && (
+            <div className="flex flex-col lg:flex-row gap-4 h-[480px] md:h-[500px]">
+              <div className="flex-1 bg-[#1e1e1e] rounded-2xl shadow-2xl border border-gray-700 flex flex-col overflow-hidden min-w-0">
+                <div className="bg-[#2d2d2d] px-4 py-3 flex items-center justify-between border-b border-gray-800">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                    <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                    <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
+                    <span className="ml-4 text-gray-400 text-sm font-mono font-bold">query.sql</span>
+                  </div>
+                  <button
+                    onClick={() => { setUserAnswer(currentStep.initialCode || ''); setOutput(''); setSubmissionState('idle'); }}
+                    className="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold rounded-md transition"
+                  >
+                    🔄 초기화
+                  </button>
+                </div>
+                <div className="flex-1 bg-[#1e1e1e] relative">
+                  <Editor
+                    height="100%"
+                    language="sql"
+                    theme="vs-dark"
+                    value={userAnswer || ''}
+                    onChange={(val) => setUserAnswer(val)}
+                    onMount={handleEditorDidMount}
+                    options={{ minimap: { enabled: false }, fontSize: 15, lineNumbers: 'on', scrollBeyondLastLine: false, wordWrap: 'on', padding: { top: 12 } }}
+                  />
+                  {!editorTouched && (
+                    <div className="absolute top-3 right-3 z-10 pointer-events-none flex items-center gap-1.5 bg-[#FFB300] text-white text-xs font-black px-3 py-1.5 rounded-full shadow-lg animate-bounce">
+                      👆 여기를 클릭해서 입력하세요
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex-1 bg-[#1a1a2e] rounded-2xl shadow-2xl border border-blue-900/40 flex flex-col overflow-hidden min-w-0">
+                <div className="bg-[#16213e] px-4 py-3 flex items-center justify-between border-b border-blue-900/40">
+                  <span className="text-blue-400 text-sm font-mono font-bold uppercase tracking-wider">SQL Result</span>
+                  {isSqlLoading && <span className="text-yellow-400 text-xs font-bold">엔진 로딩 중...</span>}
+                </div>
+                <div className={`flex-1 p-4 font-mono text-sm overflow-auto whitespace-pre ${output.startsWith('SQL 오류:') ? 'text-red-400' : 'text-cyan-300'}`}>
+                  {output || <span className="text-gray-600 italic">쿼리를 실행하면 결과가 이곳에 표시됩니다...</span>}
+                </div>
               </div>
             </div>
           )}
@@ -604,7 +778,7 @@ export default function InteractiveLessonBoard({
                     정답: {currentStep.options[currentStep.answer]}
                   </div>
                 )}
-                {submissionState === 'wrong' && currentStep.type === 'quiz_code' && (
+                {submissionState === 'wrong' && (currentStep.type === 'quiz_code' || currentStep.type === 'quiz_sql') && (
                   <div className="text-red-400 font-bold text-sm md:text-base">
                     힌트: {currentStep.hint || "출력 결과를 다시 확인하세요."}
                   </div>

@@ -34,7 +34,7 @@ TOPICS.fstring = {
     { c: "f-string 안에서 조건문(삼항 연산자)을 사용해보세요.", i: "score = 80\n# 60점 이상이면 '합격', 아니면 '불합격'을 중괄호 안에서 평가하세요.\nprint(f\"결과: {  }\")", e: "결과: 합격", h: "print(f\"결과: {'합격' if score >= 60 else '불합격'}\")" },
     { c: "f-string으로 숫자 1000000에 쉼표(,) 구분자를 넣어 출력하세요.", i: "money = 1000000\n# 콜론 뒤에 쉼표(:,)를 넣으면 천 단위 콤마가 생깁니다.\nprint(f'금액: {   }원')", e: "금액: 1,000,000원", h: "print(f'금액: {money:,}원')" },
     { c: "변수명과 값을 동시에 출력하는 f'{x=}' 문법을 사용해보세요 (디버깅용).", i: "x = 10\ny = 20\n# 중괄호 안을 x= 로 쓰면 x=10 형태로 출력됩니다.\nprint(f'{  }, {  }')", e: "x=10, y=20", h: "print(f'{x=}, {y=}')" },
-    { c: "자유롭게 f-string을 사용하여 자신만의 문장을 2개 이상의 변수를 포함해 출력해보세요.", i: "# 백지 상태입니다. 변수를 선언하고 f-string으로 출력해보세요.", e: "자유 출력", h: "name = 'Python'\nage = 30\nprint(f'{name}은 {age}년 되었습니다.')" }
+    { c: "이름 변수(name='Python')와 나이 변수(age=30)를 만들어 f-string으로 'Python은 30년 되었습니다.'를 출력하세요.", i: "# 백지 상태입니다. 변수를 선언하고 f-string으로 출력해보세요.", e: "Python은 30년 되었습니다.", h: "name = 'Python'\nage = 30\nprint(f'{name}은 {age}년 되었습니다.')" }
   ]
 };
 
@@ -96,7 +96,7 @@ TOPICS.enum_zip = {
     { c: "enumerate로 인덱스와 값을 튜플 리스트로 만들어 출력하세요.", i: "items = ['a', 'b']\n# list(enumerate(items)) 로 바로 리스트 변환이 가능합니다.\nprint(list(  ))", e: "[(0, 'a'), (1, 'b')]", h: "print(list(enumerate(items)))" },
     { c: "zip과 f-string을 활용해 '누구의 점수: 몇점' 형태로 출력하세요.", i: "users = ['에그', '치킨']\npoints = [50, 100]\nfor u, p in zip(users, points):\n    print(f'  ')  # u와 p를 이용해 포맷팅하세요", e: "에그의 점수: 50점\n치킨의 점수: 100점", h: "print(f'{u}의 점수: {p}점')" },
     { c: "enumerate와 zip을 동시에 쓸 수도 있습니다! 구조를 파악해보세요.", i: "names = ['가', '나']\nages = [10, 20]\n# i는 인덱스, (n, a)는 zip에서 나온 튜플입니다.\nfor i, (n, a) in enumerate(zip(names, ages)):\n    print(i, n, a)", e: "0 가 10\n1 나 20", h: "그대로 실행합니다." },
-    { c: "스스로 enumerate나 zip을 활용하여 원하는 리스트 두 개를 묶어 출력해보세요.", i: "# 백지 상태입니다. 두 개의 리스트를 만들고 zip으로 출력해보세요.", e: "자유 출력", h: "for a, b in zip([1,2], [3,4]): print(a, b)" }
+    { c: "리스트 [1, 2]와 [3, 4]를 zip으로 묶어 각 쌍을 한 줄씩 출력하세요.", i: "# 백지 상태입니다. 두 개의 리스트를 만들고 zip으로 출력해보세요.", e: "1 3\n2 4", h: "for a, b in zip([1, 2], [3, 4]):\n    print(a, b)" }
   ]
 };
 
@@ -127,7 +127,7 @@ TOPICS.main_block = {
     { c: "main 함수 안에서 sys.argv(명령줄 인자)를 처리하는 패턴을 확인하세요.", i: "import sys\ndef main(args):\n    print('인자 개수:', len(args))\nif __name__ == '__main__':\n    main(sys.argv)", e: "인자 개수: 1", h: "브라우저 환경이라 기본 인자 1개(스크립트 이름 없음 등)로 동작합니다." },
     { c: "pass 키워드를 사용해 구조만 먼저 잡아보세요.", i: "def main():\n    pass\nif __name__ == '__main__':\n    pass\nprint('구조 잡기 완료')", e: "구조 잡기 완료", h: "그대로 실행하세요." },
     { c: "실전 구조: 메인 로직을 감싼 main()과 이를 호출하는 if 블록을 직접 완성하세요.", i: "def main():\n    print('앱 실행')\n\n# 여기에 if 블록을 작성하세요.", e: "앱 실행", h: "if __name__ == '__main__':\n    main()" },
-    { c: "스스로 main() 함수를 만들고 자유롭게 텍스트를 출력하는 스크립 구조를 완성하세요.", i: "# 백지 상태입니다.", e: "자유 출력", h: "def main():\n    print('완성')\nif __name__ == '__main__':\n    main()" }
+    { c: "main() 함수를 만들어 '완성'을 출력하고, if __name__ == '__main__': 구조로 호출하세요.", i: "# 백지 상태입니다.", e: "완성", h: "def main():\n    print('완성')\nif __name__ == '__main__':\n    main()" }
   ]
 };
 
@@ -158,7 +158,7 @@ TOPICS.lambda_map_filter = {
     { c: "map, filter, lambda를 연속으로 조합해보세요! (짝수만 골라 10 곱하기)", i: "nums = [1, 2, 3, 4, 5]\nevens = filter(lambda x: x % 2 == 0, nums)\nresult = list(map(lambda x: x * 10, evens))\nprint(result)", e: "[20, 40]", h: "그대로 실행해 파이프라인 형태의 처리를 경험하세요." },
     { c: "여러 인자를 받는 람다와 map을 확인하세요.", i: "A = [1, 2]\nB = [10, 20]\n# 인자를 여러 개 받는 함수와 여러 개의 리스트를 넘기면 zip처럼 동작합니다.\nresult = list(map(lambda x, y: x + y, A, B))\nprint(result)", e: "[11, 22]", h: "그대로 실행합니다." },
     { c: "스스로 lambda를 정의해 바로 호출해보세요 (IIFE 패턴).", i: "print((lambda x: x * 100)(5))", e: "500", h: "그대로 실행합니다." },
-    { c: "자유롭게 map이나 filter와 lambda를 결합한 스크립트를 작성해보세요.", i: "# 백지 상태입니다. 숫자 리스트를 만들어 홀수만 거르거나 변환해보세요.", e: "자유 출력", h: "print(list(filter(lambda x: x%2!=0, [1,2,3])))" }
+    { c: "리스트 [1, 2, 3]에서 filter와 lambda를 사용해 홀수만 걸러 리스트로 출력하세요.", i: "# 백지 상태입니다. 숫자 리스트를 만들어 홀수만 거르거나 변환해보세요.", e: "[1, 3]", h: "print(list(filter(lambda x: x % 2 != 0, [1, 2, 3])))" }
   ]
 };
 
@@ -171,46 +171,32 @@ const nodesData = [
   { id: 'node_16_5', title: "이름 없는 함수와 친구들 (lambda, map, filter)", key: 'lambda_map_filter' },
 ];
 
+// Every other unit in the curriculum ramps difficulty across 4 lessons
+// (mcq/wb/code interleaved, not grouped by type) — match that here so
+// Unit 16 feels consistent with Units 1-15 instead of a 3-lesson outlier.
+function mcqStep(q) { return { type: 'quiz_multiple_choice', content: q.q, options: q.opts, answer: q.a, hint: q.hint }; }
+function wbStep(q, i) { return { type: 'quiz_word_bank', content: `단어 블록 (${i + 1})`, sentenceParts: q.parts, wordBank: q.bank, answer: q.ans, hint: q.hint }; }
+function codeStep(q) { return { type: 'quiz_code', content: q.c, initialCode: q.i, expectedOutputs: [q.e], hint: q.h }; }
+
+function buildLesson(t, mcqRange, wbRange, codeRange) {
+  const steps = [];
+  for (let i = mcqRange[0]; i < mcqRange[1]; i++) steps.push(mcqStep(t.mcq[i]));
+  for (let i = wbRange[0]; i < wbRange[1]; i++) steps.push(wbStep(t.wb[i], i));
+  for (let i = codeRange[0]; i < codeRange[1]; i++) steps.push(codeStep(t.code[i]));
+  return steps;
+}
+
 function generateUnit() {
   const nodes = [];
 
   for (const nodeInfo of nodesData) {
     const t = TOPICS[nodeInfo.key];
-    const lessons = [];
-
-    // Lesson 1: Theory (MCQ 2, WB 2, Code 2)
-    lessons.push([
-      { type: 'quiz_multiple_choice', content: t.mcq[0].q, options: t.mcq[0].opts, answer: t.mcq[0].a, hint: t.mcq[0].hint },
-      { type: 'quiz_word_bank', content: '단어 블록 (1)', sentenceParts: t.wb[0].parts, wordBank: t.wb[0].bank, answer: t.wb[0].ans, hint: t.wb[0].hint },
-      { type: 'quiz_multiple_choice', content: t.mcq[1].q, options: t.mcq[1].opts, answer: t.mcq[1].a, hint: t.mcq[1].hint },
-      { type: 'quiz_word_bank', content: '단어 블록 (2)', sentenceParts: t.wb[1].parts, wordBank: t.wb[1].bank, answer: t.wb[1].ans, hint: t.wb[1].hint },
-      { type: 'quiz_code', content: t.code[0].c, initialCode: t.code[0].i, expectedOutputs: [t.code[0].e], hint: t.code[0].h },
-      { type: 'quiz_code', content: t.code[1].c, initialCode: t.code[1].i, expectedOutputs: [t.code[1].e], hint: t.code[1].h }
-    ]);
-
-    // Lesson 2: Deep Dive (MCQ 3, WB 3, Code 4)
-    lessons.push([
-      { type: 'quiz_multiple_choice', content: t.mcq[2].q, options: t.mcq[2].opts, answer: t.mcq[2].a, hint: t.mcq[2].hint },
-      { type: 'quiz_word_bank', content: '단어 블록 (3)', sentenceParts: t.wb[2].parts, wordBank: t.wb[2].bank, answer: t.wb[2].ans, hint: t.wb[2].hint },
-      { type: 'quiz_code', content: t.code[2].c, initialCode: t.code[2].i, expectedOutputs: [t.code[2].e], hint: t.code[2].h },
-      { type: 'quiz_multiple_choice', content: t.mcq[3].q, options: t.mcq[3].opts, answer: t.mcq[3].a, hint: t.mcq[3].hint },
-      { type: 'quiz_code', content: t.code[3].c, initialCode: t.code[3].i, expectedOutputs: [t.code[3].e], hint: t.code[3].h },
-      { type: 'quiz_multiple_choice', content: t.mcq[4].q, options: t.mcq[4].opts, answer: t.mcq[4].a, hint: t.mcq[4].hint },
-      { type: 'quiz_word_bank', content: '단어 블록 (4)', sentenceParts: t.wb[3].parts, wordBank: t.wb[3].bank, answer: t.wb[3].ans, hint: t.wb[3].hint },
-      { type: 'quiz_code', content: t.code[4].c, initialCode: t.code[4].i, expectedOutputs: [t.code[4].e], hint: t.code[4].h },
-      { type: 'quiz_word_bank', content: '단어 블록 (5)', sentenceParts: t.wb[4].parts, wordBank: t.wb[4].bank, answer: t.wb[4].ans, hint: t.wb[4].hint },
-      { type: 'quiz_code', content: t.code[5].c, initialCode: t.code[5].i, expectedOutputs: [t.code[5].e], hint: t.code[5].h }
-    ]);
-
-    // Lesson 3: Practice (Code 6)
-    lessons.push([
-      { type: 'quiz_code', content: t.code[6].c, initialCode: t.code[6].i, expectedOutputs: [t.code[6].e], hint: t.code[6].h },
-      { type: 'quiz_code', content: t.code[7].c, initialCode: t.code[7].i, expectedOutputs: [t.code[7].e], hint: t.code[7].h },
-      { type: 'quiz_code', content: t.code[8].c, initialCode: t.code[8].i, expectedOutputs: [t.code[8].e], hint: t.code[8].h },
-      { type: 'quiz_code', content: t.code[9].c, initialCode: t.code[9].i, expectedOutputs: [t.code[9].e], hint: t.code[9].h },
-      { type: 'quiz_code', content: t.code[10].c, initialCode: t.code[10].i, expectedOutputs: [t.code[10].e], hint: t.code[10].h },
-      { type: 'quiz_code', content: t.code[11].c, initialCode: t.code[11].i, expectedOutputs: [t.code[11].e], hint: t.code[11].h }
-    ]);
+    const lessons = [
+      buildLesson(t, [0, 1], [0, 1], [0, 3]),
+      buildLesson(t, [1, 2], [1, 2], [3, 6]),
+      buildLesson(t, [2, 4], [2, 4], [6, 9]),
+      buildLesson(t, [4, 5], [4, 5], [9, 12])
+    ];
 
     nodes.push({
       id: nodeInfo.id,

@@ -23,7 +23,13 @@ const TOPICS = {
       { c: "변수에도 타입 힌트를 달 수 있습니다. 정수형 변수 score를 선언하세요.", i: "score:    = 100\nprint(score)", e: "100", h: "score: int" },
       { c: "딕셔너리 값에 대한 타입 힌팅도 해보세요. (키는 str, 값은 int)", i: "scores: dict[   ,    ] = {'수학': 100, '영어': 90}\nprint(scores['수학'])", e: "100", h: "dict[str, int]" },
       { c: "타입 힌트가 틀려도 실행은 됨을 확인해보세요.", i: "def add(a: int) -> int:\n    # 타입 힌트는 int지만 문자열을 넣어봅니다.\n    return a + '입니다'\nprint(add('파이썬'))", e: "파이썬입니다", h: "그대로 실행하면 문자열 덧셈이 정상 동작합니다." },
-      { c: "백지에서 두 실수를 곱해 반환하는 함수를 타입 힌팅을 사용해 작성해보세요. (실수는 float)", i: "# 함수 이름: multiply, 인자 2개, 반환값 타입 힌팅 포함", e: "자유 출력", h: "def multiply(x: float, y: float) -> float:\n    return x * y\nprint(multiply(3.0, 2.5))" }
+      { c: "정수 리스트를 받아 최댓값(int)을 반환하는 함수에 타입 힌트를 추가하세요.", i: "def find_max(nums: list[   ]) -> int:\n    return max(nums)\nprint(find_max([3, 7, 2]))", e: "7", h: "list[int]로 채우세요." },
+      { c: "값이 없을 수도 있는 매개변수에 Optional 타입 힌트를 사용해보세요.", i: "from typing import Optional\ndef get_name(name: Optional[   ] = None) -> str:\n    return name if name else '이름 없음'\nprint(get_name())", e: "이름 없음", h: "Optional[str]로 채우세요." },
+      { c: "문자열 리스트를 담은 변수에 타입 힌트를 붙여보세요.", i: "fruits:    = ['사과', '바나나']\nprint(fruits)", e: "['사과', '바나나']", h: "list[str]" },
+      { c: "함수의 매개변수에 기본값과 타입 힌트를 함께 사용해보세요.", i: "def power(base: int, exp: int   2) -> int:\n    return base ** exp\nprint(power(3))", e: "9", h: "exp: int = 2 처럼 등호(=)를 넣으세요." },
+      { c: "클래스 속성에도 타입 힌트를 붙일 수 있습니다.", i: "class Player:\n    name:   \n    level: int = 1\np = Player()\np.name = '에그'\nprint(p.name, p.level)", e: "에그 1", h: "str (문자열 타입) 을 넣으세요." },
+      { c: "두 실수(float)를 곱해 반환하는 함수를 타입 힌팅과 함께 완성하세요.", i: "def multiply(x: float, y:   ) -> float:\n    return x * y\nprint(multiply(3.0, 2.5))", e: "7.5", h: "y: float 로 채우세요." },
+      { c: "백지에서 두 문자열(str)을 이어붙여 반환하는 함수를 타입 힌트와 함께 작성해보세요.", i: "# 함수 이름: concat, 인자 2개(a: str, b: str), 반환 타입: str", e: "안녕하세요", h: "def concat(a: str, b: str) -> str:\n    return a + b\nprint(concat('안녕', '하세요'))" }
     ]
   },
   args_kwargs: {
@@ -47,7 +53,13 @@ const TOPICS = {
       { c: "일반 인자와 *args를 같이 써보세요.", i: "def make_pizza(size,    ):\n    print(f\"{size}인치 피자 토핑: {args}\")\nmake_pizza(12, '치즈', '페퍼로니', '올리브')", e: "12인치 피자 토핑: ('치즈', '페퍼로니', '올리브')", h: "*args를 넣으세요." },
       { c: "*args와 **kwargs를 모두 받는 만능 함수를 만들어보세요.", i: "def super_func(*args, **kwargs):\n    print('args:', args)\n    print('kwargs:', kwargs)\n# 그대로 실행해보세요\nsuper_func(1, 2, a=3, b=4)", e: "args: (1, 2)\nkwargs: {'a': 3, 'b': 4}", h: "그대로 실행합니다." },
       { c: "리스트의 요소들을 풀어서(Unpacking) *args 함수에 전달해보세요.", i: "def add_three(a, b, c):\n    return a + b + c\nnums = [10, 20, 30]\n# nums 앞에 *를 붙이면 리스트가 풀려서 들어갑니다.\nprint(add_three(  nums))", e: "60", h: "함수 호출 시 *nums를 씁니다." },
-      { c: "백지에서 *args를 이용해 전달받은 모든 문자열을 이어붙여 반환하는 함수를 만들어보세요.", i: "# 힌트: ''.join(args)를 사용해보세요.", e: "자유 출력", h: "def concat(*args):\n    return ''.join(args)\nprint(concat('안녕', '하세요'))" }
+      { c: "다른 함수에 인자를 그대로 전달(포워딩)하는 래퍼 함수를 완성하세요.", i: "def original(a, b, c):\n    return a + b + c\ndef wrapper(*args, **kwargs):\n    return original(  )\nprint(wrapper(1, 2, 3))", e: "6", h: "original(*args, **kwargs)" },
+      { c: "기본값과 *args를 함께 사용하는 함수를 완성하세요.", i: "def greet(greeting='안녕',    ):\n    return greeting + ' ' + ' '.join(names)\nprint(greet('안녕', '철수', '영희'))", e: "안녕 철수 영희", h: "*names를 넣으세요." },
+      { c: "*args 뒤에 키워드 전용 인자를 사용해보세요.", i: "def total(*nums, tax_rate):\n    return sum(nums) * (1 + tax_rate)\nprint(total(100, 200,   =0.5))", e: "450.0", h: "tax_rate=0.5로 채우세요." },
+      { c: "**kwargs로 넘어온 설정값들을 딕셔너리로 그대로 반환하세요.", i: "def make_config(**kwargs):\n    return kwargs\nprint(make_config(host='localhost', port=8080))", e: "{'host': 'localhost', 'port': 8080}", h: "kwargs 자체가 이미 딕셔너리입니다." },
+      { c: "딕셔너리를 **로 풀어서 함수에 전달해보세요.", i: "def intro(name, age):\n    return f'{name}는 {age}살'\ninfo = {'name': '에그', 'age': 5}\nprint(intro(info))  # 딕셔너리를 그대로 넘기면 에러가 나요!", e: "에그는 5살", h: "intro(**info)로 고치세요." },
+      { c: "임의 개수의 숫자와 배수(multiplier 키워드)를 받아 각 숫자에 배수를 곱한 리스트를 반환하는 함수를 작성하세요.", i: "def scale(*nums,    =2):\n    return [n * multiplier for n in nums]\nprint(scale(1, 2, 3, multiplier=3))", e: "[3, 6, 9]", h: "multiplier를 넣으세요." },
+      { c: "백지에서 *args를 이용해 전달받은 모든 문자열을 이어붙여 반환하는 함수 concat을 만들어보세요.", i: "# 힌트: ''.join(args)를 사용해보세요.", e: "안녕하세요", h: "def concat(*args):\n    return ''.join(args)\nprint(concat('안녕', '하세요'))" }
     ]
   },
   decorators: {
@@ -69,8 +81,15 @@ const TOPICS = {
       { c: "함수 앞뒤로 메시지를 출력하는 초간단 데코레이터를 확인하세요.", i: "def my_deco(func):\n    def wrapper():\n        print('--- 시작 ---')\n        func()\n        print('--- 끝 ---')\n    return wrapper\n\n@my_deco\ndef hello():\n    print('안녕하세요!')\n\nhello()", e: "--- 시작 ---\n안녕하세요!\n--- 끝 ---", h: "그대로 실행해서 @my_deco의 마법을 확인하세요." },
       { c: "이번엔 빈칸을 채워 데코레이터를 완성해보세요.", i: "def bold_deco(func):\n    def wrapper():\n        return \"<b>\" + func() + \"</b>\"\n    return   \n\n@bold_deco\ndef get_text():\n    return \"코딩에그\"\n\nprint(get_text())", e: "<b>코딩에그</b>", h: "내부 함수인 wrapper를 리턴해야 합니다." },
       { c: "인자를 받는 함수를 위한 데코레이터에는 *args, **kwargs가 필수입니다.", i: "def trace(func):\n    def wrapper(  args,   kwargs):\n        print(func.__name__, '함수 호출됨')\n        return func(*args, **kwargs)\n    return wrapper\n\n@trace\ndef add(a, b):\n    return a + b\n\nprint(add(10, 20))", e: "add 함수 호출됨\n30", h: "*args와 **kwargs를 넣으세요." },
-      { c: "실행 시간을 재는 실무형 데코레이터를 실행해보세요.", i: "import time\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        start = time.time()\n        res = func(*args, **kwargs)\n        print(f\"{func.__name__} 소요시간: {time.time() - start:.4f}초\")\n        return res\n    return wrapper\n\n@timer\ndef slow_func():\n    time.sleep(0.5)\n    return '완료'\n\nprint(slow_func())", e: "slow_func 소요시간: 0.5000초\n완료", h: "그대로 실행해보세요 (시간은 조금 다를 수 있습니다)." },
-      { c: "백지에서 여러분만의 데코레이터를 만들어보세요. (호출 전후로 별표(*)를 10개씩 출력)", i: "# 함수 이름: star_deco", e: "자유 출력", h: "def star_deco(func):\n    def wrapper(*args, **kwargs):\n        print('*'*10)\n        func(*args, **kwargs)\n        print('*'*10)\n    return wrapper" }
+      { c: "함수가 호출된 횟수를 세는 실무형 데코레이터를 실행해보세요.", i: "def counter(func):\n    count = 0\n    def wrapper(*args, **kwargs):\n        nonlocal count\n        count += 1\n        print(f'{func.__name__} 호출 {count}번째')\n        return func(*args, **kwargs)\n    return wrapper\n\n@counter\ndef say_hi():\n    print('hi')\n\nsay_hi()\nsay_hi()", e: "say_hi 호출 1번째\nhi\nsay_hi 호출 2번째\nhi", h: "그대로 실행해보세요." },
+      { c: "백지에서 여러분만의 데코레이터를 만들어보세요. (호출 전후로 별표(*)를 10개씩 출력하고 '안녕'을 출력하는 함수에 적용)", i: "# 함수 이름: star_deco", e: "**********\n안녕\n**********", h: "def star_deco(func):\n    def wrapper(*args, **kwargs):\n        print('*' * 10)\n        func(*args, **kwargs)\n        print('*' * 10)\n    return wrapper\n\n@star_deco\ndef greet():\n    print('안녕')\n\ngreet()" },
+      { c: "데코레이터가 반환값을 2배로 만들도록 완성하세요.", i: "def double_deco(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)   2\n    return wrapper\n\n@double_deco\ndef get_num():\n    return 5\n\nprint(get_num())", e: "10", h: "* 2를 곱하세요." },
+      { c: "데코레이터 함수 위에 @ 기호가 빠졌어요. 고쳐서 실행하세요.", i: "def shout_deco(func):\n    def wrapper():\n        return func().upper()\n    return wrapper\n\nshout_deco  # @가 빠졌어요!\ndef say():\n    return 'hello'\n\nprint(say())", e: "HELLO", h: "@shout_deco를 함수 위에 붙이세요." },
+      { c: "두 개의 데코레이터를 함께 적용해보세요.", i: "def deco_a(func):\n    def wrapper():\n        return '[A]' + func()\n    return wrapper\n\ndef deco_b(func):\n    def wrapper():\n        return '[B]' + func()\n    return wrapper\n\n@deco_a\n@deco_b\ndef base():\n    return '기본'\n\nprint(base())", e: "[A][B]기본", h: "그대로 실행해서 데코레이터가 겹겹이 적용되는 순서를 확인하세요." },
+      { c: "데코레이터로 함수 실행 전후에 로그를 남기는 코드를 완성하세요.", i: "def log_deco(func):\n    def wrapper(*args, **kwargs):\n        print('[LOG] 시작')\n        result =   (*args, **kwargs)\n        print('[LOG] 종료')\n        return result\n    return wrapper\n\n@log_deco\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))", e: "[LOG] 시작\n[LOG] 종료\n5", h: "func(*args, **kwargs)를 넣으세요." },
+      { c: "데코레이터에서 결과를 반환하는 걸 잊으면 안 됩니다. 고쳐보세요.", i: "def deco(func):\n    def wrapper(*args, **kwargs):\n        func(*args, **kwargs)  # return이 빠졌어요!\n    return wrapper\n\n@deco\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))", e: "5", h: "return func(*args, **kwargs)로 고치세요." },
+      { c: "함수의 원래 이름을 지키기 위해 사용하는 functools.wraps를 사용해보세요.", i: "from functools import wraps\ndef my_deco(func):\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@my_deco\ndef hello():\n    return 'hi'\n\nprint(hello.__name__)", e: "hello", h: "그대로 실행하면 @wraps 덕분에 원래 함수 이름이 유지됩니다." },
+      { c: "백지에서 함수의 반환값 뒤에 느낌표(!)를 붙이는 데코레이터 excite_deco를 만들어보세요.", i: "# 함수 이름: excite_deco", e: "안녕!", h: "def excite_deco(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs) + '!'\n    return wrapper\n\n@excite_deco\ndef greet():\n    return '안녕'\n\nprint(greet())" }
     ]
   },
   generators: {
@@ -92,8 +111,15 @@ const TOPICS = {
       { c: "return 대신 yield를 사용해 값을 하나씩 뱉어내는 제너레이터를 확인하세요.", i: "def count_up():\n    yield 1\n    yield 2\n    yield 3\n\n# 제너레이터 객체 생성\ngen = count_up()\nprint(next(gen))\nprint(next(gen))", e: "1\n2", h: "그대로 실행합니다. next()를 호출할 때마다 다음 yield까지 실행됩니다." },
       { c: "for문을 사용하면 next() 없이도 끝까지 알아서 뽑아줍니다.", i: "def abc():\n    yield 'A'\n    yield 'B'\n    yield 'C'\n\nfor letter in   ():\n    print(letter)", e: "A\nB\nC", h: "abc() 를 호출하세요." },
       { c: "무한히 1씩 증가하는 번호표 발행기(제너레이터)를 만들어보세요.", i: "def ticket_machine():\n    num = 1\n    while True:\n           num\n        num += 1\n\nmachine = ticket_machine()\nprint(next(machine))\nprint(next(machine))\nprint(next(machine))", e: "1\n2\n3", h: "yield num 을 적으세요." },
-      { c: "제너레이터 표현식을 사용해 메모리를 절약해보세요.", i: "# 리스트: 메모리를 한 번에 할당함\nlist_comp = [x*x for x in range(3)]\n# 제너레이터: 괄호를 소괄호로 변경\ngen_comp = (  *  for x in range(3))\n\nprint(list_comp)\nprint(gen_comp) # 객체 자체가 출력됨\nprint(next(gen_comp))", e: "[0, 1, 4]\n<generator object ...>\n0", h: "x*x 를 적으세요." },
-      { c: "백지에서 짝수만 무한히 만들어내는 제너레이터를 작성하고 3개만 뽑아보세요.", i: "# 힌트: yield x", e: "자유 출력", h: "def evens():\n    n = 0\n    while True:\n        yield n\n        n += 2\ng = evens()\nprint(next(g))\nprint(next(g))\nprint(next(g))" }
+      { c: "제너레이터 표현식을 사용해 메모리를 절약해보세요.", i: "# 리스트: 메모리를 한 번에 할당함\nlist_comp = [x*x for x in range(3)]\n# 제너레이터: 괄호를 소괄호로 변경\ngen_comp = (  *  for x in range(3))\n\nprint(list_comp)\nprint(next(gen_comp))", e: "[0, 1, 4]\n0", h: "x*x 를 적으세요." },
+      { c: "백지에서 짝수만 무한히 만들어내는 제너레이터 evens()를 작성하고 next()로 3개를 출력하세요.", i: "# 힌트: yield x", e: "0\n2\n4", h: "def evens():\n    n = 0\n    while True:\n        yield n\n        n += 2\ng = evens()\nprint(next(g))\nprint(next(g))\nprint(next(g))" },
+      { c: "제너레이터 표현식을 sum()과 함께 사용해 총합을 구해보세요.", i: "total = sum(x for x in range(1, 5))\nprint(total)", e: "10", h: "그대로 실행해보세요 (1+2+3+4)." },
+      { c: "1부터 5까지 제곱값을 만드는 제너레이터 표현식을 완성하세요.", i: "gen = (x   for x in range(1, 6))\nprint(list(gen))", e: "[1, 4, 9, 16, 25]", h: "x ** 2 또는 x*x" },
+      { c: "짝수만 걸러내는 제너레이터 표현식을 완성하세요.", i: "gen = (x for x in range(10)   x % 2 == 0)\nprint(list(gen))", e: "[0, 2, 4, 6, 8]", h: "if 조건을 추가하세요." },
+      { c: "제너레이터가 소진되면 다음 값이 없다는 것을 안전하게 확인해보세요.", i: "def one_shot():\n    yield '단 하나'\ng = one_shot()\nprint(next(g))\nprint(next(g, '더 이상 없음'))", e: "단 하나\n더 이상 없음", h: "next()의 두 번째 인자는 기본값입니다." },
+      { c: "3의 배수만 무한히 만들어내는 제너레이터에서 버그를 고치세요.", i: "def multiples_of_three():\n    n = 3\n    while True:\n        yield n\n        n = n + 1  # 3씩 증가해야 해요!\n\ng = multiples_of_three()\nprint(next(g))\nprint(next(g))\nprint(next(g))", e: "3\n6\n9", h: "n += 3으로 고치세요." },
+      { c: "제너레이터를 함수의 인자로 그대로 전달해 총합을 구해보세요.", i: "def total_of(gen):\n    return sum(gen)\nnums = (x for x in range(1, 4))\nprint(total_of(  ))", e: "6", h: "nums를 괄호 안에 넣으세요." },
+      { c: "무한 피보나치 수열을 만드는 제너레이터를 완성하고 처음 5개를 출력하세요.", i: "def fib():\n    a, b = 0, 1\n    while True:\n        yield a\n        a, b = b, a   b\n\ng = fib()\nfor _ in range(5):\n    print(next(g))", e: "0\n1\n1\n2\n3", h: "a, b = b, a + b 로 고치세요." }
     ]
   },
   env_packages: {
@@ -115,7 +141,14 @@ const TOPICS = {
       { c: "[실무 시뮬레이션] 당신은 지금 VSCode 터미널에 있습니다. requests 패키지를 설치하는 명령어를 문자열로 출력해보세요.", i: "cmd = \"   install requests\"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip install requests", h: "pip" },
       { c: "[실무 시뮬레이션] venv를 이용해 'my_project_env'라는 가상환경을 생성하는 터미널 명령어를 출력해보세요.", i: "cmd = \"python -m    my_project_env\"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: python -m venv my_project_env", h: "venv 모듈을 사용합니다." },
       { c: "[실무 시뮬레이션] 다른 개발자가 넘겨준 requirements.txt 안의 패키지를 일괄 설치하는 명령어를 출력하세요.", i: "cmd = \"pip install -r    \"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip install -r requirements.txt", h: "requirements.txt 파일명을 적습니다." },
-      { c: "파이썬 기본 내장 모듈 중, 현재 파이썬 버전을 알아내는 코드를 실행해보세요.", i: "import sys\n# 코딩에그 서버(Pyodide)의 파이썬 버전을 확인합니다.\nprint(sys.version.split(' ')[0])", e: "3.11.3 (버전은 다를 수 있음)", h: "그대로 실행합니다. 실제 환경에서도 유용합니다." },
+      { c: "파이썬 기본 내장 모듈 중, 현재 파이썬 버전을 알아내는 코드를 실행해보세요.", i: "import sys\n# 코딩에그 서버(Pyodide)의 파이썬 버전을 확인합니다.\nprint(sys.version.split(' ')[0])", e: "3.11.3", h: "그대로 실행합니다. 실제 컴퓨터의 VSCode에서는 설치된 버전이 다르게 나올 수 있습니다." },
+      { c: "[실무 시뮬레이션] 특정 패키지(numpy)의 상세 정보를 확인하는 명령어를 출력해보세요.", i: "cmd = \"pip   numpy\"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip show numpy", h: "show" },
+      { c: "[실무 시뮬레이션] 더 이상 쓰지 않는 패키지(requests)를 삭제하는 명령어를 출력해보세요.", i: "cmd = \"pip   requests\"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip uninstall requests", h: "uninstall" },
+      { c: "[실무 시뮬레이션] 현재 설치된 모든 패키지 목록을 보여주는 명령어를 출력해보세요.", i: "cmd = \"pip   \"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip list", h: "list" },
+      { c: "[실무 시뮬레이션] 가상환경(myenv)을 활성화(activate)하는 명령어를 출력해보세요 (macOS/Linux 기준).", i: "cmd = \"source   /bin/activate\"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: source myenv/bin/activate", h: "myenv" },
+      { c: "[실무 시뮬레이션] 활성화된 가상환경을 빠져나오는(비활성화) 명령어를 출력해보세요.", i: "cmd = \"   \"\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: deactivate", h: "deactivate" },
+      { c: "[실무 시뮬레이션] .gitignore 파일에 가상환경 폴더(venv)를 등록하는 줄을 출력해보세요.", i: "gitignore_line = \"  /\"\nprint(gitignore_line)", e: "venv/", h: "venv" },
+      { c: "[실무 시뮬레이션] requirements.txt를 만들 때 흔한 오타를 고쳐보세요.", i: "cmd = \"pip freez > requirements.txt\"  # 오타가 있어요!\nprint(\"실행할 명령어:\", cmd)", e: "실행할 명령어: pip freeze > requirements.txt", h: "freez를 freeze로 고치세요." },
       { c: "여기까지 오신 것을 환영합니다! 파이썬의 모든 핵심 기초와 실무 지식을 습득했습니다. 축하 메시지를 자유롭게 print 해보세요!", i: "print(\"파이썬 마스터 완료!\")", e: "파이썬 마스터 완료!", h: "자유롭게 작성하세요!" }
     ]
   }
@@ -129,75 +162,52 @@ const nodesData = [
   { id: 'node_17_5', title: 'VSCode와 실무 환경 세팅 (pip & venv)', key: 'env_packages' },
 ];
 
+// Same interleaved, difficulty-escalating 4-lesson pattern used by every
+// other node in the curriculum (see scripts/generate_tier2.cjs) — Unit17
+// previously grouped all-WB/all-MCQ/all-code into 3 flat lessons instead.
+function mcqStep(q) { return { type: 'quiz_multiple_choice', content: q.q, options: q.opts, answer: q.a, hint: q.hint }; }
+function wbStep(q, i) { return { type: 'quiz_word_bank', content: `단어 블록 채우기 (${i + 1})`, sentenceParts: q.parts, wordBank: q.bank, answer: q.ans, hint: q.hint }; }
+function codeStep(q) { return { type: 'quiz_code', content: q.c, initialCode: q.i, expectedOutputs: [q.e], hint: q.h }; }
+
+function buildLesson(t, mcqRange, wbRange, codeRange) {
+  const steps = [];
+  for (let i = mcqRange[0]; i < mcqRange[1]; i++) steps.push(mcqStep(t.mcq[i]));
+  for (let i = wbRange[0]; i < wbRange[1]; i++) steps.push(wbStep(t.wb[i], i));
+  for (let i = codeRange[0]; i < codeRange[1]; i++) steps.push(codeStep(t.code[i]));
+  return steps;
+}
+
 function generateUnit() {
-  const resultNodes = [];
+  const nodes = [];
 
-  nodesData.forEach((nodeInfo, index) => {
-    const topicData = TOPICS[nodeInfo.key];
-    const lessons = [];
+  for (const nodeInfo of nodesData) {
+    const t = TOPICS[nodeInfo.key];
+    const lessons = [
+      buildLesson(t, [0, 1], [0, 1], [0, 3]),
+      buildLesson(t, [1, 2], [1, 2], [3, 6]),
+      buildLesson(t, [2, 4], [2, 4], [6, 9]),
+      buildLesson(t, [4, 5], [4, 5], [9, 12])
+    ];
 
-    // Lesson 1: Theory + Word Bank (개념 학습)
-    const lesson1 = [];
-    topicData.wb.forEach((q, i) => {
-      lesson1.push({
-        type: 'quiz_word_bank',
-        content: `[개념 확인 ${i+1}] 다음 빈칸을 알맞은 단어로 채워보세요.`,
-        sentenceParts: q.parts,
-        wordBank: q.bank,
-        answer: q.ans,
-        hint: q.hint
-      });
-    });
-
-    // Lesson 2: Multiple Choice (핵심 퀴즈)
-    const lesson2 = [];
-    topicData.mcq.forEach((q, i) => {
-      lesson2.push({
-        type: 'quiz_multiple_choice',
-        content: `[이론 점검 ${i+1}] ${q.q}`,
-        options: q.opts,
-        answer: q.a,
-        hint: q.hint
-      });
-    });
-
-    // Lesson 3: Code (실전 코딩)
-    const lesson3 = [];
-    topicData.code.forEach((q, i) => {
-      lesson3.push({
-        type: 'quiz_code',
-        content: `[실습 ${i+1}] ${q.c}`,
-        initialCode: q.i,
-        expectedOutputs: [q.e],
-        hint: q.h
-      });
-    });
-
-    resultNodes.push({
+    nodes.push({
       id: nodeInfo.id,
       title: nodeInfo.title,
       description: "VSCode 실무 환경에서 꼭 필요한 파이썬의 고급 스킬을 마스터합니다.",
-      lessons: [lesson1, lesson2, lesson3]
+      lessons
     });
-  });
+  }
 
-  return resultNodes;
+  return {
+    id: 17,
+    title: 'UNIT 17\n파이썬 실무 스킬업',
+    nodes
+  };
 }
 
-const unit17Data = {
-  id: 17,
-  title: 'UNIT 17\n파이썬 실무 스킬업',
-  nodes: generateUnit()
-};
+const unit17Data = generateUnit();
 
 const tier3Path = path.join(__dirname, '../src/data/curriculum/tier3.jsx');
 let content = fs.readFileSync(tier3Path, 'utf8');
-
-// Clean up previous bad run if exists
-const badAppendIndex = content.indexOf('export const unit17 =');
-if (badAppendIndex !== -1) {
-  content = content.substring(0, badAppendIndex);
-}
 
 const insertIndex = content.lastIndexOf('];');
 if (insertIndex === -1) {
@@ -205,17 +215,12 @@ if (insertIndex === -1) {
   process.exit(1);
 }
 
-// Check if already inserted
-if (content.includes('UNIT 17\n파이썬 실무 스킬업')) {
-  console.log("UNIT 17 already exists in tier3 array");
-} else {
-  let injectedObj = JSON.stringify(unit17Data, null, 2);
-  injectedObj = injectedObj.replace(/"([^"]+)":/g, (match, p1) => {
-    if (/^[a-zA-Z_]\w*$/.test(p1)) return p1 + ':';
-    return match;
-  });
+let injectedObj = JSON.stringify(unit17Data, null, 2);
+injectedObj = injectedObj.replace(/"([^"]+)":/g, (match, p1) => {
+  if (/^[a-zA-Z_]\w*$/.test(p1)) return p1 + ':';
+  return match;
+});
 
-  const newContent = content.substring(0, insertIndex) + ',\n  ' + injectedObj + '\n' + content.substring(insertIndex);
-  fs.writeFileSync(tier3Path, newContent, 'utf8');
-  console.log("Successfully generated and appended UNIT 17 to tier3 array!");
-}
+const newContent = content.substring(0, insertIndex) + ',\n  ' + injectedObj + '\n' + content.substring(insertIndex);
+fs.writeFileSync(tier3Path, newContent, 'utf8');
+console.log("Successfully generated and appended UNIT 17 to tier3 array!");

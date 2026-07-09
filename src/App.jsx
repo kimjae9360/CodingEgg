@@ -68,7 +68,16 @@ export default function App() {
   const handleSelectCourse = (courseId) => {
     const picked = getCourse(courseId);
     if (!picked.available) return;
-    setSave(prev => ({ ...prev, selectedCourseId: courseId }));
+    setSave(prev => {
+      const enrolled = prev.enrolledCourses || [];
+      // Remove it if it exists so we can move it to the front
+      const filtered = enrolled.filter(c => c !== courseId);
+      return { 
+        ...prev, 
+        selectedCourseId: courseId,
+        enrolledCourses: [courseId, ...filtered]
+      };
+    });
     setView('tree');
   };
 
@@ -113,7 +122,9 @@ export default function App() {
 
       return applyLessonCompletion(withNode, result?.xpEarned, result?.gemsEarned);
     });
-    setView('tree');
+    if (!result?.continueNextLesson) {
+      setView('tree');
+    }
   };
 
   const handleLoseHeart = useCallback(() => {
@@ -287,6 +298,7 @@ export default function App() {
         theme={theme}
         selectedCourseId={save.selectedCourseId}
         onSelect={handleSelectCourse}
+        onBack={() => setView('tree')}
       />
     );
   }
@@ -435,13 +447,20 @@ export default function App() {
         )}
         {view === 'tree' && (
           <SkillTreeBoard
+            key={course.id}
             onNodeClick={handleNodeClick}
             completedNodes={save.completedNodes}
             trackData={trackData}
             theme={theme}
             onRequestSkipTest={handleRequestSkipTest}
             onRequestExam={handleRequestExam}
-            onChangeCourse={() => setView('courses')}
+            onChangeCourse={(cid) => {
+              if (cid && cid !== 'new') {
+                handleSelectCourse(cid);
+              } else {
+                setView('courses');
+              }
+            }}
             onSectionChange={setAppSectionIdx}
             onStoreClick={() => setView('store')}
             xpPerLesson={XP_PER_LESSON}

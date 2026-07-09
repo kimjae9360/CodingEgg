@@ -2,10 +2,9 @@ import React, { useState, useRef, useCallback } from 'react';
 import { CheckCircle2, Lock, Play } from 'lucide-react';
 import { playHoverSound } from '../lib/sound';
 import MatrixRain from './MatrixRain';
+import { getEmojiForTitle } from '../lib/emojiMap';
 
-const EMOJI_MAP = [
-  '🖨️', '📦', '🔢', '📝', '🔀', '🔁', '🧮', '🐍', '🚀', '🔮', '🐉', '👾'
-];
+
 
 function getCardContent(title) {
   const contentMap = {
@@ -130,12 +129,13 @@ function getCardContent(title) {
   };
 
   const cleanTitle = title.split('\n').pop().trim();
-  return contentMap[cleanTitle] || { name: "핵심 개념 학습", desc: "이 레슨에서 파이썬 프로그래밍의 핵심적인 기초 개념을 학습하게 됩니다." };
+  return contentMap[cleanTitle] || { name: cleanTitle, desc: "이 레슨에서 해당 주제의 핵심 개념을 학습하게 됩니다." };
 }
 
 export default function PokemonCard({ 
   node, 
   index,
+  globalIndex,
   totalNodes = 5,
   isLocked, 
   isCompleted, 
@@ -149,7 +149,8 @@ export default function PokemonCard({
   onStart,
   onHover,
   onLeave,
-  tooltip
+  tooltip,
+  courseId
 }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -166,8 +167,9 @@ export default function PokemonCard({
     if (onLeave) onLeave();
   };
 
-  const monsterEmoji = EMOJI_MAP[index % EMOJI_MAP.length];
+  const monsterEmoji = getEmojiForTitle(node.title, courseId, node.id, index);
   const content = getCardContent(node.title);
+  const nodeDesc = node.description || (content ? content.desc : "이 레슨에서 해당 주제의 핵심 개념을 학습하게 됩니다.");
   
   const pastelTypes = [
     { name: 'Water', bg: 'bg-[#93c5fd]', from: 'from-[#bfdbfe]', to: 'to-[#93c5fd]', border: 'border-[#dbeafe]', shadow: 'shadow-blue-300/50' },
@@ -184,11 +186,12 @@ export default function PokemonCard({
   const centerIndex = Math.floor((totalNodes - 1) / 2);
   const offset = index - centerIndex; // e.g. -2, -1, 0, 1, 2
   
-  const isPopOut = isHovered || isFocus;
+  const isSkipTarget = !!tooltip;
+  const isPopOut = isHovered || isFocus || isSkipTarget;
   const translateY = isPopOut ? -40 : Math.abs(offset) * -15; // Pop out goes up
   const rotateZ = isPopOut ? 0 : offset * 3; // Pop out straightens
   const scale = isPopOut ? 1.1 : 1.0;
-  const zIndex = isHovered ? 50 : (isFocus ? 40 : 10 - Math.abs(offset));
+  const zIndex = isHovered ? 50 : (isFocus || isSkipTarget ? 40 : 10 - Math.abs(offset));
 
   const widthClass = 'w-[220px] md:w-56';
   const heightClass = 'h-[325px] md:h-[340px]';
@@ -202,7 +205,7 @@ export default function PokemonCard({
       style={{ zIndex }}
     >
       {tooltip && (
-        <div className="absolute -top-12 md:-top-16 z-50 animate-bounce cursor-pointer hover:scale-105 transition-transform">
+        <div className="absolute -top-16 md:-top-20 z-[60] cursor-pointer hover:scale-105 transition-transform">
           {tooltip}
         </div>
       )}
@@ -224,6 +227,13 @@ export default function PokemonCard({
             transition-all duration-500 transform-gpu
           `}
         >
+          {/* Animated Spinning Border for Skip Target */}
+          {isSkipTarget && (
+            <div className="absolute -inset-[3px] rounded-[18px] md:-inset-[4px] md:rounded-[20px] overflow-hidden z-[-1]">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200%] h-[200%] bg-[conic-gradient(transparent_0deg,transparent_270deg,#ff4b8d_360deg)] animate-[spin_3s_linear_infinite]"></div>
+            </div>
+          )}
+          
           {/* Card Outer Border & Background */}
           <div className={`absolute inset-0 rounded-2xl border-[6px] md:border-[8px] bg-gradient-to-br ${cardStyle} overflow-hidden flex flex-col p-2 md:p-3`}>
             
@@ -270,7 +280,7 @@ export default function PokemonCard({
 
             {/* Info Ribbon */}
             <div className={`w-full py-0.5 px-2 mb-2 bg-black/10 rounded flex justify-between items-center text-[10px] md:text-[11px] font-bold ${textStyle}`}>
-              <span>NO. {(index + 1).toString().padStart(3, '0')}</span>
+              <span>NO. {((globalIndex !== undefined ? globalIndex : index) + 1).toString().padStart(3, '0')}</span>
               <span>LESSON {progress}/{totalLessons}</span>
             </div>
 
@@ -282,8 +292,8 @@ export default function PokemonCard({
                    <span className={`font-black text-xs md:text-sm text-gray-900`}>{content.name}</span>
                 </div>
               </div>
-              <p className={`text-[9px] md:text-[10px] leading-tight font-medium text-gray-600`}>
-                {content.desc}
+              <p className={`text-[10px] md:text-xs leading-relaxed font-bold line-clamp-2 md:line-clamp-3 ${isDark ? 'text-gray-600' : 'text-gray-600'}`}>
+                {nodeDesc}
               </p>
               
               {!isLocked && (

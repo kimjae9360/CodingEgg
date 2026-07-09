@@ -15,9 +15,12 @@ export default function LessonSummaryScreen({
   accuracy = 100,
   mistakeCount = 0,
   timeLabel = '0:00',
+  currentLessonIndex = 0,
+  totalLessonsInNode = 1,
   onContinue,
 }) {
   const perfect = mistakeCount === 0;
+  const hasNextLesson = !isExamMode && !isSkipTest && (currentLessonIndex < totalLessonsInNode - 1);
 
   if (isExamMode) {
     return (
@@ -136,12 +139,32 @@ export default function LessonSummaryScreen({
           </div>
         )}
 
-        <button
-          onClick={onContinue}
-          className="w-full bg-[#FFB300] hover:bg-[#E6A100] text-white font-black py-4 rounded-2xl text-lg shadow-[0_6px_0_#CC8F00] active:shadow-none active:translate-y-1 transition"
-        >
-          계속하기
-        </button>
+        {hasNextLesson ? (
+          <div className="w-full flex flex-col gap-3">
+            <div className="text-center mb-2 font-bold text-gray-600">
+              다음 레슨({currentLessonIndex + 2}/{totalLessonsInNode})으로 이어서 공부하시겠습니까?
+            </div>
+            <button
+              onClick={() => onContinue(true)} // true = continue next lesson
+              className="w-full bg-[#FFB300] hover:bg-[#E6A100] text-white font-black py-4 rounded-2xl text-lg shadow-[0_6px_0_#CC8F00] active:shadow-none active:translate-y-1 transition"
+            >
+              이어서 하기
+            </button>
+            <button
+              onClick={() => onContinue(false)} // false = exit
+              className="w-full bg-white text-gray-500 font-bold py-4 rounded-2xl border-2 border-gray-200 hover:bg-gray-50 active:translate-y-1 transition"
+            >
+              나중에 하기
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => onContinue(false)}
+            className="w-full bg-[#FFB300] hover:bg-[#E6A100] text-white font-black py-4 rounded-2xl text-lg shadow-[0_6px_0_#CC8F00] active:shadow-none active:translate-y-1 transition"
+          >
+            계속하기
+          </button>
+        )}
       </div>
     </div>
   );

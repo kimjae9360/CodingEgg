@@ -1,4 +1,4 @@
-import { PYTHON_TRACK, ML_TRACK } from './curriculum';
+import { PYTHON_TRACK, ML_TRACK, SQL_TRACK, CRAWLING_TRACK, DL_TRACK, LLM_TRACK } from './curriculum';
 
 // Course/subject registry — mirrors Duolingo's language picker, but for
 // coding subjects. Only Python has real curriculum content right now;
@@ -20,18 +20,20 @@ export const COURSES = [
     name: '웹 크롤링',
     subtitle: 'BeautifulSoup · Selenium',
     emoji: '🕷️',
-    logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg',
+    logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg',
     color: '#7C5CFC',
-    available: false,
+    available: true,
+    track: CRAWLING_TRACK,
   },
   {
     id: 'sql',
-    name: 'SQL',
+    name: 'MySQL',
     subtitle: '데이터베이스 · 쿼리',
     emoji: '🗄️',
     logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg',
     color: '#1CB0F6',
-    available: false,
+    available: true,
+    track: SQL_TRACK,
   },
   {
     id: 'ml',
@@ -50,16 +52,18 @@ export const COURSES = [
     emoji: '🧠',
     logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pytorch/pytorch-original.svg',
     color: '#FF4B8D',
-    available: false,
+    available: true,
+    track: DL_TRACK,
   },
   {
     id: 'llm',
     name: 'LLM',
     subtitle: '프롬프트 · RAG · 에이전트',
     emoji: '💬',
-    logoUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/openai/openai-original.svg',
+    logoUrl: '/llm_logo.svg',
     color: '#58CC02',
-    available: false,
+    available: true,
+    track: LLM_TRACK,
   },
 ];
 
