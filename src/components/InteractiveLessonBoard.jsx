@@ -28,6 +28,7 @@ export default function InteractiveLessonBoard({
   const [isHintDrawerOpen, setIsHintDrawerOpen] = useState(false);
   const [showHeartRefill, setShowHeartRefill] = useState(false);
   const [autoRunEnabled, setAutoRunEnabled] = useState(true); // New state for Auto-Run
+  const [showSkipConfirmModal, setShowSkipConfirmModal] = useState(false);
 
   const pyodideRef = useRef(null);
   const startTimeRef = useRef(Date.now());
@@ -572,7 +573,7 @@ export default function InteractiveLessonBoard({
           {submissionState === 'idle' ? (
             <>
               <button 
-                onClick={handleSkip}
+                onClick={() => setShowSkipConfirmModal(true)}
                 className="px-6 py-4 rounded-2xl font-bold text-gray-400 hover:bg-gray-100 transition uppercase tracking-wider text-sm md:text-base"
               >
                 건너뛰기
@@ -652,9 +653,9 @@ export default function InteractiveLessonBoard({
           <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
             <h3 className="font-bold text-blue-800 mb-2 flex items-center gap-2">💡 1단계 힌트 (가이드)</h3>
             <p className="text-blue-900 text-base">
-              {currentStep.type === 'quiz_code' ? "문법 오류가 없는지, 들여쓰기(Indent)가 올바른지 먼저 확인해보세요. 코드 에디터 우측 결과창의 오답 피드백을 활용하세요." : 
-               currentStep.type === 'quiz_word_bank' ? "주어진 단어 블록들의 순서와 문맥을 다시 한 번 소리내어 읽어보세요." :
-               "문제를 다시 천천히 읽어보고 가장 관련 없는 오답부터 하나씩 지워나가 보세요."}
+              {currentStep.type === 'quiz_code' ? "문법 오류가 없는지, 들여쓰기(Indent)가 올바른지 먼저 확인해 보세요. 에디터 우측 결과창의 피드백을 참고하면 도움이 됩니다." : 
+               currentStep.type === 'quiz_word_bank' ? "문맥에 가장 잘 어울리는 단어가 무엇일지, 문법에 어긋나지 않는지 단어 블록들의 조합을 다시 한 번 확인해 보세요." :
+               "문제를 천천히 다시 읽어보고, 정답이 아닌 것 같은 보기부터 하나씩 지워나가 보세요."}
             </p>
           </div>
           
@@ -705,6 +706,38 @@ export default function InteractiveLessonBoard({
                 className="w-full py-4 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition"
               >
                 취소 (학습 종료)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Skip Confirmation Modal */}
+      {showSkipConfirmModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl animate-bounce-in text-center">
+            <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <Heart size={32} fill="currentColor" className="text-red-500" />
+            </div>
+            <h2 className="text-2xl font-black text-gray-800 mb-2">건너뛰기</h2>
+            <p className="text-gray-600 font-bold mb-6 leading-relaxed">
+              건너뛰기는 하트가 소모됩니다.<br/>소모하시겠습니까?
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  setShowSkipConfirmModal(false);
+                  handleSkip();
+                }}
+                className="w-full py-3.5 rounded-2xl font-black text-white bg-red-500 hover:bg-red-400 shadow-[0_4px_0_rgba(239,68,68,1)] active:translate-y-1 active:shadow-none transition"
+              >
+                건너뛰기
+              </button>
+              <button
+                onClick={() => setShowSkipConfirmModal(false)}
+                className="w-full py-3.5 rounded-2xl font-black text-gray-500 hover:bg-gray-100 transition"
+              >
+                아니오
               </button>
             </div>
           </div>
