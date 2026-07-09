@@ -8,7 +8,7 @@ import { playCorrectSound, playWrongSound, playFinishSound } from '../lib/sound'
 
 export default function InteractiveLessonBoard({
   nodeId, trackData, overrideNode, isSkipTest = false, isExamMode = false,
-  onComplete, onBack, hearts, gems, onLoseHeart, onRefillHearts,
+  onComplete, onBack, onForceExit, hearts, gems, onLoseHeart, onRefillHearts,
   xpPerLesson = 20, gemsPerLesson = 10,
   currentLessonIndex = 0, examDurationSec = 600
 }) {
@@ -141,7 +141,13 @@ export default function InteractiveLessonBoard({
           gemsEarned={gemsPerLesson}
           accuracy={stepsQueue.length > 0 ? Math.round(((stepsQueue.length - mistakeCount) / stepsQueue.length) * 100) : 100}
           timeSpentMs={finishTimeRef.current - startTimeRef.current}
-          onContinue={() => onComplete(isExamMode ? { score: examScore, pass: examPass, weakTopics } : undefined)}
+          onContinue={() => onComplete({
+            score: isExamMode ? examScore : undefined,
+            pass: isExamMode ? examPass : undefined,
+            weakTopics: isExamMode ? weakTopics : undefined,
+            xpEarned: isSkipTest ? xpPerLesson * 2 : xpPerLesson,
+            gemsEarned: gemsPerLesson
+          })}
         />
       </>
     );
@@ -355,10 +361,10 @@ export default function InteractiveLessonBoard({
                 <span className="text-xl md:text-2xl font-bold text-gray-700">{currentStep.sentenceParts?.[0]}</span>
                 
                 <div className="flex flex-wrap gap-2 items-center justify-center min-w-[100px] min-h-[48px] border-b-2 border-gray-400 pb-1">
-                  {(userAnswer || []).map((wordIndex, i) => (
+                  {(Array.isArray(userAnswer) ? userAnswer : []).map((wordIndex, i) => (
                     <button 
                       key={i}
-                      onClick={() => setUserAnswer(prev => prev.filter((_, idx) => idx !== i))}
+                      onClick={() => setUserAnswer(prev => Array.isArray(prev) ? prev.filter((_, idx) => idx !== i) : [])}
                       className="px-4 py-2 bg-white border-2 border-gray-200 rounded-xl font-bold text-lg text-gray-700 shadow-sm active:scale-95 transition"
                     >
                       {currentStep.wordBank[wordIndex]}
@@ -372,12 +378,12 @@ export default function InteractiveLessonBoard({
               {/* Word Bank Chips (Source) */}
               <div className="flex flex-wrap justify-center gap-3 w-full max-w-2xl mt-4">
                 {currentStep.wordBank && currentStep.wordBank.map((word, i) => {
-                  const isSelected = (userAnswer || []).includes(i);
+                  const isSelected = Array.isArray(userAnswer) && userAnswer.includes(i);
                   return (
                     <button
                       key={i}
                       disabled={isSelected}
-                      onClick={() => setUserAnswer(prev => [...(prev || []), i])}
+                      onClick={() => setUserAnswer(prev => [...(Array.isArray(prev) ? prev : []), i])}
                       className={`px-4 py-3 rounded-xl font-bold text-lg md:text-xl transition-all active:scale-95 border-2
                         ${isSelected 
                           ? 'bg-gray-200 border-gray-200 text-transparent shadow-none cursor-default' 
@@ -491,8 +497,10 @@ export default function InteractiveLessonBoard({
               
               <button
                 onClick={handleContinue}
+                disabled={hearts <= 0}
                 className={`px-10 py-4 rounded-2xl font-black text-white transition uppercase tracking-wider text-sm md:text-base shadow-[0_4px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none
-                  ${submissionState === 'correct' ? 'bg-green-500 hover:bg-green-400' : 'bg-red-500 hover:bg-red-400'}
+                  ${hearts <= 0 ? 'bg-gray-400 cursor-not-allowed opacity-50 shadow-none' : 
+                   (submissionState === 'correct' ? 'bg-green-500 hover:bg-green-400' : 'bg-red-500 hover:bg-red-400')}
                 `}
               >
                 계속하기
@@ -530,33 +538,39 @@ export default function InteractiveLessonBoard({
         </div>
       </div>
 
-      {/* Heart Refill Modal Overlay */}
+      {/* Guest Mode Gift Modal inside Lesson */}
       {showHeartRefill && (
-        <div className="fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full flex flex-col items-center text-center shadow-2xl animate-bounce-in">
-            <Heart size={64} className="text-red-500 mb-6 drop-shadow-md" fill="currentColor" />
-            <h2 className="text-2xl font-black text-gray-800 mb-4">하트가 부족해요!</h2>
-            <p className="text-gray-500 mb-8 font-bold leading-relaxed">
-              남은 하트가 없습니다.<br/>보석 50개로 리필하여 계속 학습하세요!
-            </p>
-            {gems >= 50 ? (
-              <button 
-                onClick={handleRefillHearts}
-                className="w-full py-4 bg-[#B96CE8] hover:bg-[#9A50C9] text-white rounded-2xl font-black text-lg shadow-[0_4px_0_rgba(154,80,201,1)] active:translate-y-1 active:shadow-none transition flex items-center justify-center gap-2"
-              >
-                💎 50개로 리필하기
-              </button>
-            ) : (
-              <div className="w-full py-4 bg-gray-200 text-gray-500 rounded-2xl font-black text-lg">
-                보석이 부족합니다
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl animate-bounce-in text-center">
+            <div className="relative inline-block">
+              <Heart className="w-20 h-20 text-red-500 mx-auto mb-4 animate-pulse" fill="currentColor" />
+              <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-black px-2 py-1 rounded-full border-2 border-white transform rotate-12">
+                GIFT
               </div>
-            )}
-            <button 
-              onClick={onBack}
-              className="mt-4 w-full py-4 text-gray-400 hover:text-gray-600 font-bold transition"
-            >
-              나중에 하기
-            </button>
+            </div>
+            <h2 className="text-2xl font-black text-gray-800 mb-2">하트가 모두 소진됐어요!</h2>
+            <p className="text-gray-600 mb-6 font-bold">🎁 게스트 테스트를 위해<br/>5개 하트 선물이 도착했습니다.</p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => {
+                  if (onRefillHearts) onRefillHearts();
+                  setShowHeartRefill(false);
+                }}
+                className="w-full py-4 bg-green-500 hover:bg-green-400 text-white rounded-xl font-bold shadow-[0_4px_0_rgba(34,197,94,1)] active:translate-y-1 active:shadow-none transition flex items-center justify-center gap-2"
+              >
+                <Heart size={20} fill="currentColor" className="text-red-200" /> 선물 받기
+              </button>
+              <button
+                onClick={() => {
+                  setShowHeartRefill(false);
+                  if (onForceExit) onForceExit();
+                  else if (onBack) onBack();
+                }}
+                className="w-full py-4 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition"
+              >
+                취소 (학습 종료)
+              </button>
+            </div>
           </div>
         </div>
       )}

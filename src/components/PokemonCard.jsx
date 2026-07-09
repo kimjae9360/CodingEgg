@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { CheckCircle2, Lock, Play } from 'lucide-react';
+import { playHoverSound } from '../lib/sound';
 import MatrixRain from './MatrixRain';
 
 const EMOJI_MAP = [
@@ -138,6 +139,7 @@ export default function PokemonCard({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnter = () => {
+    playHoverSound();
     setIsHovered(true);
     if (onHover) onHover();
   };
@@ -218,6 +220,9 @@ export default function PokemonCard({
                   {xpReward} XP
                 </span>
                 <div className={`w-5 h-5 md:w-6 md:h-6 rounded-full shadow-inner border-[1.5px] border-white/40 flex items-center justify-center ${isLocked ? 'bg-gray-500' : type.bg}`}>
+                  {isCompleted && (
+                    <CheckCircle2 size={14} className="text-white drop-shadow-sm" />
+                  )}
                 </div>
               </div>
             </div>
@@ -285,12 +290,6 @@ export default function PokemonCard({
                   backgroundSize: '200% 200%',
                 }}
               />
-            )}
-            
-            {isCompleted && !isFocus && (
-              <div className="absolute top-2 right-2 z-40 bg-white/80 rounded-full p-1 border border-yellow-400 shadow-[0_0_10px_rgba(255,179,0,0.5)]">
-                <CheckCircle2 size={16} className="text-yellow-500" />
-              </div>
             )}
             
             {isFocus && !isLocked && !isCompleted && (

@@ -57,6 +57,14 @@ export default function App() {
     setView(save.selectedCourseId ? 'tree' : 'courses');
   };
 
+  const [showGiftModal, setShowGiftModal] = useState(false);
+
+  const acceptGift = () => {
+    setSave(prev => ({ ...prev, hearts: 5, heartsUpdatedAt: Date.now() }));
+    setShowGiftModal(false);
+    setToast('🎁 하트 5개가 지급되었습니다! 다시 시도해주세요.');
+  };
+
   const handleSelectCourse = (courseId) => {
     const picked = getCourse(courseId);
     if (!picked.available) return;
@@ -68,7 +76,7 @@ export default function App() {
     const fresh = regenHearts(save);
     if (fresh.hearts <= 0) {
       setSave(fresh);
-      setToast('하트가 모두 소진됐어요! 시간이 지나면 채워지거나, 상점에서 충전할 수 있어요.');
+      setShowGiftModal(true);
       return;
     }
     setSave(fresh);
@@ -77,7 +85,7 @@ export default function App() {
     setView('lesson');
   };
 
-  const handleLessonComplete = () => {
+  const handleLessonComplete = (result) => {
     setSave(prev => {
       if (!selectedNodeId || prev.completedNodes.includes(selectedNodeId)) return prev;
 
@@ -100,7 +108,7 @@ export default function App() {
          withNode = { ...withNode, completedNodes: [...prev.completedNodes, selectedNodeId] };
       }
 
-      return applyLessonCompletion(withNode);
+      return applyLessonCompletion(withNode, result?.xpEarned, result?.gemsEarned);
     });
     setView('tree');
   };
@@ -116,7 +124,7 @@ export default function App() {
     const fresh = regenHearts(save);
     if (fresh.hearts <= 0) {
       setSave(fresh);
-      setToast('하트가 없어서 테스트를 볼 수 없어요! 하트를 채운 뒤 다시 시도해주세요.');
+      setShowGiftModal(true);
       return;
     }
 
@@ -151,10 +159,11 @@ export default function App() {
     setView('lesson');
   };
 
-  const handleSkipTestComplete = () => {
+  const handleSkipTestComplete = (result) => {
     setSave(prev => {
       const newSet = new Set([...prev.completedNodes, ...(skipTest?.nodesToComplete || [])]);
-      return { ...prev, completedNodes: Array.from(newSet) };
+      const withNode = { ...prev, completedNodes: Array.from(newSet) };
+      return applyLessonCompletion(withNode, result?.xpEarned, result?.gemsEarned);
     });
     setSkipTest(null);
     setView('tree');
@@ -168,7 +177,7 @@ export default function App() {
     const fresh = regenHearts(save);
     if (fresh.hearts <= 0) {
       setSave(fresh);
-      setToast('하트가 없어서 시험을 볼 수 없어요! 하트를 채운 뒤 다시 시도해주세요.');
+      setShowGiftModal(true);
       return;
     }
 
@@ -196,7 +205,24 @@ export default function App() {
     setView('lesson');
   };
 
-  const handleExamComplete = () => {
+  const handleExamComplete = (result) => {
+    if (result && result.pass) {
+      setSave(prev => {
+        const sectionIdx = parseInt(examSession.node.id.split('_')[1], 10);
+        if (isNaN(sectionIdx)) return prev;
+        
+        const nodesToComplete = [];
+        for (let i = 0; i <= sectionIdx; i++) {
+          const sec = trackData.sections[i];
+          if (sec) nodesToComplete.push(...sec.nodes.map(n => n.id));
+        }
+        
+        const newSet = new Set([...prev.completedNodes, ...nodesToComplete]);
+        const withNode = { ...prev, completedNodes: Array.from(newSet) };
+        return applyLessonCompletion(withNode, result?.xpEarned, result?.gemsEarned);
+      });
+      setToast('🎉 보스전 통과! 다음 티어가 해금되었습니다!');
+    }
     setExamSession(null);
     setView('tree');
   };
@@ -248,10 +274,11 @@ export default function App() {
           isExamMode={isExam}
           onComplete={isExam ? handleExamComplete : (skipTest ? handleSkipTestComplete : handleLessonComplete)}
           onBack={requestExitLesson}
+          onForceExit={confirmExitLesson}
           hearts={save.hearts}
           gems={save.gems}
           onLoseHeart={handleLoseHeart}
-          onRefillHearts={handleBuyHeartRefill}
+          onRefillHearts={acceptGift}
           xpPerLesson={XP_PER_LESSON}
           gemsPerLesson={GEMS_PER_LESSON}
           currentLessonIndex={skipTest || isExam ? 0 : (save.nodeProgress?.[selectedNodeId] || 0)}
@@ -430,6 +457,36 @@ export default function App() {
           <BookOpen size={22} />
         </button>
       </div>
+
+      {/* Guest Mode Gift Modal */}
+      {showGiftModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl animate-bounce-in text-center">
+            <div className="relative inline-block">
+              <Heart className="w-20 h-20 text-red-500 mx-auto mb-4 animate-pulse" fill="currentColor" />
+              <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-black px-2 py-1 rounded-full border-2 border-white transform rotate-12">
+                GIFT
+              </div>
+            </div>
+            <h2 className="text-2xl font-black text-gray-800 mb-2">하트가 부족해요!</h2>
+            <p className="text-gray-600 mb-6 font-bold">🎁 게스트 테스트를 위해<br/>5개 하트 선물이 도착했습니다.</p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={acceptGift}
+                className="w-full py-4 bg-green-500 hover:bg-green-400 text-white rounded-xl font-bold shadow-[0_4px_0_rgba(34,197,94,1)] active:translate-y-1 active:shadow-none transition flex items-center justify-center gap-2"
+              >
+                <Heart size={20} fill="currentColor" className="text-red-200" /> 선물 받기
+              </button>
+              <button
+                onClick={() => setShowGiftModal(false)}
+                className="w-full py-4 text-gray-500 font-bold hover:bg-gray-100 rounded-xl transition"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast notice */}
       {toast && (

@@ -43,3 +43,7 @@ export function playFinishSound() {
     beep({ freq, duration: 0.18, type: 'triangle', delay: i * 0.1 });
   });
 }
+
+export function playHoverSound() {
+  beep({ freq: 523.25, duration: 0.15, type: 'sine', gain: 0.03 });
+}

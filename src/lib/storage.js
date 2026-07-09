@@ -97,13 +97,13 @@ export function refillHearts(state) {
 
 // Call when a lesson is completed. Handles XP, gems, streak, and the
 // daily-quest counter. Returns the updated state (does not mutate input).
-export function applyLessonCompletion(state) {
+export function applyLessonCompletion(state, earnedXp = XP_PER_LESSON, earnedGems = GEMS_PER_LESSON) {
   const today = todayStr();
   const next = checkWeekRollover({ ...state });
 
-  next.xp += XP_PER_LESSON;
-  next.gems += GEMS_PER_LESSON;
-  next.weeklyXp = (next.weeklyXp || 0) + XP_PER_LESSON;
+  next.xp += earnedXp;
+  next.gems += earnedGems;
+  next.weeklyXp = (next.weeklyXp || 0) + earnedXp;
 
   // Daily quest counter resets when the day changes.
   if (next.lessonsCompletedTodayDate !== today) {
