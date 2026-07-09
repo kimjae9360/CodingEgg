@@ -10,6 +10,16 @@ body {
   color: #1E293B;
 }
 
+/* Hides the scrollbar on the mobile card carousel (SkillTreeBoard) without
+   disabling scroll — swiping/dragging still works, it's just not shown. */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes float {
   0% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }

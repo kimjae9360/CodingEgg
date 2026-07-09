@@ -346,7 +346,7 @@ export default function App() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 ml-0 md:ml-[80px] xl:ml-[250px] min-h-screen flex flex-col pb-16 md:pb-0">
+      <div className="flex-1 min-w-0 ml-0 md:ml-[80px] xl:ml-[250px] min-h-screen flex flex-col pb-16 md:pb-0">
         {/* Daily streak reminder — Duolingo-style nudge shown until today's lesson is done */}
         {streakAtRisk && !nudgeDismissed && (
           <div className={`flex-none flex items-center gap-3 px-5 py-3 border-b-2 ${isDark ? 'bg-[#3a2a12] border-[#5a3d15] text-[#FFB300]' : 'bg-amber-50 border-amber-100 text-amber-800'}`}>

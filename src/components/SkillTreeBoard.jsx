@@ -221,11 +221,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
 
       {/* ── Compact Unit Navigation ── */}
       <div className="max-w-6xl mx-auto w-full mb-6 flex flex-col items-center justify-center">
-        <div className="flex items-center gap-3 md:gap-6 w-full justify-center">
-          {/* 처음으로 버튼 */}
-          <div className="w-20 md:w-24 flex justify-end">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-6 w-full justify-center px-2">
+          {/* 처음으로 버튼 — hidden on the smallest screens; the arrow buttons still work */}
+          <div className="hidden sm:flex w-20 md:w-24 justify-end">
             {activeSectionIdx > 0 && (
-              <button 
+              <button
                 onClick={() => setActiveSectionIdx(0)}
                 className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#334155] hover:bg-[#475569] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
               >
@@ -234,37 +234,37 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
             )}
           </div>
 
-          <div className={`flex items-center gap-4 px-2 py-2 rounded-full border-2 shadow-sm ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
-            <button 
+          <div className={`flex items-center gap-1 sm:gap-4 px-1 sm:px-2 py-2 rounded-full border-2 shadow-sm min-w-0 ${isDark ? 'bg-[#0B1120] border-[#334155]' : 'bg-white border-gray-100'}`}>
+            <button
               onClick={() => setActiveSectionIdx(p => Math.max(0, p - 1))}
               disabled={activeSectionIdx === 0}
-              className={`p-2 rounded-full transition ${activeSectionIdx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10'} ${isDark ? 'text-white' : 'text-gray-800'}`}
+              className={`p-1 sm:p-2 rounded-full transition shrink-0 ${activeSectionIdx === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10'} ${isDark ? 'text-white' : 'text-gray-800'}`}
             >
               <ChevronLeft size={24} />
             </button>
-            
-            <div className="flex flex-col items-center justify-center min-w-[280px] md:min-w-[320px] text-center">
-              <span className="text-sm font-black tracking-wider opacity-60 mb-0.5" style={{ color: info.iconColor }}>
+
+            <div className="flex flex-col items-center justify-center min-w-0 w-[170px] sm:w-[280px] md:w-[320px] text-center">
+              <span className="text-xs sm:text-sm font-black tracking-wider opacity-60 mb-0.5 truncate w-full" style={{ color: info.iconColor }}>
                 {info.label}
               </span>
-              <span className={`text-lg font-black ${isDark ? 'text-white' : 'text-gray-800'}`}>
+              <span className={`text-sm sm:text-lg font-black truncate w-full ${isDark ? 'text-white' : 'text-gray-800'}`}>
                 Unit {activeSectionIdx + 1} : {shortTitle}
               </span>
             </div>
 
-            <button 
+            <button
               onClick={() => setActiveSectionIdx(p => Math.min(trackData.sections.length - 1, p + 1))}
               disabled={activeSectionIdx === trackData.sections.length - 1}
-              className={`p-2 rounded-full transition ${activeSectionIdx === trackData.sections.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10'} ${isDark ? 'text-white' : 'text-gray-800'}`}
+              className={`p-1 sm:p-2 rounded-full transition shrink-0 ${activeSectionIdx === trackData.sections.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/5 dark:hover:bg-white/10'} ${isDark ? 'text-white' : 'text-gray-800'}`}
             >
               <ChevronRight size={24} />
             </button>
           </div>
 
-          {/* 끝으로 버튼 */}
-          <div className="w-20 md:w-24 flex justify-start">
+          {/* 끝으로 버튼 — hidden on the smallest screens; the arrow buttons still work */}
+          <div className="hidden sm:flex w-20 md:w-24 justify-start">
             {activeSectionIdx < trackData.sections.length - 1 && (
-              <button 
+              <button
                 onClick={() => setActiveSectionIdx(trackData.sections.length - 1)}
                 className={`text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg transition ${isDark ? 'bg-[#334155] hover:bg-[#475569] text-gray-300' : 'bg-gray-100 hover:bg-gray-200 text-gray-600'}`}
               >
@@ -290,10 +290,11 @@ export default function SkillTreeBoard({ onNodeClick, completedNodes, trackData,
       </div>
 
       {/* ── Pokemon Card Display (Nodes as TCG Cards - Apple Cover Flow) ── */}
-      <div className="w-full max-w-7xl mx-auto pb-8 overflow-x-clip">
-        
-        {/* Container strictly prevents scrolling, forces overlap */}
-        <div className="relative flex justify-center items-center w-full min-h-[450px] px-4 md:px-8 pt-8">
+      {/* On phones/tablets the fanned-out deck is wider than the viewport, so
+          it becomes a swipeable horizontal carousel instead of being clipped. */}
+      <div className="w-full max-w-7xl mx-auto pb-8 overflow-x-auto lg:overflow-x-clip snap-x snap-mandatory lg:snap-none scrollbar-hide">
+
+        <div className="relative flex justify-start lg:justify-center items-center w-full min-h-[450px] px-8 sm:px-16 lg:px-8 pt-8">
           
           {currentSection.nodes.map((node, i) => {
             const isNodeCompleted = completedNodes.includes(node.id);

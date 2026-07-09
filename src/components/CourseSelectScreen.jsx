@@ -13,7 +13,7 @@ export default function CourseSelectScreen({ selectedCourseId, onSelect }) {
         마음에 드는 트랙을 골라주세요. 언제든지 나중에 바꿀 수 있어요!
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-3xl w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-3xl w-full">
         {COURSES.map((course) => {
           const isSelected = course.id === selectedCourseId;
           return (
@@ -60,11 +60,11 @@ export default function CourseSelectScreen({ selectedCourseId, onSelect }) {
 
               {course.available && (
                 <div className="mt-auto pt-4 flex items-center gap-4 w-full">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-gray-500 whitespace-nowrap">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                     진행 가능
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-gray-600">
+                  <div className="flex items-center gap-1 text-xs font-bold text-gray-600 whitespace-nowrap">
                     12+ 레슨
                   </div>
                 </div>
@@ -74,8 +74,9 @@ export default function CourseSelectScreen({ selectedCourseId, onSelect }) {
         })}
       </div>
 
-      {/* Floating Sunglasses Character */}
-      <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 flex items-end gap-3 z-50 pointer-events-none">
+      {/* Floating Sunglasses Character — hidden on small screens since the
+          fixed position would otherwise sit on top of the course cards */}
+      <div className="hidden md:flex fixed bottom-6 right-6 md:bottom-10 md:right-10 items-end gap-3 z-50 pointer-events-none">
         <div className="bg-[#1E293B] text-gray-300 font-bold text-sm px-4 py-2 rounded-2xl rounded-br-none border border-gray-800 shadow-2xl animate-fade-in">
           어떤 코딩을 마스터해볼까?
         </div>
